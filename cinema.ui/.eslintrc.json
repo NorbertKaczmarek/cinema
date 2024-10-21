@@ -1,0 +1,139 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "react-hooks",
+    "prettier",
+    "simple-import-sort",
+    "import"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "no-alert": [
+      "error"
+    ],
+    "no-var": [
+      "error"
+    ],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "warn",
+      "always"
+    ],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "@typescript-eslint/ban-ts-comment": [
+      "warn"
+    ],
+    "@typescript-eslint/no-empty-function": [
+      "error"
+    ],
+    "@typescript-eslint/no-empty-interface": [
+      "warn"
+    ],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-use-before-define": [
+      "error"
+    ],
+    "@typescript-eslint/no-var-requires": "off",
+    "no-duplicate-imports": "warn",
+    "no-sparse-arrays": "error",
+    "no-unsafe-negation": "error",
+    "default-case-last": "error",
+    "eqeqeq": "error",
+    "no-implicit-coercion": [
+      "warn",
+      {
+        "string": true,
+        "number": true,
+        "allow": [
+          "!!"
+        ]
+      }
+    ],
+    "max-depth": [
+      "error",
+      4
+    ],
+    "max-lines": [
+      "warn",
+      800
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": ",^_"
+      }
+    ],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "crlf",
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "printWidth": 100,
+        "arrowParens": "avoid",
+        "plugins": [
+          "prettier-plugin-tailwindcss"
+        ]
+      }
+    ],
+    "simple-import-sort/imports": [
+      "warn",
+      {
+        "groups": [
+          [
+            "^react",
+            "^@?\\w"
+          ],
+          [
+            "^[a-z].+[a-z]"
+          ],
+          [
+            "^Jest.+"
+          ],
+          [
+            "^[A-Z].+[a-z]"
+          ],
+          [
+            "^\\.\\.(?!/?$)', '^\\.\\./?$"
+          ],
+          [
+            "^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$"
+          ]
+        ]
+      }
+    ]
+  }
+}
