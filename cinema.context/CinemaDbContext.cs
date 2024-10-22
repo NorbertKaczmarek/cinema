@@ -13,6 +13,18 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
     public DbSet<OrderedSeat> OrderedSeats { get; set; }
     public DbSet<User> Users { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Movie>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.HasOne(m => m.MovieCategory)
+                .WithMany()
+                .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
     public void UpdateDatabase()
     {
         if (Database.CanConnect() && Database.IsRelational())
@@ -54,7 +66,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Cast = "Actor 1, Actor 2",
                 Description = "An action-packed adventure.",
                 Rating = 8.5,
-                CategoryId = Categories.FirstOrDefault(x => x.Name == "Action")!.Id
+                MovieCategory = Categories.FirstOrDefault(x => x.Name == "Action")
             },
             new Movie
             {
@@ -66,7 +78,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Cast = "Actor 3, Actor 4",
                 Description = "A hilarious comedy.",
                 Rating = 7.0,
-                CategoryId = Categories.FirstOrDefault(x => x.Name == "Comedy")!.Id
+                MovieCategory = Categories.FirstOrDefault(x => x.Name == "Comedy")
             }
         };
         if (!Movies.Any())
