@@ -15,13 +15,76 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.Name).HasColumnType("varchar(100)");
+        });
+
         modelBuilder.Entity<Movie>(eb =>
         {
             eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.Title).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Duration).HasColumnType("time(6)");
+            eb.Property(eb => eb.PosterUrl).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Director).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Cast).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Description).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Rating).HasColumnType("double");
+            eb.Property(eb => eb.CategoryId).HasColumnType("char(36)");
+
             eb.HasOne(m => m.MovieCategory)
                 .WithMany()
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<Seat>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.Row).HasColumnType("varchar(1)");
+            eb.Property(eb => eb.Number).HasColumnType("int");
+        });
+
+        modelBuilder.Entity<User>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.IsAdmin).HasColumnType("tinyint(1)");
+            eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.FirstName).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.PasswordHash).HasColumnType("varchar(100)");
+        });
+
+        modelBuilder.Entity<Screening>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.StartDateTime).HasColumnType("datetime(6)");
+            eb.Property(eb => eb.EndDateTime).HasColumnType("datetime(6)");
+            eb.Property(eb => eb.MovieId).HasColumnType("char(36)");
+        });
+
+        modelBuilder.Entity<Order>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.PhoneNumber).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Status).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.ScreeningId).HasColumnType("char(36)");
+        });
+
+        modelBuilder.Entity<OrderedSeat>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.SeatId).HasColumnType("char(36)");
+            eb.Property(eb => eb.OrderId).HasColumnType("char(36)");
         });
     }
 
