@@ -11,5 +11,5 @@ public class Movie
     public required string Description { get; set; }
     public double Rating { get; set; }
     public Guid? CategoryId {  get; set; }
-    public virtual Category? MovieCategory { get; set; }
+    public virtual Category? Category { get; set; }
 }

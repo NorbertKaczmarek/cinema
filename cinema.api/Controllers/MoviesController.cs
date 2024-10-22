@@ -19,7 +19,7 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public IEnumerable<Movie> Get()
     {
-        return _context.Movies.Include(m => m.MovieCategory).ToList();
+        return _context.Movies.Include(m => m.Category).ToList();
     }
 
     [HttpGet("{id}")]
@@ -30,7 +30,7 @@ public class MoviesController : ControllerBase
 
     private Movie getById(Guid id)
     {
-        return _context.Movies.Include(m => m.MovieCategory).FirstOrDefault(m => m.Id == id)!;
+        return _context.Movies.Include(m => m.Category).FirstOrDefault(m => m.Id == id)!;
     }
 
     [HttpPost]

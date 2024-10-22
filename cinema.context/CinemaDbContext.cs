@@ -34,29 +34,10 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Rating).HasColumnType("double");
             eb.Property(eb => eb.CategoryId).HasColumnType("char(36)");
 
-            eb.HasOne(m => m.MovieCategory)
+            eb.HasOne(m => m.Category)
                 .WithMany()
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
-        });
-
-        modelBuilder.Entity<Seat>(eb =>
-        {
-            eb.HasKey(eb => eb.Id);
-            eb.Property(eb => eb.Id).HasColumnType("char(36)");
-            eb.Property(eb => eb.Row).HasColumnType("varchar(1)");
-            eb.Property(eb => eb.Number).HasColumnType("int");
-        });
-
-        modelBuilder.Entity<User>(eb =>
-        {
-            eb.HasKey(eb => eb.Id);
-            eb.Property(eb => eb.Id).HasColumnType("char(36)");
-            eb.Property(eb => eb.IsAdmin).HasColumnType("tinyint(1)");
-            eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.FirstName).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.PasswordHash).HasColumnType("varchar(100)");
         });
 
         modelBuilder.Entity<Screening>(eb =>
@@ -66,6 +47,19 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.StartDateTime).HasColumnType("datetime(6)");
             eb.Property(eb => eb.EndDateTime).HasColumnType("datetime(6)");
             eb.Property(eb => eb.MovieId).HasColumnType("char(36)");
+
+            eb.HasOne(m => m.Movie)
+                .WithMany()
+                .HasForeignKey(c => c.MovieId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<Seat>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.Row).HasColumnType("varchar(1)");
+            eb.Property(eb => eb.Number).HasColumnType("int");
         });
 
         modelBuilder.Entity<Order>(eb =>
@@ -79,6 +73,22 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
 
             eb.HasMany(o => o.Seats)
                 .WithMany();
+
+            eb.HasOne(m => m.Screening)
+                .WithMany()
+                .HasForeignKey(c => c.ScreeningId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<User>(eb =>
+        {
+            eb.HasKey(eb => eb.Id);
+            eb.Property(eb => eb.Id).HasColumnType("char(36)");
+            eb.Property(eb => eb.IsAdmin).HasColumnType("tinyint(1)");
+            eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.FirstName).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.PasswordHash).HasColumnType("varchar(100)");
         });
     }
 
@@ -123,7 +133,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Cast = "Actor 1, Actor 2",
                 Description = "An action-packed adventure.",
                 Rating = 8.5,
-                MovieCategory = Categories.FirstOrDefault(x => x.Name == "Action")
+                Category = Categories.FirstOrDefault(x => x.Name == "Action")
             },
             new Movie
             {
@@ -135,7 +145,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Cast = "Actor 3, Actor 4",
                 Description = "A hilarious comedy.",
                 Rating = 7.0,
-                MovieCategory = Categories.FirstOrDefault(x => x.Name == "Comedy")
+                Category = Categories.FirstOrDefault(x => x.Name == "Comedy")
             }
         };
         if (!Movies.Any())
@@ -197,9 +207,9 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             screenings.Add(new Screening
             {
                 Id = Guid.NewGuid(),
-                MovieId = movie.Id,
                 StartDateTime = startTime,
-                EndDateTime = startTime.Add(movie.Duration)
+                EndDateTime = startTime.Add(movie.Duration),
+                Movie = movie
             });
         }
         if (!Screenings.Any())
@@ -217,7 +227,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Email = "customer@example.com",
                 PhoneNumber = "123-456-7890",
                 Status = OrderStatus.Ready,
-                ScreeningId = screening.Id,
+                Screening = screening,
                 Seats = new List<Seat>()
                 {
                     Seats.FirstOrDefault(x => x.Number == 4 && x.Row == 'C')!,
