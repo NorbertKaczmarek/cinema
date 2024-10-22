@@ -69,10 +69,6 @@ app.Services.CreateScope().ServiceProvider.GetRequiredService<CinemaDbContext>()
 // Seed database
 app.Services.CreateScope().ServiceProvider.GetRequiredService<CinemaDbContext>().SeedDatabase();
 
-app.MapGet("/api/", () => "Hello World!");
-app.MapGet("/api/2/", () => "Hello World! 2");
-app.MapGet("/api/3/", () => "Hello World! 3");
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
