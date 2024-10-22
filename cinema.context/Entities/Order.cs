@@ -14,4 +14,5 @@ public class Order
     public required string PhoneNumber { get; set; }
     public OrderStatus Status { get; set; }
     public Guid ScreeningId { get; set; }
+    public virtual List<Seat>? Seats { get; set; }
 }
