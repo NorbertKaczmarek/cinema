@@ -29,5 +29,6 @@ public class Movie
     public double Rating { get; set; }
 
     [Column(TypeName = "char(36)")]
-    public Guid CategoryId {  get; set; }
+    public Guid? CategoryId {  get; set; }
+    public virtual Category? MovieCategory { get; set; }
 }
