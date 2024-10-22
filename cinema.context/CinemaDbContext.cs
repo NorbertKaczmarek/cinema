@@ -10,7 +10,6 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
     public DbSet<Movie> Movies { get; set; }
     public DbSet<Screening> Screenings { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderedSeat> OrderedSeats { get; set; }
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -77,14 +76,9 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.PhoneNumber).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Status).HasColumnType("varchar(100)");
             eb.Property(eb => eb.ScreeningId).HasColumnType("char(36)");
-        });
 
-        modelBuilder.Entity<OrderedSeat>(eb =>
-        {
-            eb.HasKey(eb => eb.Id);
-            eb.Property(eb => eb.Id).HasColumnType("char(36)");
-            eb.Property(eb => eb.SeatId).HasColumnType("char(36)");
-            eb.Property(eb => eb.OrderId).HasColumnType("char(36)");
+            eb.HasMany(o => o.Seats)
+                .WithMany();
         });
     }
 
@@ -223,34 +217,19 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Email = "customer@example.com",
                 PhoneNumber = "123-456-7890",
                 Status = OrderStatus.Ready,
-                ScreeningId = screening.Id
+                ScreeningId = screening.Id,
+                Seats = new List<Seat>()
+                {
+                    Seats.FirstOrDefault(x => x.Number == 4 && x.Row == 'C')!,
+                    Seats.FirstOrDefault(x => x.Number == 1 && x.Row == 'B')!,
+                    Seats.FirstOrDefault(x => x.Number == 4 && x.Row == 'A')!,
+                    Seats.FirstOrDefault(x => x.Number == 2 && x.Row == 'D')!,
+                }
             });
         }
         if (!Orders.Any())
         {
             Orders.AddRange(orders);
-            SaveChanges();
-        }
-
-        var orderedSeats = new List<OrderedSeat>();
-        foreach (var order in orders)
-        {
-            orderedSeats.Add(new OrderedSeat
-            {
-                Id = Guid.NewGuid(),
-                SeatId = Seats.FirstOrDefault(x => x.Number == 4 && x.Row == 'C')!.Id,
-                OrderId = order.Id
-            });
-            orderedSeats.Add(new OrderedSeat
-            {
-                Id = Guid.NewGuid(),
-                SeatId = Seats.FirstOrDefault(x => x.Number == 7 && x.Row == 'B')!.Id,
-                OrderId = order.Id
-            });
-        }
-        if (!OrderedSeats.Any())
-        {
-            OrderedSeats.AddRange(orderedSeats);
             SaveChanges();
         }
     }

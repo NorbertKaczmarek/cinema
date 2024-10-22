@@ -43,12 +43,11 @@
 | `Status`       | `varchar(100)`  | Status                           |
 | `ScreeningId`  | `char(36)`      | Id seansu                        |
 
-**OrderedSeats** 
+**OrderSeat** 
 | Parametr       | Typ             | Opis                                 |
 | :------------- | :-------------- | :----------------------------------- |
-| `Id`           | `char(36)`      | Id rezerwacji siedzenia              |
-| `SeatId`       | `char(36)`      | Id siedzenia                         |
 | `OrderId`      | `char(36)`      | Id rezerwacji                        |
+| `SeatId`       | `char(36)`      | Id siedzenia                         |
 
 **Users**
 | Parametr       | Typ             | Opis                                 |
