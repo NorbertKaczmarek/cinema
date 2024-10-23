@@ -59,7 +59,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 // Database
 var connectionString = configuration.GetConnectionString("MySql")!;
 builder.Services.AddDbContext<CinemaDbContext>
-    (options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    (options => options.UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql")));
 
 var app = builder.Build();
 
