@@ -1,6 +1,6 @@
 services:      
   db:
-    image: mysql
+    image: mysql:9.0
     restart: always
     environment:
       MYSQL_DATABASE: 'CinemaApp'
@@ -10,7 +10,7 @@ services:
     ports:
       - '3309:3306'
     volumes:
-      - bookmark-app-db:/var/lib/fms/mysql
+      - cinema-app-db:/var/lib/fms/mysql
 volumes:
-  bookmark-app-db:
+  cinema-app-db:
   
