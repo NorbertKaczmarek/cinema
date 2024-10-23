@@ -10,7 +10,6 @@ namespace cinema.tests;
 
 public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _scopedServices;
@@ -18,16 +17,17 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
 
     public CategoriesControllerTests(CustomWebApplicationFactory<Program> factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
-        _scope = _factory.Services.CreateScope();
+        _client = factory.CreateClient();
+        _scope = factory.Services.CreateScope();
         _scopedServices = _scope.ServiceProvider;
         _context = _scopedServices.GetRequiredService<CinemaDbContext>();
     }
 
-    private static HttpContent serializeObject(object obj)
+    private async Task<Guid> seedCategory(Category category)
     {
-        return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+        await _context.Categories.AddAsync(category);
+        await _context.SaveChangesAsync();
+        return category.Id;
     }
 
     [Theory]
@@ -39,29 +39,22 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         response.EnsureSuccessStatusCode();
     }
 
-    private async Task<Guid> seedCategory(Category category)
-    {
-        await _context.Categories.AddAsync(category);
-        await _context.SaveChangesAsync();
-        return category.Id;
-    }
-
     [Theory]
     [InlineData("test1")]
     [InlineData("test2")]
     [InlineData("test3")]
     public async Task GetCategory_WithValidId_ReturnsOK(string name)
     {
-        // arange
+        // Arrange
         var category = new Category() { Name = name };
         var categoryId = await seedCategory(category);
 
-        // act
+        // Act
         var response = await _client.GetAsync("/api/Categories/" + categoryId);
         var responseBody = await response.Content.ReadAsStringAsync();
         var retrievedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
-        // asert
+        // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         retrievedCategory.Should().NotBeNull();
         retrievedCategory!.Id.Should().Be(categoryId);
@@ -74,13 +67,13 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     [InlineData("test23")]
     public async Task CreateCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
-        // arange
-        HttpContent content = serializeObject(categoryName);
+        // Arrange
+        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
-        // act
+        // Act
         var response = await _client.PostAsync("/api/Categories", content);
 
-        // asert
+        // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
     }
 
@@ -90,15 +83,15 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     [InlineData("test33")]
     public async Task DeleteCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
-        // arange
+        // Arrange
         var category = new Category() { Name = categoryName };
         var categoryId = await seedCategory(category);
 
-        // act
+        // Act
         var response = await _client.DeleteAsync("/api/Categories/" + categoryId);
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
-        // asert
+        // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         deletedCategory.Should().BeNull();
     }
@@ -109,29 +102,19 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     [InlineData("test43")]
     public async Task CreateAndDeleteCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
-        // arange
-        HttpContent content = serializeObject(categoryName);
+        // Arrange
+        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
-        // act
+        // Act
         var responseCreated = await _client.PostAsync("/api/Categories", content);
         var location = responseCreated.Headers.Location;
         var responseDeleted = await _client.DeleteAsync(location);
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Name == categoryName);
 
-        // asert
+        // Asert
         responseCreated.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
         location.Should().NotBeNull();
         responseDeleted.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         deletedCategory.Should().BeNull();
     }
-
-    //[Theory]
-    //public async Task CreateCategory_WithValidModel_ReturnsCreatedStatus()
-    //{
-    //    // arange
-
-    //    // act
-
-    //    // asert
-    //}
 }
