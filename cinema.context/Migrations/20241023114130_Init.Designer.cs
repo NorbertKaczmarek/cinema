@@ -12,7 +12,7 @@ using cinema.context;
 namespace cinema.context.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    [Migration("20241023110840_Init")]
+    [Migration("20241023114130_Init")]
     partial class Init
     {
         /// <inheritdoc />
