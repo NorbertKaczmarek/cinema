@@ -2,6 +2,7 @@
 using cinema.context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers;
 
@@ -19,7 +20,13 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public IEnumerable<Order> Get()
     {
-        return _context.Orders.ToList();
+        return _context
+            .Orders
+            .Include(o => o.Seats)
+            .Include(o => o.Screening)
+            .ThenInclude(s => s.Movie)
+            .ThenInclude(m => m.Category)
+            .ToList();
     }
 
     [HttpGet("{id}")]
@@ -30,7 +37,13 @@ public class OrdersController : ControllerBase
 
     private Order getById(Guid id)
     {
-        return _context.Orders.FirstOrDefault(m => m.Id == id)!;
+        return _context
+            .Orders
+            .Include(o => o.Seats)
+            .Include(o => o.Screening)
+            .ThenInclude(s => s.Movie)
+            .ThenInclude(m => m.Category)
+            .FirstOrDefault(o => o.Id == id)!;
     }
 
     [HttpPost]

@@ -1,6 +1,7 @@
 ﻿using cinema.context.Entities;
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers;
 
@@ -18,7 +19,11 @@ public class ScreeningsController : ControllerBase
     [HttpGet]
     public IEnumerable<Screening> Get()
     {
-        return _context.Screenings.ToList();
+        return _context
+            .Screenings
+            .Include(s => s.Movie)
+            .ThenInclude(m => m.Category)
+            .ToList();
     }
 
     [HttpGet("{id}")]
@@ -29,7 +34,11 @@ public class ScreeningsController : ControllerBase
 
     private Screening getById(Guid id)
     {
-        return _context.Screenings.FirstOrDefault(m => m.Id == id)!;
+        return _context
+            .Screenings
+            .Include(s => s.Movie)
+            .ThenInclude(m => m.Category)
+            .FirstOrDefault(m => m.Id == id)!;
     }
 
     [HttpPost]
