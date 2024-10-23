@@ -5,10 +5,12 @@ namespace cinema.tests;
 public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
+    private readonly HttpClient _client;
 
     public BasicTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
+        _client = _factory.CreateClient();
     }
 
     [Theory]
@@ -20,9 +22,7 @@ public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
     [InlineData("/api/Seats")]
     public async Task Get_Endpoints_ReturnsSuccessStatusCode(string url)
     {
-        var client = _factory.CreateClient();
-
-        var response = await client.GetAsync(url);
+        var response = await _client.GetAsync(url);
 
         response.EnsureSuccessStatusCode();
     }
