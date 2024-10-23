@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "jsx": "react-jsx",
+    "baseUrl": "."
+  },
+  "include": [
+    "src"
+  ]
+}
