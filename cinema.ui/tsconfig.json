@@ -2,15 +2,31 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "target": "ES6",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    //    "rootDir": "./src",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    /* Linting */
+    "strict": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
+  "include": [
+    "vite.config.ts",
+    "src"
   ]
 }
