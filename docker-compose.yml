@@ -1,0 +1,16 @@
+services:      
+  db:
+    image: mysql:8.0.40
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'CinemaApp'
+      MYSQL_USER: 'CinemaAppUser'
+      MYSQL_PASSWORD: 'CinemaAppPassword'
+      MYSQL_ROOT_PASSWORD: 'CinemaAppRootPassword'
+    ports:
+      - '3309:3306'
+    volumes:
+      - cinema-app-db:/var/lib/fms/mysql
+volumes:
+  cinema-app-db:
+  
