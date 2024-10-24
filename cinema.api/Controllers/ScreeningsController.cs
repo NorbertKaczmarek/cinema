@@ -22,7 +22,7 @@ public class ScreeningsController : ControllerBase
         return _context
             .Screenings
             .Include(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(m => m!.Category)
             .ToList();
     }
 
@@ -37,7 +37,7 @@ public class ScreeningsController : ControllerBase
         return _context
             .Screenings
             .Include(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(m => m!.Category)
             .FirstOrDefault(m => m.Id == id)!;
     }
 

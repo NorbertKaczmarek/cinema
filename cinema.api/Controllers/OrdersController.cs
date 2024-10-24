@@ -24,8 +24,8 @@ public class OrdersController : ControllerBase
             .Orders
             .Include(o => o.Seats)
             .Include(o => o.Screening)
-            .ThenInclude(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(s => s!.Movie)
+            .ThenInclude(m => m!.Category)
             .ToList();
     }
 
@@ -41,8 +41,8 @@ public class OrdersController : ControllerBase
             .Orders
             .Include(o => o.Seats)
             .Include(o => o.Screening)
-            .ThenInclude(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(s => s!.Movie)
+            .ThenInclude(m => m!.Category)
             .FirstOrDefault(o => o.Id == id)!;
     }
 
