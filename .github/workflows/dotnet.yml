@@ -53,7 +53,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_IP }} \
         "cd $APP_DIR && \
         git pull origin $BRANCH && \
-        cd ..\
+        cd .. && \
         docker stop ${BRANCH}-cinema.api-1 && \
         docker rm ${BRANCH}-cinema.api-1 && \
         docker compose up -d --build && \
