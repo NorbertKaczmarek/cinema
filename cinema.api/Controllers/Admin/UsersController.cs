@@ -67,12 +67,6 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-        // TODO
-    }
-
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {
