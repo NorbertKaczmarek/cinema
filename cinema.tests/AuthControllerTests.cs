@@ -15,7 +15,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly string _endpoint = "/api/admin/auth";
+    private readonly string _endpoint = "/api/auth";
 
     public AuthControllerTests(CustomWebApplicationFactory<Program> factory)
     {

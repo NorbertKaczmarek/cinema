@@ -11,9 +11,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace cinema.api.Controllers.Admin;
+namespace cinema.api.Controllers;
 
-[Route("api/admin/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 [Authorize]
 public class AuthController : ControllerBase
@@ -27,45 +27,6 @@ public class AuthController : ControllerBase
         _context = context;
         _passwordHasher = passwordHasher;
         _options = options;
-    }
-
-    [HttpGet]
-    public IEnumerable<User> Get()
-    {
-        return _context.Users.ToList();
-    }
-
-    [HttpGet("{id}")]
-    public User Get(Guid id)
-    {
-        return getById(id);
-    }
-
-    private User getById(Guid id)
-    {
-        return _context.Users.FirstOrDefault(m => m.Id == id)!;
-    }
-
-    [HttpPost]
-    public ActionResult Post([FromBody] UserCreateDto dto)
-    {
-        if (getUserByEmail(dto.Email) != null) return BadRequest();
-        if (dto.Password != dto.ConfirmPassword) return BadRequest();
-
-        var newUser = new User()
-        {
-            IsAdmin = dto.IsAdmin,
-            Email = dto.Email,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            PasswordHash = ""
-        };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
-        newUser.PasswordHash = hashedPasword;
-        _context.Users.Add(newUser);
-        _context.SaveChanges();
-
-        return Ok();
     }
 
     [HttpPost("login")]
