@@ -1,5 +1,6 @@
 ﻿using cinema.context.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace cinema.context;
 
@@ -109,24 +110,61 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
     public void SeedDatabase()
     {
         if (!Database.CanConnect() || !Database.IsRelational()) return;
-        var categories = new[]
+
+        if (!Categories.Any())
+        {
+            Categories.AddRange(SeedCategories());
+            SaveChanges();
+        }
+        
+        if (!Movies.Any())
+        {
+            Movies.AddRange(SeedMovies());
+            SaveChanges();
+        }
+
+        if (!Users.Any())
+        {
+            Users.AddRange(SeedUsers());
+            SaveChanges();
+        }
+
+        if (!Seats.Any())
+        {
+            Seats.AddRange(SeedSeats());
+            SaveChanges();
+        }
+
+
+        if (!Screenings.Any())
+        {
+            Screenings.AddRange(SeedScreenings(Movies.ToList()));
+            SaveChanges();
+        }
+
+        if (!Orders.Any())
+        {
+            Orders.AddRange(SeedOrders(Screenings.ToList()));
+            SaveChanges();
+        }
+    }
+
+    private List<Category> SeedCategories()
+    {
+        var categories = new List<Category>
         {
             new Category { Id = Guid.NewGuid(), Name = "Dramat" },
             new Category { Id = Guid.NewGuid(), Name = "Animacja" },
             new Category { Id = Guid.NewGuid(), Name = "Sci-Fi" },
             new Category { Id = Guid.NewGuid(), Name = "Horror" },
-
-            new Category { Id = Guid.NewGuid(), Name = "Action" },
-            new Category { Id = Guid.NewGuid(), Name = "Comedy" },
-            new Category { Id = Guid.NewGuid(), Name = "Drama" }
         };
-        if (!Categories.Any())
-        {
-            Categories.AddRange(categories);
-            SaveChanges();
-        }
 
-        var movies = new[]
+        return categories;
+    }
+
+    private List<Movie> SeedMovies()
+    {
+        var movies = new List<Movie>
         {
             new Movie
             {
@@ -199,15 +237,39 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 Description = "Poznaj historię Optimusa Prime'a i Megatrona, lepiej znanych jako zaprzysięgli wrogowie. Kiedyś byli jednak przyjaciółmi związanymi jak bracia, którzy na zawsze zmienili los Cybertronu.",
                 Rating = 8.1,
                 Category = Categories.FirstOrDefault(x => x.Name == "Animacja")
+            },
+            new Movie
+            {
+                Id = Guid.NewGuid(),
+                Title = "Uśmiechnij się 2",
+                Duration = TimeSpan.FromMinutes(132),
+                PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/aE85MnPIsSoSs3978Noo16BRsKN.jpg",
+                Director = "Parker Finn",
+                Cast = "Naomi Scott, Rosemarie DeWitt, Dylan Gelula, Lukas Gage, Peter Jacobson",
+                Description = "Przed wyruszeniem w nową trasę koncertową, globalna sensacja popu Skye Riley zaczyna doświadczać coraz bardziej przerażających i niewytłumaczalnych wydarzeń. Przytłoczona narastającymi horrorami i presją sławy, Skye jest zmuszona stawić czoła swojej mrocznej przeszłości, aby odzyskać kontrolę nad swoim życiem, zanim wymknie się spod kontroli.",
+                Rating = 6.9,
+                Category = Categories.FirstOrDefault(x => x.Name == "Horror")
+            },
+            new Movie
+            {
+                Id = Guid.NewGuid(),
+                Title = "Reagan",
+                Duration = TimeSpan.FromMinutes(135),
+                PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/o21NB4f5fNk1dtrRlyAmA0C0cb3.jpg",
+                Director = "Sean McNamara",
+                Cast = "Dennis Quaid, Jon Voight, Penelope Ann Miller, Mena Suvari",
+                Description = "Historia opowiedziana z perspektywy byłego agenta KGB, którego życie nierozerwalnie łączy się z osobą Ronalda Reagana od czasu, gdy ten po raz pierwszy zwrócił na siebie uwagę Sowietów jako aktor w Hollywood. Reagan pokonuje przeciwności losu i zostaje 40. prezydentem Stanów Zjednoczonych, jednym z największych w historii.",
+                Rating = 6.3,
+                Category = Categories.FirstOrDefault(x => x.Name == "Dramat")
             }
         };
-        if (!Movies.Any())
-        {
-            Movies.AddRange(movies);
-            SaveChanges();
-        }
 
-        var users = new[]
+        return movies;
+    }
+
+    private List<User> SeedUsers()
+    {
+        var users = new List<User>
         {
             new User
             {
@@ -228,12 +290,12 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 PasswordHash = "AQAAAAIAAYagAAAAELOJS+TqdtQUup3mVJMOqOWGNrYvwn48x4U6G7AB7ocRDWlXagMLK5gLM2BFi0G39g=="
             }
         };
-        if (!Users.Any())
-        {
-            Users.AddRange(users);
-            SaveChanges();
-        }
 
+        return users;
+    }
+
+    private List<Seat> SeedSeats()
+    {
         var seats = new List<Seat>();
         for (var row = 'A'; row <= 'E'; row++)
         {
@@ -247,12 +309,12 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 });
             }
         }
-        if (!Seats.Any())
-        {
-            Seats.AddRange(seats);
-            SaveChanges();
-        }
 
+        return seats;
+    }
+
+    private List<Screening> SeedScreenings(List<Movie> movies)
+    {
         var _random = new Random();
         long startTicks = new DateTimeOffset(2024, 6, 10, 8, 30, 0, TimeSpan.Zero).UtcTicks;
         long endTicks = new DateTimeOffset(2024, 12, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
@@ -264,7 +326,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             {
                 long randomTicks = (long)(_random.NextDouble() * (endTicks - startTicks)) + startTicks;
 
-                var randomDate =  new DateTimeOffset(randomTicks, TimeSpan.Zero);
+                var randomDate = new DateTimeOffset(randomTicks, TimeSpan.Zero);
                 var randomHour = _random.Next(8, 20);
                 var randomMinute = _random.Next(0, 59);
 
@@ -280,12 +342,13 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 });
             }
         }
-        if (!Screenings.Any())
-        {
-            Screenings.AddRange(screenings);
-            SaveChanges();
-        }
 
+        return screenings;
+    }
+
+    private List<Order> SeedOrders(List<Screening> screenings)
+    {
+        var _random = new Random();
         var rows = Seats.GroupBy(s => s.Row).Select(g => g.Key).ToList();
         var orders = new List<Order>();
         foreach (var screening in screenings)
@@ -315,10 +378,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 }
             }
         }
-        if (!Orders.Any())
-        {
-            Orders.AddRange(orders);
-            SaveChanges();
-        }
+
+        return orders;
     }
 }
