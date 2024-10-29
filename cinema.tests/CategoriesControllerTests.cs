@@ -1,9 +1,7 @@
 ﻿using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace cinema.tests;
@@ -117,5 +115,21 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         location.Should().NotBeNull();
         responseDeleted.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         deletedCategory.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateExistingCategory_WithValidModel_ReturnsBadRequest()
+    {
+        // Arrange
+        var categoryName = "test51";
+        var category = new Category() { Name = categoryName };
+        var categoryId = await seedCategory(category);
+        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+
+        // Act
+        var responseCreated = await _client.PostAsync(_endpoint, content);
+
+        // Asert
+        responseCreated.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
     }
 }

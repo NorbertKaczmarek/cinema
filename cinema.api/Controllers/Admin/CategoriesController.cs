@@ -1,8 +1,6 @@
 ﻿using cinema.context;
 using cinema.context.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -37,10 +35,12 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] string categoryName)
     {
-        // TODO unique Name
         if (categoryName == null) return BadRequest();
-        var newCategory = new Category { Name = categoryName };
 
+        var category = _context.Categories.FirstOrDefault(x => x.Name == categoryName);
+        if (category != null) return BadRequest();
+
+        var newCategory = new Category { Name = categoryName };
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
 

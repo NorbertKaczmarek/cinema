@@ -17,8 +17,7 @@ public static class SalterAndHasher
         return (saltText, saltedHashedPassword);
     }
 
-    public static bool CheckPassword(string password,
-      string salt, string hashedPassword)
+    public static bool CheckPassword(string password, string salt, string hashedPassword)
     {
         string saltedHashedPassword = SaltAndHashPassword(password, salt);
 

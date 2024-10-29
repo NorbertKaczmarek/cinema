@@ -1,7 +1,9 @@
-﻿using cinema.context;
+﻿using cinema.api.Models;
+using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -34,15 +36,32 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
-    public void Post([FromBody] Movie movie)
+    public ActionResult Post([FromBody] MovieCreateDto dto)
     {
-        // TODO
+        if (dto == null) return BadRequest();
+
+        var newMovie = new Movie()
+        {
+            Title = dto.Title,
+            Duration = dto.Duration,
+            PosterUrl = dto.PosterUrl,
+            Director = dto.Director,
+            Cast = dto.Cast,
+            Description = dto.Description,
+            Rating = dto.Rating,
+            Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName)
+        };
+
+        _context.Movies.Add(newMovie);
+        _context.SaveChanges();
+
+        return Created($"/api/admin/movies/{newMovie.Id}", null);
     }
 
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {
-        var movie = getById(id);
+        var movie = _context.Movies.FirstOrDefault(m => m.Id == id)!;
         if (movie == null) return;
 
         _context.Movies.Remove(movie);
