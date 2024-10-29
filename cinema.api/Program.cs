@@ -54,9 +54,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Password hasher
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-
 // Seeder
 builder.Services.AddScoped<Seeder>();
 

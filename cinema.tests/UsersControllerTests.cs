@@ -1,12 +1,9 @@
 ﻿using cinema.context;
 using cinema.context.Entities;
-using FluentAssertions;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using cinema.api.Models;
 using Microsoft.AspNetCore.Identity;
+using cinema.api.Helpers;
 
 namespace cinema.tests;
 
@@ -16,7 +13,6 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
     //private readonly string _endpoint = "/api/admin/users";
 
     public UsersControllerTests(CustomWebApplicationFactory<Program> factory)
@@ -25,22 +21,21 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
         _scope = factory.Services.CreateScope();
         _scopedServices = _scope.ServiceProvider;
         _context = _scopedServices.GetRequiredService<CinemaDbContext>();
-        _passwordHasher = _scopedServices.GetRequiredService<IPasswordHasher<User>>();
     }
 
     private async Task<Guid> seedUser(UserCreateDto dto)
     {
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+
         User newUser = new User
         {
             IsAdmin = dto.IsAdmin,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            PasswordHash = ""
+            Salt = saltText,
+            SaltedHashedPassword = saltedHashedPassword,
         };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
-        newUser.PasswordHash = hashedPasword;
-
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
 

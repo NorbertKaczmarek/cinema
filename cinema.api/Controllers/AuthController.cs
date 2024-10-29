@@ -1,4 +1,5 @@
-﻿using cinema.api.Models;
+﻿using cinema.api.Helpers;
+using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+
+using static System.Convert;
 
 namespace cinema.api.Controllers;
 
@@ -19,13 +23,11 @@ namespace cinema.api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly CinemaDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
     private readonly AuthenticationOptions _options;
 
-    public AuthController(CinemaDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationOptions options)
+    public AuthController(CinemaDbContext context, AuthenticationOptions options)
     {
         _context = context;
-        _passwordHasher = passwordHasher;
         _options = options;
     }
 
@@ -36,8 +38,8 @@ public class AuthController : ControllerBase
         var user = getUserByEmail(dto.Email);
         if (user is null) return BadRequest();
 
-        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-        if (result == PasswordVerificationResult.Failed) return BadRequest();
+        var result = SalterAndHasher.CheckPassword(dto.Password, user.Salt, user.SaltedHashedPassword);
+        if (result == false) return BadRequest();
 
         return Ok(generateJSONWebToken(user));
     }
