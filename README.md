@@ -41,7 +41,7 @@ erDiagram
         varchar(100)    PosterUrl           "Url plakatu"
         varchar(100)    Director            "Reżyser"
         varchar(100)    Cast                "Obsada"
-        varchar(100)    Description         "Opis filmu"
+        varchar(1000)   Description         "Opis filmu"
         datetime(6)     Rating              "Ocena filmu (0-10)"
         char(36)        CategoryId      FK  "Id kategorii"
     }
