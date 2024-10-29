@@ -54,7 +54,6 @@ jobs:
         "cd $APP_DIR && \
         git pull origin $BRANCH && \
         cd .. && \
-        docker stop ${BRANCH}-cinema.api-1 && \
-        docker rm ${BRANCH}-cinema.api-1 && \
+        docker compose down && \
         docker compose up -d --build && \
         docker system prune -af"
