@@ -14,6 +14,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
+    private readonly string _endpoint = "/api/admin/categories";
 
     public CategoriesControllerTests(CustomWebApplicationFactory<Program> factory)
     {
@@ -31,7 +32,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     }
 
     [Theory]
-    [InlineData("/api/Categories")]
+    [InlineData("/api/admin/categories")]
     public async Task Get_Categories_ReturnsCategories(string url)
     {
         var response = await _client.GetAsync(url);
@@ -50,7 +51,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var categoryId = await seedCategory(category);
 
         // Act
-        var response = await _client.GetAsync("/api/Categories/" + categoryId);
+        var response = await _client.GetAsync($"{_endpoint}/{categoryId}");
         var responseBody = await response.Content.ReadAsStringAsync();
         var retrievedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
@@ -71,7 +72,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
         // Act
-        var response = await _client.PostAsync("/api/Categories", content);
+        var response = await _client.PostAsync(_endpoint, content);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
@@ -88,7 +89,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var categoryId = await seedCategory(category);
 
         // Act
-        var response = await _client.DeleteAsync("/api/Categories/" + categoryId);
+        var response = await _client.DeleteAsync($"{_endpoint}/{categoryId}");
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
         // Assert
@@ -106,7 +107,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
         // Act
-        var responseCreated = await _client.PostAsync("/api/Categories", content);
+        var responseCreated = await _client.PostAsync(_endpoint, content);
         var location = responseCreated.Headers.Location;
         var responseDeleted = await _client.DeleteAsync(location);
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Name == categoryName);

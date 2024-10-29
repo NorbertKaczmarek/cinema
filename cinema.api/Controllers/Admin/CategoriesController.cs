@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace cinema.api.Controllers;
+namespace cinema.api.Controllers.Admin;
 
-[Route("api/[controller]")]
+[Route("api/admin/[controller]")]
 [ApiController]
 public class CategoriesController : ControllerBase
 {
@@ -43,8 +43,8 @@ public class CategoriesController : ControllerBase
 
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
-        
-        return Created($"/api/Categories/{newCategory.Id}", null);
+
+        return Created($"/api/admin/categories/{newCategory.Id}", null);
     }
 
     [HttpDelete("{id}")]
