@@ -2,9 +2,9 @@
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 
-namespace cinema.api.Controllers;
+namespace cinema.api.Controllers.Admin;
 
-[Route("api/[controller]")]
+[Route("api/admin/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
 {
