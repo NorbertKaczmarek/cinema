@@ -6,6 +6,15 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react()],
   base: '/',
+  resolve: {
+    alias: {
+      Components: resolve(__dirname, './src/components'),
+      Hooks: resolve(__dirname, './src/hooks'),
+      Types: resolve(__dirname, './src/types'),
+      Utils: resolve(__dirname, './src/utils'),
+      Constants: resolve(__dirname, './src/constants'),
+    },
+  },
   server: {
     open: true,
     port: 3000,

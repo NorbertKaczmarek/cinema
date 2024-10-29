@@ -23,7 +23,28 @@
     /* Linting */
     "strict": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    // Other
+    "paths": {
+      "Components/*": [
+        "./src/components/*"
+      ],
+      "Hooks/*": [
+        "./src/hooks/*"
+      ],
+      "Types/*": [
+        "./src/types/*"
+      ],
+      "Utils/*": [
+        "./src/utils/*"
+      ],
+      "Constants/*": [
+        "./src/constants/*"
+      ],
+      "*": [
+        "./src/*.d.ts"
+      ]
+    }
   },
   "include": [
     "vite.config.ts",
