@@ -3,6 +3,7 @@ using cinema.context.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using cinema.api.Models;
 
 namespace cinema.tests;
 
@@ -67,7 +68,8 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task CreateCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
         // Arrange
-        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+        var categoryCreateDto = new CategoryCreateDto() { CategoryName = categoryName };
+        var content = HttpContentHelper.ToJsonHttpContent(categoryCreateDto);
 
         // Act
         var response = await _client.PostAsync(_endpoint, content);
@@ -102,7 +104,8 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task CreateAndDeleteCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
         // Arrange
-        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+        var categoryCreateDto = new CategoryCreateDto() { CategoryName = categoryName };
+        var content = HttpContentHelper.ToJsonHttpContent(categoryCreateDto);
 
         // Act
         var responseCreated = await _client.PostAsync(_endpoint, content);

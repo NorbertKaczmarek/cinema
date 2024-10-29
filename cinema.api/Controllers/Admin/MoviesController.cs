@@ -61,7 +61,7 @@ public class MoviesController : ControllerBase
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {
-        var movie = _context.Movies.FirstOrDefault(m => m.Id == id)!;
+        var movie = getById(id);
         if (movie == null) return;
 
         _context.Movies.Remove(movie);
