@@ -271,11 +271,13 @@ public class Seeder
                         selectedSeats.Add(_context.Seats.First(x => x.Number == j && x.Row == selectedRow));
                     }
 
+                    var customerId = _random.Next(1, 11);
+                    var customerPhoneNumber = _random.Next(111111111, 999999999).ToString();
                     orders.Add(new Order
                     {
                         Id = Guid.NewGuid(),
-                        Email = "customer@example.com",
-                        PhoneNumber = "123-456-7890",
+                        Email = $"customer{customerId}@example.com",
+                        PhoneNumber = customerPhoneNumber,
                         Status = OrderStatus.Ready,
                         Screening = screening,
                         Seats = selectedSeats
