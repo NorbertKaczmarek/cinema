@@ -16,10 +16,10 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
     [Theory]
     [InlineData("/swagger")]
     [InlineData("/api/categories")]
-    [InlineData("/api/Movies")]
-    [InlineData("/api/Orders")]
-    [InlineData("/api/Screenings")]
-    [InlineData("/api/Seats")]
+    [InlineData("/api/movies")]
+    [InlineData("/api/orders")]
+    [InlineData("/api/screenings")]
+    [InlineData("/api/seats")]
     public async Task Get_Endpoints_ReturnsSuccessStatusCode(string url)
     {
         var response = await _client.GetAsync(url);

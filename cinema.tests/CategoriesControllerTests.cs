@@ -31,7 +31,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     }
 
     [Theory]
-    [InlineData("/api/Categories")]
+    [InlineData("/api/categories")]
     public async Task Get_Categories_ReturnsCategories(string url)
     {
         var response = await _client.GetAsync(url);
@@ -50,7 +50,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var categoryId = await seedCategory(category);
 
         // Act
-        var response = await _client.GetAsync("/api/Categories/" + categoryId);
+        var response = await _client.GetAsync("/api/categories/" + categoryId);
         var responseBody = await response.Content.ReadAsStringAsync();
         var retrievedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
@@ -71,7 +71,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
         // Act
-        var response = await _client.PostAsync("/api/Categories", content);
+        var response = await _client.PostAsync("/api/categories", content);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
@@ -88,7 +88,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var categoryId = await seedCategory(category);
 
         // Act
-        var response = await _client.DeleteAsync("/api/Categories/" + categoryId);
+        var response = await _client.DeleteAsync("/api/categories/" + categoryId);
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
 
         // Assert
@@ -106,7 +106,7 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         var content = HttpContentHelper.ToJsonHttpContent(categoryName);
 
         // Act
-        var responseCreated = await _client.PostAsync("/api/Categories", content);
+        var responseCreated = await _client.PostAsync("/api/categories", content);
         var location = responseCreated.Headers.Location;
         var responseDeleted = await _client.DeleteAsync(location);
         var deletedCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Name == categoryName);
