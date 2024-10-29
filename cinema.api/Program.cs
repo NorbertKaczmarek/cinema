@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(options =>
 
 // Add services to the container.
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -56,18 +57,22 @@ builder.Services.AddSwaggerGen();
 // Password hasher
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+// Seeder
+builder.Services.AddScoped<Seeder>();
+
 // Database
 var connectionString = configuration.GetConnectionString("MySql")!;
 builder.Services.AddDbContext<CinemaDbContext>
     (options => options.UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql")));
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
 
 // Migrate database
-app.Services.CreateScope().ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
+scope.ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
 
 // Seed database
-app.Services.CreateScope().ServiceProvider.GetRequiredService<CinemaDbContext>().SeedDatabase();
+scope.ServiceProvider.GetRequiredService<Seeder>().SeedDatabase();
 
 app.UseSwagger();
 app.UseSwaggerUI();

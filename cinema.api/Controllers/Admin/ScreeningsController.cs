@@ -3,9 +3,9 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace cinema.api.Controllers;
+namespace cinema.api.Controllers.Admin;
 
-[Route("api/[controller]")]
+[Route("api/admin/[controller]")]
 [ApiController]
 public class ScreeningsController : ControllerBase
 {
@@ -22,7 +22,7 @@ public class ScreeningsController : ControllerBase
         return _context
             .Screenings
             .Include(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(m => m!.Category)
             .ToList();
     }
 
@@ -37,7 +37,7 @@ public class ScreeningsController : ControllerBase
         return _context
             .Screenings
             .Include(s => s.Movie)
-            .ThenInclude(m => m.Category)
+            .ThenInclude(m => m!.Category)
             .FirstOrDefault(m => m.Id == id)!;
     }
 
