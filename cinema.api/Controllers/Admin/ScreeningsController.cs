@@ -2,6 +2,7 @@
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using cinema.api.Models;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -42,9 +43,20 @@ public class ScreeningsController : ControllerBase
     }
 
     [HttpPost]
-    public void Post([FromBody] string value)
+    public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
-        // TODO
+        if (dto == null) return BadRequest();
+
+        var screening = new Screening()
+        {
+            StartDateTime = dto.StartDateTime,
+            EndDateTime = dto.EndDateTime,
+            MovieId = dto.MovieId
+        };
+
+        _context.Screenings.Add(screening);
+        _context.SaveChanges();
+        return Created($"/api/admin/screenings/{screening.Id}", null);
     }
 
     [HttpDelete("{id}")]

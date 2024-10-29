@@ -1,10 +1,9 @@
 ﻿using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using cinema.api.Models;
 
 namespace cinema.tests;
 
@@ -69,7 +68,8 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task CreateCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
         // Arrange
-        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+        var categoryCreateDto = new CategoryCreateDto() { CategoryName = categoryName };
+        var content = HttpContentHelper.ToJsonHttpContent(categoryCreateDto);
 
         // Act
         var response = await _client.PostAsync(_endpoint, content);
@@ -104,7 +104,8 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task CreateAndDeleteCategory_WithValidModel_ReturnsCreatedStatus(string categoryName)
     {
         // Arrange
-        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+        var categoryCreateDto = new CategoryCreateDto() { CategoryName = categoryName };
+        var content = HttpContentHelper.ToJsonHttpContent(categoryCreateDto);
 
         // Act
         var responseCreated = await _client.PostAsync(_endpoint, content);
@@ -117,5 +118,21 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
         location.Should().NotBeNull();
         responseDeleted.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         deletedCategory.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateExistingCategory_WithValidModel_ReturnsBadRequest()
+    {
+        // Arrange
+        var categoryName = "test51";
+        var category = new Category() { Name = categoryName };
+        var categoryId = await seedCategory(category);
+        var content = HttpContentHelper.ToJsonHttpContent(categoryName);
+
+        // Act
+        var responseCreated = await _client.PostAsync(_endpoint, content);
+
+        // Asert
+        responseCreated.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
     }
 }

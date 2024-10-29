@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cinema.api", "cinema.api\ci
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cinema.context", "cinema.context\cinema.context.csproj", "{DD30B073-A36D-416E-B8D0-B81A087AE1A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cinema.tests", "cinema.tests\cinema.tests.csproj", "{55AB0EB9-B6ED-4DF0-975A-C7AFDA2D49E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cinema.tests", "cinema.tests\cinema.tests.csproj", "{55AB0EB9-B6ED-4DF0-975A-C7AFDA2D49E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

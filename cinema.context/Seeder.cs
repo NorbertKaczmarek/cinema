@@ -183,7 +183,8 @@ public class Seeder
                 Email = "admin@cinema.com",
                 FirstName = "Admin",
                 LastName = "User",
-                PasswordHash = "AQAAAAIAAYagAAAAED4cFxkJ39lBJJcndsDW7zdH6C3qd6BJ7oZiyg5U9Z5oBEiEPy4hFeLbSVZzS7rG6A=="
+                Salt = "sD3JrhsaKwbJSEIGtCroxg==",
+                SaltedHashedPassword = "KebGc28ucmF35m9Mem88N4EmGn1kI/tkR7edZAxSuIs="
             },
             new User
             {
@@ -192,7 +193,8 @@ public class Seeder
                 Email = "user@cinema.com",
                 FirstName = "Regular",
                 LastName = "User",
-                PasswordHash = "AQAAAAIAAYagAAAAELOJS+TqdtQUup3mVJMOqOWGNrYvwn48x4U6G7AB7ocRDWlXagMLK5gLM2BFi0G39g=="
+                Salt = "IzOkJvJcKGzVGolBAAIOEw==",
+                SaltedHashedPassword = "wrLiIVdbY7IKGSEDUsqkzHd/JsjrGilRwPVSGZomGBs="
             }
         };
 

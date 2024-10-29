@@ -88,7 +88,8 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
             eb.Property(eb => eb.FirstName).HasColumnType("varchar(100)");
             eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.PasswordHash).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Salt).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.SaltedHashedPassword).HasColumnType("varchar(100)");
         });
     }
 

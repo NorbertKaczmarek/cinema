@@ -2,7 +2,7 @@
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using cinema.api.Models;
-using Microsoft.AspNetCore.Identity;
+using cinema.api.Helpers;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -11,12 +11,10 @@ namespace cinema.api.Controllers.Admin;
 public class UsersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UsersController(CinemaDbContext context, IPasswordHasher<User> passwordHasher)
+    public UsersController(CinemaDbContext context)
     {
         _context = context;
-        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -51,16 +49,17 @@ public class UsersController : ControllerBase
         if (getUserByEmail(dto.Email) != null) return BadRequest();
         if (dto.Password != dto.ConfirmPassword) return BadRequest();
 
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+
         var newUser = new User()
         {
             IsAdmin = dto.IsAdmin,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            PasswordHash = ""
+            Salt = saltText,
+            SaltedHashedPassword = saltedHashedPassword,
         };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
-        newUser.PasswordHash = hashedPasword;
         _context.Users.Add(newUser);
         _context.SaveChanges();
 
