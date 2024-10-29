@@ -4,6 +4,7 @@ using cinema.context.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace cinema.tests;
 
@@ -14,6 +15,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly string _endpoint = "/api/admin/auth";
 
     public AuthControllerTests(CustomWebApplicationFactory<Program> factory)
     {
@@ -69,7 +71,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         };
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
-        var response = await _client.PostAsync("/api/auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
         var token = await response.Content.ReadAsStringAsync();
 
         return token;
@@ -99,7 +101,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
         // Act
-        var response = await _client.PostAsync("/api/auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -132,7 +134,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
         // Act
-        var response = await _client.PostAsync("/api/auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);

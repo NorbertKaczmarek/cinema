@@ -14,7 +14,6 @@ public class CategoriesControllerTests : IClassFixture<CustomWebApplicationFacto
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
-
     private readonly string _endpoint = "/api/admin/categories";
 
     public CategoriesControllerTests(CustomWebApplicationFactory<Program> factory)

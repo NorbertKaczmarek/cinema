@@ -11,9 +11,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace cinema.api.Controllers;
+namespace cinema.api.Controllers.Admin;
 
-[Route("api/[controller]")]
+[Route("api/admin/[controller]")]
 [ApiController]
 [Authorize]
 public class AuthController : ControllerBase
