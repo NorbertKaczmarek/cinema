@@ -17,7 +17,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly string _endpoint = "/api/admin/users";
+    //private readonly string _endpoint = "/api/admin/users";
 
     public UsersControllerTests(CustomWebApplicationFactory<Program> factory)
     {
