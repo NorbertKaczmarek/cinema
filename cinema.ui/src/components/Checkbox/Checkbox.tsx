@@ -5,7 +5,7 @@ import { Check } from 'lucide-react';
 import { ControllerRenderProps } from 'react-hook-form';
 
 import { Label } from 'Components/Label';
-import { cn } from 'Utils/cn.ts';
+import { cn } from 'Utils/cn';
 
 const Base = forwardRef<ElementRef<typeof Root>, ComponentPropsWithoutRef<typeof Root>>(
   ({ className, ...props }, ref) => (
@@ -23,7 +23,6 @@ const Base = forwardRef<ElementRef<typeof Root>, ComponentPropsWithoutRef<typeof
     </Root>
   )
 );
-
 Base.displayName = Root.displayName;
 
 type Props = CheckboxProps &

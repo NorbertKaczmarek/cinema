@@ -4,9 +4,9 @@ import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps } from 'class-variance-authority';
 import { Loader2 } from 'lucide-react';
 
-import { cn } from 'Utils/cn.ts';
+import { cn } from 'Utils/cn';
 
-import { baseButtonVariants, ButtonSize, ButtonVariant } from './const.ts';
+import { baseButtonVariants, ButtonSize, ButtonVariant } from './const';
 
 interface BaseProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -27,7 +27,6 @@ const Base = forwardRef<HTMLButtonElement, BaseProps>(
     );
   }
 );
-
 Base.displayName = 'BaseButton';
 
 interface Props extends BaseProps {

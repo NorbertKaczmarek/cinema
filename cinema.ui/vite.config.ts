@@ -8,11 +8,12 @@ export default defineConfig({
   base: '/',
   resolve: {
     alias: {
-      Components: resolve(__dirname, './src/components'),
-      Hooks: resolve(__dirname, './src/hooks'),
-      Types: resolve(__dirname, './src/types'),
-      Utils: resolve(__dirname, './src/utils'),
-      Constants: resolve(__dirname, './src/constants'),
+      Components: resolve(__dirname, './src/components/'),
+      Configs: resolve(__dirname, 'src/configs/'),
+      Hooks: resolve(__dirname, './src/hooks/'),
+      Types: resolve(__dirname, './src/types/'),
+      Utils: resolve(__dirname, './src/utils/'),
+      Constants: resolve(__dirname, './src/constants/'),
     },
   },
   server: {

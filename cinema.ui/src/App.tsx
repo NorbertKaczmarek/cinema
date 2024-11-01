@@ -1,14 +1,20 @@
 import { ChevronLeft, DollarSignIcon, RabbitIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Badge, BadgeVariant } from 'Components/Badge';
 import { Button, ButtonSize, ButtonVariant } from 'Components/Button';
 import { Card } from 'Components/Card';
 import { Checkbox } from 'Components/Checkbox';
+import { Header } from 'Components/Header';
+import { Input } from 'Components/Input';
 import { Label } from 'Components/Label';
+import { Select } from 'Components/Select';
+import { Spinner } from 'Components/Spinner';
+import { Toaster } from 'Components/Toaster';
 
 const App = () => {
   return (
-    <div className="flex gap-4 p-2">
+    <div className="flex flex-wrap gap-4 p-2">
       <div className="flex flex-col gap-2">
         Badge
         <Badge>Default</Badge>
@@ -78,6 +84,70 @@ const App = () => {
           }
         />
       </div>
+      <div className="flex flex-col gap-2">
+        Input
+        <Input label="Email Label" type="email" placeholder="email" />
+        <Input label="Password Label" type="password" placeholder="password" />
+      </div>
+      <div className="flex w-52 flex-col gap-2">
+        Select
+        <Select
+          label="Select label"
+          options={[
+            {
+              label: 'Option 1',
+              value: 'option-1',
+            },
+            {
+              label: 'Option 2',
+              value: 'option-2',
+            },
+            {
+              label: 'Option 3',
+              value: 'option-3',
+            },
+          ]}
+        />
+      </div>
+      <div className="flex w-52 flex-col gap-2">
+        Spinner
+        <Card>
+          <Spinner classNames={{ wrapper: 'flex flex-col gap-4' }} isSpinning>
+            <Input label="Email Label" type="email" placeholder="email" />
+            <Input label="Password Label" type="password" placeholder="password" />
+          </Spinner>
+        </Card>
+      </div>
+      <div className="flex w-52 flex-col gap-2">
+        Toaster
+        <Button onClick={() => toast('Hello!', { position: 'top-center' })}>Click me!</Button>
+        <Button
+          variant={ButtonVariant.Success}
+          onClick={() => toast.success('Hello!', { position: 'top-center' })}
+        >
+          Click me!
+        </Button>
+        <Button
+          variant={ButtonVariant.Warning}
+          onClick={() => toast.warning('Hello!', { position: 'top-center' })}
+        >
+          Click me!
+        </Button>
+        <Button
+          variant={ButtonVariant.Danger}
+          onClick={() => toast.error('Hello!', { position: 'top-center' })}
+        >
+          Click me!
+        </Button>
+      </div>
+      <div className="flex w-52 flex-col gap-2">
+        Header
+        <Header
+          title="Nowa kategoria"
+          onClick={() => toast('Redirect', { position: 'top-center' })}
+        />
+      </div>
+      <Toaster />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 
-import { cn } from 'Utils/cn.ts';
+import { cn } from 'Utils/cn';
 
 const Wrapper = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (

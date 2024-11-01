@@ -20,6 +20,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
     /* Linting */
     "strict": true,
     "noUnusedParameters": true,
@@ -28,6 +29,9 @@
     "paths": {
       "Components/*": [
         "./src/components/*"
+      ],
+      "Configs/*": [
+        "./src/configs/*"
       ],
       "Hooks/*": [
         "./src/hooks/*"

@@ -3,9 +3,9 @@ import { LabelProps, Root } from '@radix-ui/react-label';
 
 import { VariantProps } from 'class-variance-authority';
 
-import { cn } from 'Utils/cn.ts';
+import { cn } from 'Utils/cn';
 
-import { labelVariants } from './const.ts';
+import { labelVariants } from './const';
 
 const Base = forwardRef<
   ElementRef<typeof Root>,

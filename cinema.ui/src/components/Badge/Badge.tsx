@@ -4,7 +4,7 @@ import { type VariantProps } from 'class-variance-authority';
 
 import { cn } from 'Utils/cn';
 
-import { BadgeVariant, badgeVariants } from './const.ts';
+import { BadgeVariant, badgeVariants } from './const';
 
 interface Props extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {
   variant?: BadgeVariant;
