@@ -8,12 +8,15 @@ export default defineConfig({
   base: '/',
   resolve: {
     alias: {
+      Api: resolve(__dirname, './src/api/'),
       Components: resolve(__dirname, './src/components/'),
+      Constants: resolve(__dirname, './src/constants/'),
       Configs: resolve(__dirname, 'src/configs/'),
       Hooks: resolve(__dirname, './src/hooks/'),
+      Pages: resolve(__dirname, './src/pages/'),
+      Routing: resolve(__dirname, './src/routing/'),
       Types: resolve(__dirname, './src/types/'),
       Utils: resolve(__dirname, './src/utils/'),
-      Constants: resolve(__dirname, './src/constants/'),
     },
   },
   server: {

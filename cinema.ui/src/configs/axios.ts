@@ -6,7 +6,7 @@ export const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 export const httpClient = (): AxiosInstance => {
   const httpClient = axios.create({
-    baseURL: BACKEND_URL,
+    baseURL: 'https://develop.cinema.nkaczmarek.pl/api',
     headers: {
       'Access-Control-Allow-Origin': '*',
     },

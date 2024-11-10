@@ -23,7 +23,7 @@ Base.displayName = 'Input';
 
 type InputClassNames = 'wrapper' | 'input';
 
-interface Props extends BaseProps {
+export interface Props extends BaseProps {
   label?: string;
   classNames?: ClassNames<InputClassNames>;
   isDisabled?: boolean;
