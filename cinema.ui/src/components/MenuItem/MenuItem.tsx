@@ -1,30 +1,24 @@
 import { cloneElement, ReactElement } from 'react';
 
+import { NavigateFunction } from 'react-router-dom';
+
 import { Button, ButtonVariant } from 'Components/Button';
 import { Tooltip } from 'Components/Tooltip';
 import { cn } from 'Utils/cn';
 
-export interface MenuItemProps {
+interface Props {
   label: string;
-  href?: string;
+  href: string;
   classNames?: ClassNames<'button' | 'icon' | 'label'> & {
     tooltip: ClassNames<'trigger' | 'icon' | 'content' | 'text'>;
   };
   icon?: ReactElement;
   isActive?: boolean;
   isOpen?: boolean;
-  onClick?: (href?: string) => void;
+  onClick?: NavigateFunction;
 }
 
-export const MenuItem = ({
-  label,
-  href,
-  classNames,
-  icon,
-  isOpen,
-  isActive,
-  onClick,
-}: MenuItemProps) => (
+export const MenuItem = ({ label, href, classNames, icon, isOpen, isActive, onClick }: Props) => (
   <Tooltip
     side="right"
     trigger={

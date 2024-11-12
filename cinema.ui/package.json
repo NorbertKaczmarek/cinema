@@ -12,7 +12,7 @@
   "style": "dist/style.css",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "tsc-check": "tsc -b",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

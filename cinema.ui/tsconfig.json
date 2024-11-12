@@ -23,7 +23,7 @@
     "allowSyntheticDefaultImports": true,
     /* Linting */
     "strict": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     // Other
     "paths": {

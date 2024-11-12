@@ -4,11 +4,11 @@ import { NavigateFunction } from 'react-router-dom';
 
 export interface MenuItemProps {
   label: string;
-  href?: string;
+  href: string;
   icon?: ReactElement;
   isActive?: boolean;
   isDisabled?: boolean;
-  onClick?: ((href?: string) => void) | NavigateFunction;
+  onClick?: NavigateFunction;
 }
 
 export interface MenuGroup {

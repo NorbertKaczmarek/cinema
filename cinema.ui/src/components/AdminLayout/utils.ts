@@ -7,6 +7,6 @@ export const generateMenuWithRedirect = (menus: MenuGroup[], onNavigate: Navigat
     ...menu,
     items: menu.items?.map(item => ({
       ...item,
-      onClick: item.onClick ?? onNavigate,
+      onClick: onNavigate,
     })),
   }));
