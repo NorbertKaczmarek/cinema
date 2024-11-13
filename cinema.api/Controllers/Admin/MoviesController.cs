@@ -2,9 +2,7 @@
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace cinema.api.Controllers.Admin;
 
