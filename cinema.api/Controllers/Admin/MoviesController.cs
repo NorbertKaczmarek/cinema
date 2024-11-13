@@ -2,6 +2,7 @@
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 
@@ -19,9 +20,26 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Movie> Get()
+    public PageResult<Movie> Get([FromQuery] PageQuery query)
     {
-        return _context.Movies.Include(m => m.Category).ToList();
+        var baseQuery = _context
+            .Movies
+            .Include(m => m.Category)
+            .Where(
+                m => query.Phrase == null ||
+                (
+                    m.Title.ToLower().Contains(query.Phrase.ToLower())
+                )
+            );
+
+        var totalCount = baseQuery.Count();
+
+        var result = baseQuery
+            .Skip(query.Size * query.Page)
+            .Take(query.Size)
+            .ToList();
+
+        return new PageResult<Movie>(result, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]

@@ -52,7 +52,10 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.DescribeAllParametersInCamelCase();
+});
 
 // Seeder
 builder.Services.AddScoped<Seeder>();
