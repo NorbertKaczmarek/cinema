@@ -6,7 +6,7 @@ using cinema.api.Controllers.Admin;
 using Microsoft.AspNetCore.Mvc;
 using FluentAssertions;
 
-namespace cinema.tests;
+namespace cinema.tests.Controllers;
 
 public class UsersControllerTests
 {

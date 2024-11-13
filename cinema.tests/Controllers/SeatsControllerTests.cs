@@ -4,7 +4,7 @@ using cinema.context;
 using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 
-namespace cinema.tests;
+namespace cinema.tests.Controllers;
 
 public class SeatsControllerTests
 {
