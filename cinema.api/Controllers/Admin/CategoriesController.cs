@@ -48,6 +48,25 @@ public class CategoriesController : ControllerBase
         return Created($"/api/admin/categories/{newCategory.Id}", null);
     }
 
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] CategoryCreateDto dto)
+    {
+        if (dto == null || dto.CategoryName == null) return BadRequest("Invalid category data.");
+
+        var existingCategory = getById(id);
+
+        if (existingCategory == null)
+        {
+            return NotFound($"Category with id {id} not found.");
+        }
+
+        existingCategory.Name = dto.CategoryName;
+
+        _context.SaveChanges();
+
+        return Ok(existingCategory);
+    }
+
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {

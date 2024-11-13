@@ -46,8 +46,9 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
-        if (getUserByEmail(dto.Email) != null) return BadRequest();
-        if (dto.Password != dto.ConfirmPassword) return BadRequest();
+        if (getUserByEmail(dto.Email) != null) return BadRequest("User already exists.");
+        if (!string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
 
         (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
 
@@ -64,6 +65,27 @@ public class UsersController : ControllerBase
         _context.SaveChanges();
 
         return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] UserCreateDto dto)
+    {
+        var existingUser = getById(id);
+        if (existingUser == null) return NotFound("User not found.");
+        
+        existingUser.FirstName = dto.FirstName;
+        existingUser.LastName = dto.LastName;
+        existingUser.IsAdmin = dto.IsAdmin;
+
+        if (!string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
+
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+        existingUser.Salt = saltText;
+        existingUser.SaltedHashedPassword = saltedHashedPassword;
+
+        _context.SaveChanges();
+        return Ok(existingUser);
     }
 
     [HttpDelete("{id}")]

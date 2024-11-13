@@ -59,6 +59,20 @@ public class ScreeningsController : ControllerBase
         return Created($"/api/admin/screenings/{screening.Id}", null);
     }
 
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] ScreeningCreateDto dto)
+    {
+        var existingScreening = getById(id);
+        if (existingScreening == null) return NotFound("Screening not found.");
+
+        existingScreening.StartDateTime = dto.StartDateTime;
+        existingScreening.EndDateTime = dto.EndDateTime;
+        existingScreening.MovieId = dto.MovieId;
+
+        _context.SaveChanges();
+        return Ok(existingScreening);
+    }
+
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {
