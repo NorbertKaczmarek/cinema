@@ -154,7 +154,7 @@ public class UsersControllerTests
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
-        var updatedUser = _context.Users.Find(existingUser.Id);
+        var updatedUser = _context.Users.Find(existingUser.Id)!;
         updatedUser.Should().NotBeNull();
         updatedUser.FirstName.Should().Be("UpdatedFirstName");
         updatedUser.LastName.Should().Be("UpdatedLastName");
