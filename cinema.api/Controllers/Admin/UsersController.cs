@@ -47,7 +47,7 @@ public class UsersController : ControllerBase
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
         if (getUserByEmail(dto.Email) != null) return BadRequest("User already exists.");
-        if (!string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
         if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
 
         (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
@@ -77,7 +77,7 @@ public class UsersController : ControllerBase
         existingUser.LastName = dto.LastName;
         existingUser.IsAdmin = dto.IsAdmin;
 
-        if (!string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
         if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
 
         (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
