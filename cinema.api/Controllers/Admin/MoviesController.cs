@@ -76,6 +76,33 @@ public class MoviesController : ControllerBase
         return Created($"/api/admin/movies/{newMovie.Id}", null);
     }
 
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] MovieCreateDto dto)
+    {
+        if (dto == null) return BadRequest("Invalid movie data.");
+
+        var existingMovie = getById(id);
+
+        if (existingMovie == null)
+        {
+            return NotFound($"Movie with id {id} not found.");
+        }
+
+        existingMovie.Title = dto.Title;
+        existingMovie.Duration = dto.Duration;
+        existingMovie.PosterUrl = dto.PosterUrl;
+        existingMovie.Director = dto.Director;
+        existingMovie.Cast = dto.Cast;
+        existingMovie.Description = dto.Description;
+        existingMovie.Rating = dto.Rating;
+        existingMovie.Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+
+        _context.SaveChanges();
+
+        return Ok(existingMovie);
+    }
+
+
     [HttpDelete("{id}")]
     public void Delete(Guid id)
     {
