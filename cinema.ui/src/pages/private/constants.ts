@@ -16,7 +16,7 @@ export const MOVIE_DICT_STATE = {
     director: '',
     posterUrl: '',
     rating: 0,
-    duration: '',
+    duration: 0,
     title: '',
   },
   listUrl: ROUTES.private.MOVIES_TABLE,

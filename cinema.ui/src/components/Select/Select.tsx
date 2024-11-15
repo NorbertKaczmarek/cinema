@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ElementRef, forwardRef, Fragment } from 'react';
+import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { SelectProps } from '@radix-ui/react-select';
 
@@ -8,8 +8,6 @@ import { Label } from 'Components/Label';
 import { cn } from 'Utils/cn';
 
 const BaseWrapper = SelectPrimitive.Root;
-
-const BaseGroup = SelectPrimitive.Group;
 
 const BaseValue = SelectPrimitive.Value;
 
@@ -149,16 +147,8 @@ interface SelectOption {
   isDisabled?: boolean;
 }
 
-interface SelectGroup {
-  options: SelectOption[];
-  value?: string | number;
-  label?: string;
-  isDisabled?: boolean;
-  isGroupDisabled?: boolean;
-}
-
 interface Props extends SelectProps {
-  options: SelectGroup[] | SelectOption[];
+  options: SelectOption[];
   label?: string;
   value?: string;
   classNames?: ClassNames<
@@ -168,57 +158,29 @@ interface Props extends SelectProps {
   onChange?: (value: string) => void;
 }
 
-const SelectGroupLabel = ({ label, value }: Pick<SelectGroup, 'value' | 'label'>) => {
-  if (!(label || value)) return null;
-
-  return (
-    <BaseLabel>
-      {value ? <BaseItem value={value.toString()}>{label || value}</BaseItem> : label}
-    </BaseLabel>
-  );
-};
-
 export const Select = forwardRef<HTMLDivElement, Props>(
   (
     { label, options, placeholder = 'Wybierz', value, onChange, classNames, ...rest }: Props,
     ref
-  ) => {
-    const isGroups = options && Object.keys(options[0])?.includes('options');
-    const optionGroups = !isGroups
-      ? [{ options: options as SelectOption[] }]
-      : (options as SelectGroup[]);
-
-    return (
-      <BaseWrapper onValueChange={onChange} defaultValue={value} {...rest}>
-        {!!label && <Label>{label}</Label>}
-        <BaseTrigger className={cn('relative', classNames?.input)}>
-          <BaseValue
-            className={classNames?.inputValue}
-            placeholder={
-              <span className={cn('opacity-60', classNames?.inputPlaceholder)}>{placeholder}</span>
-            }
-          />
-        </BaseTrigger>
-        <BaseContent className={classNames?.content} ref={ref}>
-          {optionGroups?.map(({ label, value, ...group }, index) => (
-            <Fragment key={`${index}-${label}`}>
-              <BaseGroup className={classNames?.group}>
-                <SelectGroupLabel label={label} value={value} />
-                {group?.options?.map(({ value, isDisabled, label }, index) => (
-                  <BaseItem
-                    key={index}
-                    value={value?.toString()}
-                    disabled={isDisabled || group.isGroupDisabled}
-                  >
-                    {label || value}
-                  </BaseItem>
-                ))}
-              </BaseGroup>
-              {index < optionGroups.length - 1 && <BaseSeparator />}
-            </Fragment>
-          ))}
-        </BaseContent>
-      </BaseWrapper>
-    );
-  }
+  ) => (
+    <BaseWrapper onValueChange={onChange} value={value} {...rest}>
+      {!!label && <Label>{label}</Label>}
+      <BaseTrigger className={cn('relative', classNames?.input)}>
+        <BaseValue
+          ref={ref}
+          className={classNames?.inputValue}
+          placeholder={
+            <span className={cn('opacity-60', classNames?.inputPlaceholder)}>{placeholder}</span>
+          }
+        />
+      </BaseTrigger>
+      <BaseContent className={classNames?.content} ref={ref}>
+        {options.map(({ label, value, isDisabled }, index) => (
+          <BaseItem key={`${index}-${label}`} value={value.toString()} disabled={isDisabled}>
+            {label || value}
+          </BaseItem>
+        ))}
+      </BaseContent>
+    </BaseWrapper>
+  )
 );

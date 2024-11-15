@@ -5,7 +5,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
   resolve: {
     alias: {
       Api: resolve(__dirname, './src/api/'),
@@ -29,14 +28,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-      },
-      external: ['react', 'react-dom'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
+        main: resolve(__dirname, './index.html'),
       },
     },
   },
