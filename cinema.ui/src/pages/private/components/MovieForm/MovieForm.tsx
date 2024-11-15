@@ -17,9 +17,7 @@ interface Props {
 export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
   const { data } = useAdminCategories({ page: 0, size: 5 });
 
-  // const categoryOptions = (data || []).map(({ name, id }) => ({ label: name, value: String(id) }));
-
-  const options2 = [{ label: '1', value: '1' }];
+  const categoryOptions = (data || []).map(({ name, id }) => ({ label: name, value: id }));
 
   return (
     <Card>
@@ -29,7 +27,7 @@ export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
             <Input isDisabled={isDisabled} />
           </FormField>
           <FormField name="categoryId" label="Kategoria" control={form.control}>
-            <Select options={options2} disabled={isDisabled} />
+            <Select options={categoryOptions} disabled={isDisabled} />
           </FormField>
           <FormField name="description" label="Opis" control={form.control}>
             <Input isDisabled={isDisabled} />
@@ -44,10 +42,10 @@ export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
             <Input isDisabled={isDisabled} />
           </FormField>
           <FormField name="rating" label="Oceny" control={form.control}>
-            <Input type="number" min="0" max="5" step="0.01" isDisabled={isDisabled} />
+            <Input type="number" min="0" step="0.01" isDisabled={isDisabled} />
           </FormField>
           <FormField name="duration" label="Długość" control={form.control}>
-            <Input isDisabled={isDisabled} />
+            <Input type="number" min="0" step="1" isDisabled={isDisabled} />
           </FormField>
         </form>
       </FormProvider>

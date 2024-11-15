@@ -1,11 +1,11 @@
-import { useAdminCategories } from 'Api/queries/useAdminCategories.ts';
+import { useAdminCategories } from 'Api/queries/useAdminCategories';
 import { ActionButtons } from 'Components/ActionButtons';
 import { Header } from 'Components/Header';
 import { Spinner } from 'Components/Spinner';
-import { useDictionaryState } from 'Hooks/useDictionaryState.ts';
+import { useDictionaryState } from 'Hooks/useDictionaryState';
 import { MovieForm } from 'Pages/private/components';
-import { MOVIE_DICT_STATE } from 'Pages/private/constants.ts';
-import { Movie } from 'Types/movie.ts';
+import { MOVIE_DICT_STATE } from 'Pages/private/constants';
+import { Movie } from 'Types/movie';
 
 export const AdminMovieDetails = () => {
   const {

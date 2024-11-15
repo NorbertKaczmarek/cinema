@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { PaginationState, RowSelectionState } from '@tanstack/react-table';
 import { OnChangeFn } from '@tanstack/table-core/src/types';
 
-import { DEFAULT_PAGE_INDEX, MIN_SEARCH_PHRASE } from 'Constants/index.ts';
+import { DEFAULT_PAGE_INDEX, MIN_SEARCH_PHRASE } from 'Constants/index';
 import useDebouncePhrase from 'Hooks/useDebouncedPhrase';
 import { ParamsState } from 'Types/table';
 

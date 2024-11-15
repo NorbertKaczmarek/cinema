@@ -15,7 +15,7 @@
     "declaration": true,
     "declarationDir": "./dist",
     "outDir": "./dist",
-    //    "rootDir": "./src",
+    "rootDir": "./src",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -60,7 +60,6 @@
     }
   },
   "include": [
-    "vite.config.ts",
     "src"
   ]
 }

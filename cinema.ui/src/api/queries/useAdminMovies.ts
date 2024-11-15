@@ -5,7 +5,7 @@ import { httpClient } from 'Configs/axios';
 import { Movie } from 'Types/movie';
 import { BackendTable, QueryParamsTable } from 'Types/table';
 
-import { QUERY_KEYS } from './queryKeys.ts';
+import { QUERY_KEYS } from './queryKeys';
 
 export const useAdminMovies = (
   queryParams: QueryParamsTable
