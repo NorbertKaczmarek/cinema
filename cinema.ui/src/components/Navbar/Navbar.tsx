@@ -19,7 +19,7 @@ export interface NavbarProps {
 
 export const Navbar = ({ navItems, profileMenus, actions }: NavbarProps) => (
   <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
-    <div className="container mx-auto flex h-14 w-full items-center justify-between px-4 sm:px-8">
+    <div className="flex h-14 w-full items-center justify-between px-4 lg:container sm:px-8 lg:mx-auto">
       <div className="flex items-center space-x-2 lg:space-x-0">
         {navItems?.map(({ label, href, icon, onClick }) => (
           <Button

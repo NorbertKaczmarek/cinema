@@ -25,9 +25,9 @@ export const useTableState = <T>(
   });
 
   const table = useReactTable({
-    data: data || [],
+    data: data?.content || [],
     columns,
-    // pageCount: data?.totalPages,
+    pageCount: data?.totalPages,
     getCoreRowModel: getCoreRowModel(),
     manualFiltering: true,
     manualPagination: true,

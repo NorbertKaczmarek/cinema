@@ -1,6 +1,6 @@
 import { Clapperboard, LogOut, PanelsTopLeft, UsersIcon } from 'lucide-react';
 
-import { MOVIES } from 'Api/paths/movies.ts';
+import { ROUTES } from 'Routing/routes';
 
 export const adminSidebarMenus = [
   {
@@ -8,7 +8,7 @@ export const adminSidebarMenus = [
     items: [
       {
         label: 'Filmy',
-        href: MOVIES.PRIVATE.MOVIES_TABLE,
+        href: ROUTES.private.MOVIES_TABLE,
         icon: <Clapperboard />,
       },
     ],

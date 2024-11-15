@@ -1,12 +1,10 @@
 import { PaginationState } from '@tanstack/react-table';
 
-// export type BackendTable<T> = {
-//   content: T[];
-//   totalElements: number;
-//   totalPages: number;
-// };
-
-export type BackendTable<T> = T[];
+export type BackendTable<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+};
 
 export type QueryParamsTable = {
   page: number;

@@ -46,7 +46,7 @@ const BaseLayout = ({
         {children && (
           <>
             <Navbar profileMenus={profileMenus} actions={actions} />
-            <div className="container mx-auto px-4 pb-8 pt-8 sm:px-8">{children}</div>
+            <div className="px-4 pb-8 pt-8 lg:container sm:px-8 lg:mx-auto">{children}</div>
           </>
         )}
       </main>

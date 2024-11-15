@@ -12,18 +12,17 @@ const useDebouncedPhrase = (
   const [phrase, setPhrase] = useState<string | undefined>();
   const isMounted = useIsMounted();
 
-  let SEARCH_DEBOUNCE_TIME;
   const debouncedOnSearch = useCallback(
     debounce((val: string) => {
       if (!isMounted()) return;
-      if (val.length <= minSearchPhrase) {
+      if (val.length < minSearchPhrase) {
         setPhrase(undefined);
         customUpdateFn?.(undefined);
       } else {
         setPhrase(val);
         customUpdateFn?.(val);
       }
-    }, SEARCH_DEBOUNCE_TIME),
+    }, 300),
     []
   );
 

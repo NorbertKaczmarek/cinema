@@ -161,7 +161,9 @@ interface Props extends SelectProps {
   options: SelectGroup[] | SelectOption[];
   label?: string;
   value?: string;
-  classNames?: ClassNames<'content' | 'trigger' | 'input' | 'inputValue' | 'item' | 'group'>;
+  classNames?: ClassNames<
+    'content' | 'trigger' | 'input' | 'inputValue' | 'inputPlaceholder' | 'item' | 'group'
+  >;
   placeholder?: string;
   onChange?: (value: string) => void;
 }
@@ -190,7 +192,12 @@ export const Select = forwardRef<HTMLDivElement, Props>(
       <BaseWrapper onValueChange={onChange} defaultValue={value} {...rest}>
         {!!label && <Label>{label}</Label>}
         <BaseTrigger className={cn('relative', classNames?.input)}>
-          <BaseValue className={classNames?.inputValue} placeholder={placeholder} />
+          <BaseValue
+            className={classNames?.inputValue}
+            placeholder={
+              <span className={cn('opacity-60', classNames?.inputPlaceholder)}>{placeholder}</span>
+            }
+          />
         </BaseTrigger>
         <BaseContent className={classNames?.content} ref={ref}>
           {optionGroups?.map(({ label, value, ...group }, index) => (

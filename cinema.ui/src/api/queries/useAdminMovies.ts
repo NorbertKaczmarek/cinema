@@ -7,14 +7,14 @@ import { BackendTable, QueryParamsTable } from 'Types/table';
 
 import { QUERY_KEYS } from './queryKeys.ts';
 
-export const useAdminMovieTable = (
+export const useAdminMovies = (
   queryParams: QueryParamsTable
 ): UseQueryResult<BackendTable<Movie>, Error> =>
   useQuery({
-    queryKey: QUERY_KEYS.ADMIN_MOVIE_TABLE(queryParams),
+    queryKey: QUERY_KEYS.ADMIN_MOVIES(queryParams),
     queryFn: async () => {
       const axios = httpClient();
-      const { data } = await axios.get(PATHS.MOVIES.PRIVATE.MOVIES_TABLE, {
+      const { data } = await axios.get(PATHS.MOVIES.PRIVATE.MOVIES, {
         params: queryParams,
       });
 

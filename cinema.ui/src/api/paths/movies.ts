@@ -1,5 +1,9 @@
 const PRIVATE = {
-  MOVIES_TABLE: '/admin/movies',
+  MOVIES: '/admin/movies',
+  GET_MOVIE: (id: string) => `/admin/movies/${id}`,
+  CREATE_MOVIE: '/admin/movies',
+  UPDATE_MOVIE: (id: string) => `/admin/movies/${id}`,
+  DELETE_MOVIE: (id: string) => `/admin/movies/${id}`,
 };
 
 const PUBLIC = {};
