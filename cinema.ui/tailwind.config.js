@@ -5,6 +5,12 @@ export default {
   darkMode: ['class'],
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
+    screens: {
+      sm: '480px',
+      md: '768px',
+      lg: '1068px',
+      xl: '1336px',
+    },
     extend: {
       borderRadius: {
         lg: 'var(--radius)',

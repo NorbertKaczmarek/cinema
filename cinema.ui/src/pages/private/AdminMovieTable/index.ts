@@ -1,0 +1,1 @@
+export { AdminMovieTable } from './AdminMovieTable';
