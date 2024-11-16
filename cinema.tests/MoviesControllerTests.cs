@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
 using cinema.api.Models;
+using Humanizer;
 
 namespace cinema.tests;
 
@@ -116,7 +117,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Cast = cast,
             Description = description,
             Rating = rating,
-            CategoryName = categoryName
+            CategoryId = category.Id
         };
         var content = HttpContentHelper.ToJsonHttpContent(movie);
 
@@ -190,7 +191,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Cast = cast,
             Description = description,
             Rating = rating,
-            CategoryName = categoryName
+            CategoryId = category.Id
         };
         var content = HttpContentHelper.ToJsonHttpContent(movie);
 

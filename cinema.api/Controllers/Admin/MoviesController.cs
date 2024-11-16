@@ -65,7 +65,7 @@ public class MoviesController : ControllerBase
             Cast = dto.Cast,
             Description = dto.Description,
             Rating = dto.Rating,
-            Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName)
+            CategoryId = dto.CategoryId
         };
 
         _context.Movies.Add(newMovie);
@@ -93,7 +93,7 @@ public class MoviesController : ControllerBase
         existingMovie.Cast = dto.Cast;
         existingMovie.Description = dto.Description;
         existingMovie.Rating = dto.Rating;
-        existingMovie.Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        existingMovie.CategoryId = dto.CategoryId;
 
         _context.SaveChanges();
 
