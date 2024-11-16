@@ -67,7 +67,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
         var movie = new Movie()
         {
             Title = title,
-            Duration = new TimeSpan(durationHours, durationMinutes, 0),
+            DurationMinutes = durationHours*60 + durationMinutes,
             PosterUrl = posterUrl,
             Director = director,
             Cast = cast,
@@ -110,7 +110,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
         var movie = new MovieCreateDto()
         {
             Title = title,
-            Duration = new TimeSpan(durationHours, durationMinutes, 0),
+            DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
             Director = director,
             Cast = cast,
@@ -146,7 +146,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
         var movie = new Movie()
         {
             Title = title,
-            Duration = new TimeSpan(durationHours, durationMinutes, 0),
+            DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
             Director = director,
             Cast = cast,
@@ -184,7 +184,7 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
         var movie = new MovieCreateDto()
         {
             Title = title,
-            Duration = new TimeSpan(durationHours, durationMinutes, 0),
+            DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
             Director = director,
             Cast = cast,

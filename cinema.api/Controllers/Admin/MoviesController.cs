@@ -59,7 +59,7 @@ public class MoviesController : ControllerBase
         var newMovie = new Movie()
         {
             Title = dto.Title,
-            Duration = dto.Duration,
+            DurationMinutes = dto.DurationMinutes,
             PosterUrl = dto.PosterUrl,
             Director = dto.Director,
             Cast = dto.Cast,
@@ -87,7 +87,7 @@ public class MoviesController : ControllerBase
         }
 
         existingMovie.Title = dto.Title;
-        existingMovie.Duration = dto.Duration;
+        existingMovie.DurationMinutes = dto.DurationMinutes;
         existingMovie.PosterUrl = dto.PosterUrl;
         existingMovie.Director = dto.Director;
         existingMovie.Cast = dto.Cast;
