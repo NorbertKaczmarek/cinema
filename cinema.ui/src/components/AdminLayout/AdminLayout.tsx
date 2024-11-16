@@ -1,5 +1,6 @@
 import { ReactElement, ReactNode } from 'react';
 
+import { Popcorn } from 'lucide-react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { Navbar, NavbarProps } from 'Components/Navbar';
@@ -69,6 +70,7 @@ export const AdminLayout = ({ children = <Outlet /> }: Props) => {
     <BaseLayout
       sidebarMenus={generateMenuWithRedirect(adminSidebarMenus, navigate)}
       profileMenus={generateMenuWithRedirect(adminProfileMenus, navigate)}
+      headerIcon={<Popcorn />}
     >
       {children}
     </BaseLayout>
