@@ -13,8 +13,11 @@ import { Movie } from 'Types/movie';
 import { columns } from './columns';
 
 export const AdminMovieTable = () => {
-  const { inputPhrase, selectedRows, table, data, isLoadingTableData, onSearchPhrase } =
-    useTableState<Movie>(columns, INITIAL_PARAMS, useAdminMovies);
+  const { inputPhrase, table, isLoadingTableData, onSearchPhrase } = useTableState<Movie>(
+    columns,
+    INITIAL_PARAMS,
+    useAdminMovies
+  );
 
   const navigate = useNavigate();
 
@@ -39,11 +42,7 @@ export const AdminMovieTable = () => {
           </div>
         </div>
         <DataTable table={table} columns={columns} notFoundText="Brak wyników" />
-        <DataTable.Pagination
-          table={table}
-          selectedRows={selectedRows}
-          maxRows={data?.totalElements}
-        />
+        <DataTable.Pagination table={table} />
       </div>
     </Spinner>
   );

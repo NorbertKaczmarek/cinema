@@ -2,17 +2,7 @@ import { Table } from '@tanstack/react-table';
 
 import { Pagination } from 'Components/Pagination';
 
-type DataTablePaginationProps<T> = {
-  selectedRows?: number;
-  maxRows?: number;
-  table: Table<T>;
-};
-
-export const DataTablePagination = <T,>({
-  selectedRows,
-  maxRows,
-  table,
-}: DataTablePaginationProps<T>) => {
+export const DataTablePagination = <T,>({ table }: { table: Table<T> }) => {
   const {
     getPageCount,
     getState,
@@ -26,8 +16,6 @@ export const DataTablePagination = <T,>({
 
   return (
     <Pagination
-      selectedRows={selectedRows}
-      maxRows={maxRows}
       maxPages={getPageCount()}
       currentPageIndex={getState().pagination.pageIndex + 1}
       pageSizeValue={String(getState().pagination.pageSize)}
