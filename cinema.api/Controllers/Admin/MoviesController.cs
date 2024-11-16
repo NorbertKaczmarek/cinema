@@ -59,13 +59,13 @@ public class MoviesController : ControllerBase
         var newMovie = new Movie()
         {
             Title = dto.Title,
-            Duration = dto.Duration,
+            DurationMinutes = dto.DurationMinutes,
             PosterUrl = dto.PosterUrl,
             Director = dto.Director,
             Cast = dto.Cast,
             Description = dto.Description,
             Rating = dto.Rating,
-            Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName)
+            CategoryId = dto.CategoryId
         };
 
         _context.Movies.Add(newMovie);
@@ -87,13 +87,13 @@ public class MoviesController : ControllerBase
         }
 
         existingMovie.Title = dto.Title;
-        existingMovie.Duration = dto.Duration;
+        existingMovie.DurationMinutes = dto.DurationMinutes;
         existingMovie.PosterUrl = dto.PosterUrl;
         existingMovie.Director = dto.Director;
         existingMovie.Cast = dto.Cast;
         existingMovie.Description = dto.Description;
         existingMovie.Rating = dto.Rating;
-        existingMovie.Category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        existingMovie.CategoryId = dto.CategoryId;
 
         _context.SaveChanges();
 
