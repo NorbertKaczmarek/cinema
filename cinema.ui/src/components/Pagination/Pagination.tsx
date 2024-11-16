@@ -8,8 +8,6 @@ import { cn } from 'Utils/cn';
 
 interface Props {
   currentPageIndex?: number;
-  selectedRows?: number;
-  maxRows?: number;
   maxPages?: number;
   pageSizeValue?: string;
   navButtonClass?: string;
@@ -40,9 +38,7 @@ export const Pagination = ({
   navButtonClass,
   iconClass,
   currentPageIndex,
-  maxRows,
   maxPages,
-  selectedRows,
   pageSizeValue,
   onChangePageSize,
   pageSizeOptions,
@@ -57,32 +53,19 @@ export const Pagination = ({
   classNames,
 }: Props) => {
   const defaultSelectOptions = DEFAULT_PAGINATION_VALUES.map(el => ({ label: el, value: el }));
-  const isSelectedRows = !!selectedRows && !!maxRows;
 
   return (
-    <div
-      className={cn(
-        `flex items-center ${isSelectedRows ? 'justify-between' : 'justify-end'} px-2`,
-        classNames?.mainWrapper
-      )}
-    >
-      {isSelectedRows && (
-        <div
-          className={cn('flex-1 text-sm text-muted-foreground', classNames?.selectedRowsWrapper)}
-        >
-          {selectedRows} of {maxRows} row(s) selected.
-        </div>
-      )}
+    <div className={cn('flex items-center justify-end px-2', classNames?.mainWrapper)}>
       <div
         className={cn('flex items-center space-x-6 lg:space-x-8', classNames?.navigationWrapper)}
       >
         <div
           className={cn(
-            'flex w-24 items-center justify-center text-sm font-medium',
+            'w-22 flex items-center justify-center text-sm font-medium',
             classNames?.pageOfWrapper
           )}
         >
-          Page {currentPageIndex} of {maxPages}
+          Strona {currentPageIndex} z {maxPages}
         </div>
         <div className={cn('flex items-center space-x-2', classNames?.buttonWrapper)}>
           {goToFirstPage && (
@@ -127,8 +110,8 @@ export const Pagination = ({
           )}
         </div>
         {onChangePageSize && (
-          <div className={cn('ml-4 flex items-center space-x-2', classNames?.changeSizeWrapper)}>
-            <div className="min-w-24 text-sm font-medium">Rows per page</div>
+          <div className={cn('ml-2 flex items-center space-x-2', classNames?.changeSizeWrapper)}>
+            <div className="min-w-32 text-sm font-medium">Wierszy na stronę</div>
             <Select
               value={pageSizeValue}
               onChange={onChangePageSize}

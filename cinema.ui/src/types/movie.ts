@@ -7,5 +7,5 @@ export type Movie = {
   description: string;
   categoryId: string;
   rating: number;
-  duration: number;
+  durationMinutes: number;
 };

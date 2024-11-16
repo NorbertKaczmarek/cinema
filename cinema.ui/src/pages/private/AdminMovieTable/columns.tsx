@@ -2,6 +2,7 @@ import { Row } from '@tanstack/table-core/src/types';
 
 import { RedirectCell } from 'Components/RedirectCell';
 import { Movie } from 'Types/movie';
+import { formatDuration } from 'Utils/formatDuration';
 
 export const columns = [
   {
@@ -17,11 +18,14 @@ export const columns = [
     ),
   },
   {
-    id: 'duration',
-    accessorKey: 'duration',
+    id: 'durationMinutes',
+    accessorKey: 'durationMinutes',
     header: 'Długość',
     size: 150,
     enableSorting: true,
+    cell: ({ row }: { row: Row<Movie> }) => (
+      <span>{formatDuration(row.getValue('durationMinutes'))}</span>
+    ),
   },
   {
     id: 'rating',

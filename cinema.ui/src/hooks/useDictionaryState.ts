@@ -91,7 +91,7 @@ export const useDictionaryState = <T extends FieldValues>({
 
   const handleUpdateElem = () => {
     try {
-      form.handleSubmit(data => updateDictElem(data));
+      form.handleSubmit(data => updateDictElem(data))();
     } catch {
       toast.error('Error xD');
     }

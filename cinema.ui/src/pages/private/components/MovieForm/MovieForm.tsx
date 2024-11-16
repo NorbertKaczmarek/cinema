@@ -7,6 +7,7 @@ import { Card } from 'Components/Card';
 import { FormField } from 'Components/FormField';
 import { Input } from 'Components/Input';
 import { Select } from 'Components/Select';
+import { Textarea } from 'Components/Textarea';
 import { Movie } from 'Types/movie';
 
 interface Props {
@@ -30,21 +31,21 @@ export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
             <Select options={categoryOptions} disabled={isDisabled} />
           </FormField>
           <FormField name="description" label="Opis" control={form.control}>
-            <Input isDisabled={isDisabled} />
+            <Textarea isDisabled={isDisabled} />
           </FormField>
           <FormField name="posterUrl" label="Link do plakatu" control={form.control}>
-            <Input isDisabled={isDisabled} />
-          </FormField>
-          <FormField name="director" label="Reżyser" control={form.control}>
             <Input isDisabled={isDisabled} />
           </FormField>
           <FormField name="cast" label="Obsada" control={form.control}>
             <Input isDisabled={isDisabled} />
           </FormField>
+          <FormField name="director" label="Reżyser" control={form.control}>
+            <Input isDisabled={isDisabled} />
+          </FormField>
           <FormField name="rating" label="Oceny" control={form.control}>
             <Input type="number" min="0" step="0.01" isDisabled={isDisabled} />
           </FormField>
-          <FormField name="duration" label="Długość" control={form.control}>
+          <FormField name="durationMinutes" label="Długość (minuty)" control={form.control}>
             <Input type="number" min="0" step="1" isDisabled={isDisabled} />
           </FormField>
         </form>

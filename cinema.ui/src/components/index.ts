@@ -21,5 +21,6 @@ export * from './Separator';
 export * from './Sidebar';
 export * from './Spinner';
 export * from './Table';
+export * from './Textarea';
 export * from './Toaster';
 export * from './Tooltip';

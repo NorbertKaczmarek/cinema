@@ -40,13 +40,9 @@ export const useTableState = <T>(
     },
   });
 
-  const selectedRows = Object.keys(rowSelection)?.length;
-
   return {
     inputPhrase,
-    selectedRows,
     table,
-    data,
     isLoadingTableData,
     onSearchPhrase,
   };
