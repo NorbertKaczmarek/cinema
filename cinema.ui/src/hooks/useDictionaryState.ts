@@ -110,7 +110,7 @@ export const useDictionaryState = <T extends FieldValues>({
     handleEdit: openEdit,
     handleCreateElem,
     handleUpdateElem,
-    handleDeleteElem: deleteDictElem,
+    handleDeleteElem: () => deleteDictElem(),
     handleRedirect,
   };
 };
