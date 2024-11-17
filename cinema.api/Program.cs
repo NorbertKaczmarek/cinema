@@ -52,10 +52,10 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Password hasher
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.DescribeAllParametersInCamelCase();
+});
 
 // Seeder
 builder.Services.AddScoped<Seeder>();

@@ -75,7 +75,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Joker: Folie à Deux",
-                Duration = TimeSpan.FromMinutes(138),
+                DurationMinutes = 138,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/rc4oXn6mQ1KSwXJo190bFulvHtB.jpg",
                 Director = "Todd Phillips",
                 Cast = "Joaquin Phoenix, Lady Gaga, Brendan Gleeson",
@@ -87,7 +87,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Dziki robot",
-                Duration = TimeSpan.FromMinutes(101),
+                DurationMinutes = 101,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg",
                 Director = "Chris Sanders",
                 Cast = "Lupita Nyong'o, Pedro Pascal, Kit Connor, Bill Nighy, Stephanie Hsu, Matt Berry",
@@ -99,7 +99,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Venom 3: Ostatni taniec",
-                Duration = TimeSpan.FromMinutes(109),
+                DurationMinutes = 109,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/k42Owka8v91trK1qMYwCQCNwJKr.jpg",
                 Director = "Kelly Marcel",
                 Cast = "Tom Hardy, Chiwetel Ejiofor, Juno Temple, Clark Backo, Rhys Ifans",
@@ -111,7 +111,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Terrifier 3",
-                Duration = TimeSpan.FromMinutes(125),
+                DurationMinutes = 125,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/63xYQj1BwRFielxsBDXvHIJyXVm.jpg",
                 Director = "Damien Leonel",
                 Cast = "Lauren LaVera, David Howard Thornton, Antonella Rose",
@@ -123,7 +123,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Obcy: Romulus",
-                Duration = TimeSpan.FromMinutes(119),
+                DurationMinutes = 119,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/6FsZvai0QZDdtOf2ideSRUZZyg.jpg",
                 Director = "Fede Álvarez",
                 Cast = "Cailee Spaeny, David Jonsson, Archie Renaux, Isabela Merced",
@@ -135,7 +135,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Transformers: Początek",
-                Duration = TimeSpan.FromMinutes(104),
+                DurationMinutes = 104,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/4GEtIdL6WzLKwLrj7DY4kHnma2v.jpg",
                 Director = "Josh Cooley",
                 Cast = "Chris Hemsworth, Brian Tyree Henry, Scarlett Johansson, Keegan-Michael Key, Jon Hamm",
@@ -147,7 +147,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Uśmiechnij się 2",
-                Duration = TimeSpan.FromMinutes(132),
+                DurationMinutes = 132,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/aE85MnPIsSoSs3978Noo16BRsKN.jpg",
                 Director = "Parker Finn",
                 Cast = "Naomi Scott, Rosemarie DeWitt, Dylan Gelula, Lukas Gage, Peter Jacobson",
@@ -159,7 +159,7 @@ public class Seeder
             {
                 Id = Guid.NewGuid(),
                 Title = "Reagan",
-                Duration = TimeSpan.FromMinutes(135),
+                DurationMinutes = 135,
                 PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/o21NB4f5fNk1dtrRlyAmA0C0cb3.jpg",
                 Director = "Sean McNamara",
                 Cast = "Dennis Quaid, Jon Voight, Penelope Ann Miller, Mena Suvari",
@@ -183,7 +183,8 @@ public class Seeder
                 Email = "admin@cinema.com",
                 FirstName = "Admin",
                 LastName = "User",
-                PasswordHash = "AQAAAAIAAYagAAAAED4cFxkJ39lBJJcndsDW7zdH6C3qd6BJ7oZiyg5U9Z5oBEiEPy4hFeLbSVZzS7rG6A=="
+                Salt = "sD3JrhsaKwbJSEIGtCroxg==",
+                SaltedHashedPassword = "KebGc28ucmF35m9Mem88N4EmGn1kI/tkR7edZAxSuIs="
             },
             new User
             {
@@ -192,7 +193,8 @@ public class Seeder
                 Email = "user@cinema.com",
                 FirstName = "Regular",
                 LastName = "User",
-                PasswordHash = "AQAAAAIAAYagAAAAELOJS+TqdtQUup3mVJMOqOWGNrYvwn48x4U6G7AB7ocRDWlXagMLK5gLM2BFi0G39g=="
+                Salt = "IzOkJvJcKGzVGolBAAIOEw==",
+                SaltedHashedPassword = "wrLiIVdbY7IKGSEDUsqkzHd/JsjrGilRwPVSGZomGBs="
             }
         };
 
@@ -242,7 +244,7 @@ public class Seeder
                 {
                     Id = Guid.NewGuid(),
                     StartDateTime = startTime,
-                    EndDateTime = startTime.Add(movie.Duration),
+                    EndDateTime = startTime.AddMinutes(movie.DurationMinutes), 
                     Movie = movie
                 });
             }

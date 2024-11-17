@@ -58,16 +58,17 @@ erDiagram
     }
     
     ORDERSEAT {
-        char(36)        OrderId         PK,FK  "Id rezerwacji"
-        char(36)        SeatId          PK,FK  "Id siedzenia"
+        char(36)        OrderId         PK,FK  	"Id rezerwacji"
+        char(36)        SeatId          PK,FK  	"Id siedzenia"
     }
     
     USER {
-        char(36)        Id              PK  "Id użytkownika"
-        tinyint(1)      IsAdmin             "Czy użytkownik jest administratorem"
-        varchar(100)    Email               "Email użytkownika"
-        varchar(100)    FirstName           "Imię użytkownika"
-        varchar(100)    LastName            "Nazwisko użytkownika"
-        varchar(100)    PasswordHash        "Zabezpieczone hasło użytkownika"
+        char(36)        Id              PK  	"Id użytkownika"
+        tinyint(1)      IsAdmin             	"Czy użytkownik jest administratorem"
+        varchar(100)    Email               	"Email użytkownika"
+        varchar(100)    FirstName           	"Imię użytkownika"
+        varchar(100)    LastName            	"Nazwisko użytkownika"
+        varchar(100)    Salt		        	"Salt użytkownika"
+        varchar(100)    SaltedHashedPassword	"Zabezpieczone hasło użytkownika"
     }
 ```

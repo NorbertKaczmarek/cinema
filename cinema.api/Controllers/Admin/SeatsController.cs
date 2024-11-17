@@ -24,27 +24,12 @@ public class SeatsController : ControllerBase
     [HttpGet("{id}")]
     public Seat Get(Guid id)
     {
-        return getById(id);
+        return _context.Seats.FirstOrDefault(s => s.Id == id)!;
     }
 
-    private Seat getById(Guid id)
+    [HttpGet("{row}/{number}")]
+    public Seat GetByRowAndNumber(char row, int number)
     {
-        return _context.Seats.FirstOrDefault(m => m.Id == id)!;
-    }
-
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-        // TODO
-    }
-
-    [HttpDelete("{id}")]
-    public void Delete(Guid id)
-    {
-        var seat = getById(id);
-        if (seat == null) return;
-
-        _context.Seats.Remove(seat);
-        _context.SaveChanges();
+        return _context.Seats.FirstOrDefault(s => s.Number == number && s.Row == row)!;
     }
 }

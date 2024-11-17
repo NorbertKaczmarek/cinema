@@ -15,18 +15,51 @@
     "declaration": true,
     "declarationDir": "./dist",
     "outDir": "./dist",
-    //    "rootDir": "./src",
+    "rootDir": "./src",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
     /* Linting */
     "strict": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    // Other
+    "paths": {
+      "Api/*": [
+        "./src/api/*"
+      ],
+      "Components/*": [
+        "./src/components/*"
+      ],
+      "Constants/*": [
+        "./src/constants/*"
+      ],
+      "Configs/*": [
+        "./src/configs/*"
+      ],
+      "Hooks/*": [
+        "./src/hooks/*"
+      ],
+      "Pages/*": [
+        "./src/pages/*"
+      ],
+      "Routing/*": [
+        "./src/routing/*"
+      ],
+      "Types/*": [
+        "./src/types/*"
+      ],
+      "Utils/*": [
+        "./src/utils/*"
+      ],
+      "*": [
+        "./src/*.d.ts"
+      ]
+    }
   },
   "include": [
-    "vite.config.ts",
     "src"
   ]
 }

@@ -1,0 +1,1 @@
+export { AdminMovieAdd } from './AdminMovieAdd';

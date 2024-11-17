@@ -26,7 +26,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.HasKey(eb => eb.Id);
             eb.Property(eb => eb.Id).HasColumnType("char(36)");
             eb.Property(eb => eb.Title).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.Duration).HasColumnType("time(6)");
+            eb.Property(eb => eb.DurationMinutes).HasColumnType("int");
             eb.Property(eb => eb.PosterUrl).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Director).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Cast).HasColumnType("varchar(100)");
@@ -88,7 +88,8 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
             eb.Property(eb => eb.FirstName).HasColumnType("varchar(100)");
             eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
-            eb.Property(eb => eb.PasswordHash).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.Salt).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.SaltedHashedPassword).HasColumnType("varchar(100)");
         });
     }
 

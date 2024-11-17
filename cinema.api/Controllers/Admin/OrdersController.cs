@@ -1,8 +1,8 @@
 ﻿using cinema.context.Entities;
 using cinema.context;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using cinema.api.Models;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -47,9 +47,56 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public void Post([FromBody] string value)
+    public ActionResult Post([FromBody] OrderCreateDto dto)
     {
-        // TODO
+        if (dto == null) return BadRequest("Invalid order data.");
+
+        var screening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
+        if (screening == null) return BadRequest("Invalid screening ID.");       
+
+        var seats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
+        if (seats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+
+        var newOrder = new Order
+        {
+            Email = dto.Email,
+            PhoneNumber = dto.PhoneNumber,
+            Status = dto.Status,
+            Screening = screening,
+            Seats = seats,
+        };
+
+        _context.Orders.Add(newOrder);
+        _context.SaveChanges();
+
+        return Created($"/api/admin/orders/{newOrder.Id}", newOrder);
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] OrderCreateDto dto)
+    {
+        if (dto == null) return BadRequest("Invalid order data.");
+
+        var existingOrder = getById(id);
+        if (existingOrder == null) return NotFound($"Order with id {id} not found.");
+
+        var newScreening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
+        if (newScreening == null) return BadRequest("Invalid screening ID.");
+
+        existingOrder.Screening = newScreening;
+
+        var newSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
+        if (newSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+
+        existingOrder.Seats = newSeats;
+
+        existingOrder.Email = dto.Email;
+        existingOrder.PhoneNumber = dto.PhoneNumber;
+        existingOrder.Status = dto.Status;
+
+        _context.SaveChanges();
+
+        return Ok(existingOrder);
     }
 
     [HttpDelete("{id}")]

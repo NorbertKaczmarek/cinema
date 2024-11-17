@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-
-namespace cinema.tests;
+﻿namespace cinema.tests;
 
 public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {

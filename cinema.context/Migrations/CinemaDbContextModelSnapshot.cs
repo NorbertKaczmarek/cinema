@@ -73,8 +73,8 @@ namespace cinema.context.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time(6)");
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("PosterUrl")
                         .IsRequired()
@@ -183,7 +183,11 @@ namespace cinema.context.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("SaltedHashedPassword")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 

@@ -2,7 +2,7 @@
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using cinema.api.Models;
-using Microsoft.AspNetCore.Identity;
+using cinema.api.Helpers;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -11,12 +11,10 @@ namespace cinema.api.Controllers.Admin;
 public class UsersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UsersController(CinemaDbContext context, IPasswordHasher<User> passwordHasher)
+    public UsersController(CinemaDbContext context)
     {
         _context = context;
-        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -48,8 +46,11 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
-        if (getUserByEmail(dto.Email) != null) return BadRequest();
-        if (dto.Password != dto.ConfirmPassword) return BadRequest();
+        if (getUserByEmail(dto.Email) != null) return BadRequest("User already exists.");
+        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
+
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
 
         var newUser = new User()
         {
@@ -57,14 +58,34 @@ public class UsersController : ControllerBase
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            PasswordHash = ""
+            Salt = saltText,
+            SaltedHashedPassword = saltedHashedPassword,
         };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
-        newUser.PasswordHash = hashedPasword;
         _context.Users.Add(newUser);
         _context.SaveChanges();
 
         return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult Put(Guid id, [FromBody] UserCreateDto dto)
+    {
+        var existingUser = getById(id);
+        if (existingUser == null) return NotFound("User not found.");
+        
+        existingUser.FirstName = dto.FirstName;
+        existingUser.LastName = dto.LastName;
+        existingUser.IsAdmin = dto.IsAdmin;
+
+        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
+        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
+
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+        existingUser.Salt = saltText;
+        existingUser.SaltedHashedPassword = saltedHashedPassword;
+
+        _context.SaveChanges();
+        return Ok(existingUser);
     }
 
     [HttpDelete("{id}")]
