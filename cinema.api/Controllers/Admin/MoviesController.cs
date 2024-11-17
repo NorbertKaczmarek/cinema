@@ -32,10 +32,19 @@ public class MoviesController : ControllerBase
 
         var totalCount = baseQuery.Count();
 
-        var result = baseQuery
-            .Skip(query.Size * query.Page)
-            .Take(query.Size)
-            .ToList();
+        List<Movie> result;
+
+        if (query.Size == 0)
+        {
+            result = baseQuery.ToList();
+        }
+        else
+        {
+            result = baseQuery
+                .Skip(query.Size * query.Page)
+                .Take(query.Size)
+                .ToList();
+        }
 
         return new PageResult<Movie>(result, totalCount, query.Size);
     }
