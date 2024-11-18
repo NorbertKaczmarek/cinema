@@ -35,13 +35,14 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
+        var initialCount = context.Categories.Count();
 
         // Act
         var result = controller.Get(new PageQuery());
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalElements.Should().Be(3);
+        result.TotalElements.Should().Be(initialCount);
     }
 
     [Fact]
@@ -178,11 +179,13 @@ public class CategoriesControllerTests
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var categoryToDelete = context.Categories.First();
+        var initialCount = context.Categories.Count();
 
         // Act
         controller.Delete(categoryToDelete.Id);
 
         // Assert
+        context.Categories.Count().Should().Be(initialCount - 1);
         var deletedCategory = context.Categories.Find(categoryToDelete.Id);
         deletedCategory.Should().BeNull();
     }
@@ -194,11 +197,13 @@ public class CategoriesControllerTests
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var invalidCategoryId = Guid.NewGuid();
+        var initialCount = context.Categories.Count();
 
         // Act
         controller.Delete(invalidCategoryId);
 
         // Assert
+        context.Categories.Count().Should().Be(initialCount);
         var category = context.Categories.First();
         category.Should().NotBeNull();
     }

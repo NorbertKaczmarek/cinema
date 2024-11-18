@@ -66,7 +66,7 @@ public class ScreeningsController : ControllerBase
     }
 
     [HttpGet("{id}/seats")]
-    public IEnumerable<SeatDto> GetSeats(Guid id)
+    public SeatResult GetSeats(Guid id)
     {
         var allSeats = _context
             .Seats
@@ -92,7 +92,19 @@ public class ScreeningsController : ControllerBase
             .OrderBy(s => s.Row)
             .ToList();
 
-        return seatDtos;
+        var totalSeats = allSeats.Count;
+        var takenSeatsCount = seatDtos.Count(seat => seat.IsTaken);
+        var availableSeatsCount = totalSeats - takenSeatsCount;
+
+        var seatResult = new SeatResult
+        {
+            TotalSeats = totalSeats,
+            TakenSeats = takenSeatsCount,
+            AvailableSeats = availableSeatsCount,
+            Seats = seatDtos
+        };
+
+        return seatResult;
     }
 
     [HttpPost]
