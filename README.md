@@ -2,10 +2,12 @@
 
 ### main
 [cinema.nkaczmarek.pl](https://cinema.nkaczmarek.pl)\
+[admin panel](https://cinema.nkaczmarek.pl/admin)\
 [swagger](https://cinema.nkaczmarek.pl/swagger)
 
 ### develop
 [develop.cinema.nkaczmarek.pl](https://develop.cinema.nkaczmarek.pl)\
+[admin panel](https://develop.cinema.nkaczmarek.pl/admin)\
 [swagger](https://develop.cinema.nkaczmarek.pl/swagger)
 
 ## Database diagram
@@ -37,7 +39,7 @@ erDiagram
     MOVIE {
         char(36)        Id              PK  "Id filmu"
         varchar(100)    Title               "Nazwa filmu"
-        time(6)         Duration            "Czas trwania filmu"
+        int             DurationMinutes     "Czas trwania filmu"
         varchar(100)    PosterUrl           "Url plakatu"
         varchar(100)    Director            "Reżyser"
         varchar(100)    Cast                "Obsada"

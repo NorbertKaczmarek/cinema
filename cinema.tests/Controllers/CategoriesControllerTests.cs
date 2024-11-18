@@ -37,11 +37,11 @@ public class CategoriesControllerTests
         var controller = new CategoriesController(context);
 
         // Act
-        var result = controller.Get();
+        var result = controller.Get(new PageQuery());
 
         // Assert
         result.Should().NotBeNull();
-        result.Count().Should().Be(3);
+        result.TotalElements.Should().Be(3);
     }
 
     [Fact]

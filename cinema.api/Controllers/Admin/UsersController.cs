@@ -3,6 +3,7 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using cinema.api.Models;
 using cinema.api.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -18,9 +19,36 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<User> Get()
+    public PageResult<User> Get([FromQuery] PageQuery query)
     {
-        return _context.Users.ToList();
+        var baseQuery = _context
+            .Users
+            .Where(
+                u => query.Phrase == null ||
+                (
+                    u.Email.ToLower().Contains(query.Phrase.ToLower()) ||
+                    u.FirstName.ToLower().Contains(query.Phrase.ToLower()) ||
+                    u.LastName.ToLower().Contains(query.Phrase.ToLower())
+                )
+            );
+
+        var totalCount = baseQuery.Count();
+
+        List<User> result;
+
+        if (query.Size == 0)
+        {
+            result = baseQuery.ToList();
+        }
+        else
+        {
+            result = baseQuery
+                .Skip(query.Size * query.Page)
+                .Take(query.Size)
+                .ToList();
+        }
+
+        return new PageResult<User>(result, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]

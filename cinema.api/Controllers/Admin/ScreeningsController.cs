@@ -18,13 +18,36 @@ public class ScreeningsController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Screening> Get()
+    public PageResult<Screening> Get([FromQuery] PageQuery query)
     {
-        return _context
+        var baseQuery = _context
             .Screenings
             .Include(s => s.Movie)
             .ThenInclude(m => m!.Category)
-            .ToList();
+            .Where(
+                s => query.Phrase == null ||
+                (
+                    s!.Movie!.Title.ToLower().Contains(query.Phrase.ToLower())
+                )
+            );
+
+        var totalCount = baseQuery.Count();
+
+        List<Screening> result;
+
+        if (query.Size == 0)
+        {
+            result = baseQuery.ToList();
+        }
+        else
+        {
+            result = baseQuery
+                .Skip(query.Size * query.Page)
+                .Take(query.Size)
+                .ToList();
+        }
+
+        return new PageResult<Screening>(result, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
