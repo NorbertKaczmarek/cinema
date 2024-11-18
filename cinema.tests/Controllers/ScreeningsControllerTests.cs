@@ -34,11 +34,40 @@ public class ScreeningsControllerTests
         };
 
         context.Movies.Add(movie);
-        context.Screenings.AddRange(new List<Screening>
-            {
-                new Screening { Id = Guid.NewGuid(), StartDateTime = DateTime.Now, EndDateTime = DateTime.Now.AddHours(2), MovieId = movie.Id },
-                new Screening { Id = Guid.NewGuid(), StartDateTime = DateTime.Now.AddDays(1), EndDateTime = DateTime.Now.AddDays(1).AddHours(2), MovieId = movie.Id }
-            });
+
+        var screening = new Screening
+        {
+            Id = Guid.NewGuid(),
+            StartDateTime = DateTime.Now,
+            EndDateTime = DateTime.Now.AddHours(2),
+            MovieId = movie.Id
+        };
+        context.Screenings.Add(screening);
+
+        var seat1 = new Seat { Id = Guid.NewGuid(), Row = 'A', Number = 1 };
+        var seat2 = new Seat { Id = Guid.NewGuid(), Row = 'A', Number = 2 };
+        var seat3 = new Seat { Id = Guid.NewGuid(), Row = 'B', Number = 1 };
+        var seat4 = new Seat { Id = Guid.NewGuid(), Row = 'B', Number = 2 };
+
+        var seats = new List<Seat>
+        {
+            seat1,
+            seat2,
+            seat3,
+            seat4
+        };
+        context.Seats.AddRange(seats);
+
+        var order = new Order
+        {
+            Id = Guid.NewGuid(),
+            Email = "test@example.com",
+            PhoneNumber = "1234567890",
+            Status = OrderStatus.Ready,
+            ScreeningId = screening.Id,
+            Seats = new List<Seat> { seat1, seat2 }
+        };
+        context.Orders.Add(order);
 
         context.SaveChanges();
         return context;
@@ -157,5 +186,48 @@ public class ScreeningsControllerTests
 
         // Assert
         context.Screenings.Any(s => s.Id == screeningId).Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetSeats_WithValidScreeningId_ReturnsCorrectSeatResult()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new ScreeningsController(context);
+        var screeningId = context.Screenings.First().Id;
+
+        // Act
+        var result = controller.GetSeats(screeningId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.TotalSeats.Should().Be(4);
+        result.TakenSeats.Should().Be(2);
+        result.AvailableSeats.Should().Be(2);
+        result.Seats.Count.Should().Be(4);
+        result.Seats.First(s => s.Row == 'A' && s.Number == 1).IsTaken.Should().BeTrue();
+        result.Seats.First(s => s.Row == 'A' && s.Number == 2).IsTaken.Should().BeTrue();
+        result.Seats.First(s => s.Row == 'B' && s.Number == 1).IsTaken.Should().BeFalse();
+        result.Seats.First(s => s.Row == 'B' && s.Number == 2).IsTaken.Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetSeats_WithInvalidScreeningId_ReturnsEmptySeatResult()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new ScreeningsController(context);
+        var invalidScreeningId = Guid.NewGuid();
+
+        // Act
+        var result = controller.GetSeats(invalidScreeningId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.TotalSeats.Should().Be(4);
+        result.TakenSeats.Should().Be(0);
+        result.AvailableSeats.Should().Be(4);
+        result.Seats.Count.Should().Be(4);
+        result.Seats.All(s => !s.IsTaken).Should().BeTrue();
     }
 }
