@@ -2,6 +2,7 @@
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -17,9 +18,34 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Category> Get()
+    public PageResult<Category> Get([FromQuery] PageQuery query)
     {
-        return _context.Categories.ToList();
+        var baseQuery = _context
+            .Categories
+            .Where(
+                m => query.Phrase == null ||
+                (
+                    m.Name.ToLower().Contains(query.Phrase.ToLower())
+                )
+            );
+
+        var totalCount = baseQuery.Count();
+
+        List<Category> result;
+
+        if (query.Size == 0)
+        {
+            result = baseQuery.ToList();
+        }
+        else
+        {
+            result = baseQuery
+                .Skip(query.Size * query.Page)
+                .Take(query.Size)
+                .ToList();
+        }
+
+        return new PageResult<Category>(result, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
