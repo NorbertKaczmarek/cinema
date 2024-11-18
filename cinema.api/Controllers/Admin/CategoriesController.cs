@@ -23,9 +23,9 @@ public class CategoriesController : ControllerBase
         var baseQuery = _context
             .Categories
             .Where(
-                m => query.Phrase == null ||
+                c => query.Phrase == null ||
                 (
-                    m.Name.ToLower().Contains(query.Phrase.ToLower())
+                    c.Name.ToLower().Contains(query.Phrase.ToLower())
                 )
             );
 

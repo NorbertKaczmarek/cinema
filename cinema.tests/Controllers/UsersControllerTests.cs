@@ -60,11 +60,11 @@ public class UsersControllerTests
     public void Get_ShouldReturnAllUsers()
     {
         // Act
-        var result = _controller.Get();
+        var result = _controller.Get(new PageQuery());
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.TotalElements.Should().Be(2);
     }
 
     [Fact]

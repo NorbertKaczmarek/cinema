@@ -18,15 +18,38 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Order> Get()
+    public PageResult<Order> Get([FromQuery] PageQuery query)
     {
-        return _context
+        var baseQuery = _context
             .Orders
             .Include(o => o.Seats)
             .Include(o => o.Screening)
             .ThenInclude(s => s!.Movie)
             .ThenInclude(m => m!.Category)
-            .ToList();
+            .Where(
+                o => query.Phrase == null ||
+                (
+                    o.Email.ToLower().Contains(query.Phrase.ToLower())
+                )
+            );
+
+        var totalCount = baseQuery.Count();
+
+        List<Order> result;
+
+        if (query.Size == 0)
+        {
+            result = baseQuery.ToList();
+        }
+        else
+        {
+            result = baseQuery
+                .Skip(query.Size * query.Page)
+                .Take(query.Size)
+                .ToList();
+        }
+
+        return new PageResult<Order>(result, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
