@@ -65,6 +65,36 @@ public class ScreeningsController : ControllerBase
             .FirstOrDefault(m => m.Id == id)!;
     }
 
+    [HttpGet("{id}/seats")]
+    public IEnumerable<SeatDto> GetSeats(Guid id)
+    {
+        var allSeats = _context
+            .Seats
+            .ToList();
+
+        var takenSeats = _context
+            .Orders
+            .Where(o => o.ScreeningId == id)
+            .Include(o => o.Seats)
+            .SelectMany(o => o.Seats!)
+            .Select(s => s.Id)
+            .ToHashSet();
+
+        var seatDtos = allSeats
+            .Select(s => new SeatDto
+            {
+                Id = s.Id,
+                Row = s.Row,
+                Number = s.Number,
+                IsTaken = takenSeats.Contains(s.Id)
+            })
+            .OrderBy(s => s.Number)
+            .OrderBy(s => s.Row)
+            .ToList();
+
+        return seatDtos;
+    }
+
     [HttpPost]
     public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
