@@ -41,6 +41,8 @@ erDiagram
         varchar(100)    Title               "Nazwa filmu"
         int             DurationMinutes     "Czas trwania filmu"
         varchar(100)    PosterUrl           "Url plakatu"
+        varchar(100)    TrailerUrl          "Url zwiastunu"
+        varchar(100)    BackgroundUrl       "Url tła"
         varchar(100)    Director            "Reżyser"
         varchar(100)    Cast                "Obsada"
         varchar(1000)   Description         "Opis filmu"

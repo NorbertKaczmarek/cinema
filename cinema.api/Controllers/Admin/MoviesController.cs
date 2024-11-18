@@ -70,6 +70,8 @@ public class MoviesController : ControllerBase
             Title = dto.Title,
             DurationMinutes = dto.DurationMinutes,
             PosterUrl = dto.PosterUrl,
+            TrailerUrl = dto.TrailerUrl,
+            BackgroundUrl = dto.BackgroundUrl,
             Director = dto.Director,
             Cast = dto.Cast,
             Description = dto.Description,
@@ -98,6 +100,8 @@ public class MoviesController : ControllerBase
         existingMovie.Title = dto.Title;
         existingMovie.DurationMinutes = dto.DurationMinutes;
         existingMovie.PosterUrl = dto.PosterUrl;
+        existingMovie.TrailerUrl = dto.TrailerUrl;
+        existingMovie.BackgroundUrl = dto.BackgroundUrl;
         existingMovie.Director = dto.Director;
         existingMovie.Cast = dto.Cast;
         existingMovie.Description = dto.Description;

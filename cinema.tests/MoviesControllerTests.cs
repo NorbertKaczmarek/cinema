@@ -50,13 +50,15 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
     }
 
     [Theory]
-    [InlineData("Tytul11", 1, 30, "posterUrl", "Director11", "Cast11", "Description11", 4.6, "Category11")]
-    [InlineData("Tytul12", 2, 30, "posterUrl", "Director12", "Cast12", "Description12", 8.1, "Category12")]
+    [InlineData("Tytul11", 1, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director11", "Cast11", "Description11", 4.6, "Category11")]
+    [InlineData("Tytul12", 2, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director12", "Cast12", "Description12", 8.1, "Category12")]
     public async Task GetMovie_WithValidId_ReturnsOK(
         string title, 
         int durationHours,
         int durationMinutes,
-        string posterUrl, 
+        string posterUrl,
+        string trailerUrl,
+        string backgroundUrl,
         string director, 
         string cast, 
         string description, 
@@ -70,6 +72,8 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Title = title,
             DurationMinutes = durationHours*60 + durationMinutes,
             PosterUrl = posterUrl,
+            TrailerUrl = trailerUrl,
+            BackgroundUrl = backgroundUrl,
             Director = director,
             Cast = cast,
             Description = description,
@@ -93,13 +97,15 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
     }
 
     [Theory]
-    [InlineData("Tytul21", 1, 30, "posterUrl", "Director21", "Cast21", "Description21", 4.6, "Category21")]
-    [InlineData("Tytul22", 2, 30, "posterUrl", "Director22", "Cast22", "Description22", 8.1, "Category22")]
+    [InlineData("Tytul21", 1, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director21", "Cast21", "Description21", 4.6, "Category21")]
+    [InlineData("Tytul22", 2, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director22", "Cast22", "Description22", 8.1, "Category22")]
     public async Task CreateMovie_WithValidModel_ReturnsCreatedStatus(
         string title,
         int durationHours,
         int durationMinutes,
         string posterUrl,
+        string trailerUrl,
+        string backgroundUrl,
         string director,
         string cast,
         string description,
@@ -113,6 +119,8 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Title = title,
             DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
+            TrailerUrl = trailerUrl,
+            BackgroundUrl = backgroundUrl,
             Director = director,
             Cast = cast,
             Description = description,
@@ -129,13 +137,15 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
     }
 
     [Theory]
-    [InlineData("Tytul31", 1, 30, "posterUrl", "Director31", "Cast31", "Description31", 4.6, "Category31")]
-    [InlineData("Tytul32", 2, 30, "posterUrl", "Director32", "Cast32", "Description32", 8.1, "Category32")]
+    [InlineData("Tytul31", 1, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director31", "Cast31", "Description31", 4.6, "Category31")]
+    [InlineData("Tytul32", 2, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director32", "Cast32", "Description32", 8.1, "Category32")]
     public async Task DeleteMovie_WithValidModel_ReturnsCreatedStatus(
         string title,
         int durationHours,
         int durationMinutes,
         string posterUrl,
+        string trailerUrl,
+        string backgroundUrl,
         string director,
         string cast,
         string description,
@@ -149,6 +159,8 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Title = title,
             DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
+            TrailerUrl = trailerUrl,
+            BackgroundUrl = backgroundUrl,
             Director = director,
             Cast = cast,
             Description = description,
@@ -167,13 +179,15 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
     }
 
     [Theory]
-    [InlineData("Tytul41", 1, 30, "posterUrl", "Director41", "Cast41", "Description41", 4.6, "Category41")]
-    [InlineData("Tytul42", 2, 30, "posterUrl", "Director42", "Cast42", "Description42", 8.1, "Category42")]
+    [InlineData("Tytul41", 1, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director41", "Cast41", "Description41", 4.6, "Category41")]
+    [InlineData("Tytul42", 2, 30, "posterUrl", "trailerUrl", "backgroundUrl", "Director42", "Cast42", "Description42", 8.1, "Category42")]
     public async Task CreateAndDeleteMovie_WithValidModel_ReturnsCreatedStatus(
         string title,
         int durationHours,
         int durationMinutes,
         string posterUrl,
+        string trailerUrl,
+        string backgroundUrl,
         string director,
         string cast,
         string description,
@@ -187,6 +201,8 @@ public class MoviesControllerTests : IClassFixture<CustomWebApplicationFactory<P
             Title = title,
             DurationMinutes = durationHours * 60 + durationMinutes,
             PosterUrl = posterUrl,
+            TrailerUrl = trailerUrl,
+            BackgroundUrl = backgroundUrl,
             Director = director,
             Cast = cast,
             Description = description,
