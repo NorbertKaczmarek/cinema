@@ -18,6 +18,9 @@ public class CategoriesController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Retrieves all categories with optional pagination and search.
+    /// </summary>
     [HttpGet]
     public PageResult<Category> Get([FromQuery] PageQuery query)
     {
@@ -48,7 +51,7 @@ public class CategoriesController : ControllerBase
 
         return new PageResult<Category>(result, totalCount, query.Size);
     }
-
+    
     [HttpGet("{id}")]
     public ActionResult Get(Guid id)
     {
