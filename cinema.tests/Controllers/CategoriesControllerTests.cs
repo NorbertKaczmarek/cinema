@@ -119,22 +119,27 @@ public class CategoriesControllerTests
         var result = controller.Post(existingCategoryDto);
 
         // Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<ConflictObjectResult>();
+        var conflictResult = result as ConflictObjectResult;
+        conflictResult!.Value.Should().Be("Category with that name already exists.");
     }
 
-    [Fact]
-    public void Post_WithNullCategoryName_ShouldReturnBadRequest()
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void Post_WithInvalidCategoryName_ShouldReturnBadRequest(string categoryName)
     {
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var invalidCategoryDto = new CategoryCreateDto { CategoryName = null! };
+        var invalidCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
         var result = controller.Post(invalidCategoryDto);
 
         // Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Theory]
@@ -153,7 +158,7 @@ public class CategoriesControllerTests
         var result = controller.Put(existingCategory.Id, updatedCategoryDto);
 
         // Assert
-        result.Should().BeOfType<OkObjectResult>();
+        result.Should().BeOfType<CreatedResult>();
         var updatedCategory = context.Categories.Find(existingCategory.Id)!;
         updatedCategory.Should().NotBeNull();
         updatedCategory.Name.Should().Be(categoryName);
@@ -176,6 +181,32 @@ public class CategoriesControllerTests
 
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public void Put_WithExistingCategoryName_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new CategoriesController(context);
+        var existingcategoryName = (new Guid()).ToString();
+        var editedcategoryOldName = (new Guid()).ToString();
+        var editedcategoryNewName = (new Guid()).ToString();
+
+        var existingCategory = new Category { Name = existingcategoryName };
+        var editedCategory = new Category { Name = editedcategoryOldName };
+        context.Categories.AddRange(existingCategory, editedCategory);
+        context.SaveChanges();
+
+        var updatedCategoryDto = new CategoryCreateDto { CategoryName = editedcategoryNewName };
+
+        // Act
+        var result = controller.Put(existingCategory.Id, updatedCategoryDto);
+
+        // Assert
+        result.Should().BeOfType<ConflictObjectResult>();
+        var conflictResult = result as ConflictObjectResult;
+        conflictResult!.Value.Should().Be("Category with that name already exists.");
     }
 
     [Fact]

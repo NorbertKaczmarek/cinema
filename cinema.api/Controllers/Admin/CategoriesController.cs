@@ -1,6 +1,7 @@
 ﻿using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,16 +65,17 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null) return BadRequest();
+        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
+            return BadRequest("Invalid model.");
 
         var category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
-        if (category != null) return BadRequest();
+        if (category != null) return Conflict("Category with that name already exists.");
 
         var newCategory = new Category { Name = dto.CategoryName };
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
 
-        return Created($"/api/admin/categories/{newCategory.Id}", null);
+        return Created($"/api/admin/categories/{newCategory.Id}", newCategory);
     }
 
     [HttpPut("{id}")]
@@ -82,26 +84,27 @@ public class CategoriesController : ControllerBase
         if (dto == null || dto.CategoryName == null) return BadRequest("Invalid category data.");
 
         var existingCategory = getById(id);
+        if (existingCategory == null) return NotFound($"Category with id {id} not found.");
 
-        if (existingCategory == null)
-        {
-            return NotFound($"Category with id {id} not found.");
-        }
+        var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        if (categoryWithThatName != null && categoryWithThatName.Id != id) 
+            return Conflict("Category with that name already exists.");
 
         existingCategory.Name = dto.CategoryName;
-
         _context.SaveChanges();
 
-        return Ok(existingCategory);
+        return Created($"/api/admin/categories/{existingCategory.Id}", existingCategory);
     }
 
     [HttpDelete("{id}")]
-    public void Delete(Guid id)
+    public ActionResult Delete(Guid id)
     {
         var category = getById(id);
-        if (category == null) return;
+        if (category == null) return NotFound("Category not found.");
 
         _context.Categories.Remove(category);
         _context.SaveChanges();
+
+        return NoContent();
     }
 }
