@@ -75,10 +75,23 @@ public class OrdersController : ControllerBase
         if (dto == null) return BadRequest("Invalid order data.");
 
         var screening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
-        if (screening == null) return BadRequest("Invalid screening ID.");       
+        if (screening == null) return BadRequest("Invalid screening ID.");
 
-        var seats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
-        if (seats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+        var requestedSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
+        if (requestedSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+
+        var takenSeatIds = _context.Orders
+            .Where(o => o.ScreeningId == dto.ScreeningId)
+            .SelectMany(o => o.Seats!)
+            .Select(s => s.Id)
+            .ToHashSet();
+
+        var takenSeats = requestedSeats.Where(seat => takenSeatIds.Contains(seat.Id)).ToList();
+        if (takenSeats.Any())
+        {
+            var takenSeatNumbers = string.Join(", ", takenSeats.Select(s => $"{s.Row}{s.Number}"));
+            return BadRequest($"The following seats are already taken: {takenSeatNumbers}");
+        }
 
         var newOrder = new Order
         {
@@ -86,7 +99,7 @@ public class OrdersController : ControllerBase
             PhoneNumber = dto.PhoneNumber,
             Status = dto.Status,
             Screening = screening,
-            Seats = seats,
+            Seats = requestedSeats,
         };
 
         _context.Orders.Add(newOrder);

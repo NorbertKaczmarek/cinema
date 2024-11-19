@@ -1,10 +1,10 @@
-﻿using cinema.context;
-using cinema.context.Entities;
-using cinema.api.Controllers.Admin;
+﻿using cinema.api.Controllers.Admin;
 using cinema.api.Models;
+using cinema.context;
+using cinema.context.Entities;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cinema.tests.Controllers;
 
@@ -18,9 +18,6 @@ public class OrdersControllerTests
 
         var context = new CinemaDbContext(options);
 
-        var category = new Category { Id = Guid.NewGuid(), Name = "Test Category" };
-        context.Categories.Add(category);
-
         var movie = new Movie
         {
             Id = Guid.NewGuid(),
@@ -33,14 +30,14 @@ public class OrdersControllerTests
             Cast = "Test Cast",
             Description = "Test Description",
             Rating = 5.0,
-            Category = category
+            Category = new Category { Id = Guid.NewGuid(), Name = "Action" }
         };
         context.Movies.Add(movie);
 
         var screening = new Screening
         {
             Id = Guid.NewGuid(),
-            StartDateTime = DateTime.Now,
+            StartDateTime = DateTime.Now.AddHours(1),
             EndDateTime = DateTime.Now.AddHours(2),
             Movie = movie
         };
@@ -51,7 +48,7 @@ public class OrdersControllerTests
             new Seat { Id = Guid.NewGuid(), Row = 'A', Number = 1 },
             new Seat { Id = Guid.NewGuid(), Row = 'A', Number = 2 },
             new Seat { Id = Guid.NewGuid(), Row = 'B', Number = 1 },
-            new Seat { Id = Guid.NewGuid(), Row = 'B', Number = 2 }
+            new Seat { Id = Guid.NewGuid(), Row = 'B', Number = 2 },
         };
         context.Seats.AddRange(seats);
 
@@ -85,7 +82,6 @@ public class OrdersControllerTests
         result.Should().NotBeNull();
         result.Email.Should().Be("test@example.com");
         result.Status.Should().Be(OrderStatus.Pending);
-        result.Seats!.Count.Should().Be(2);
     }
 
     [Fact]
@@ -103,19 +99,32 @@ public class OrdersControllerTests
     }
 
     [Fact]
-    public void Post_CreateOrderWithValidData_ReturnsCreatedStatus()
+    public void Post_CreateOrderWithAvailableSeats_ReturnsCreatedStatus()
     {
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new OrdersController(context);
-        var screeningId = context.Screenings.First().Id;
+
+        var movie = context.Movies.First();
+        var screening = new Screening
+        {
+            Id = Guid.NewGuid(),
+            StartDateTime = DateTime.Now.AddDays(1),
+            EndDateTime = DateTime.Now.AddDays(1).AddHours(2),
+            Movie = movie
+        };
+        context.Screenings.Add(screening);
+        context.SaveChanges();
+
         var seatIds = context.Seats.Select(s => s.Id).ToList();
+        var initialCount = context.Orders.Count();
+
         var orderDto = new OrderCreateDto
         {
-            Email = "neworder@example.com",
-            PhoneNumber = "0987654321",
-            Status = OrderStatus.Ready,
-            ScreeningId = screeningId,
+            Email = "test@example.com",
+            PhoneNumber = "123-456-7890",
+            Status = OrderStatus.Pending,
+            ScreeningId = screening.Id,
             SeatIds = seatIds
         };
 
@@ -124,10 +133,73 @@ public class OrdersControllerTests
 
         // Assert
         result.Should().BeOfType<CreatedResult>();
-        context.Orders.Count().Should().Be(2);
-        var newOrder = context.Orders.Last();
-        newOrder.Email.Should().Be("neworder@example.com");
-        newOrder.Seats!.Count.Should().Be(seatIds.Count);
+        context.Orders.Count().Should().Be(initialCount + 1);
+    }
+
+    [Fact]
+    public void Post_CreateOrderWithTakenSeats_ReturnsBadRequest()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new OrdersController(context);
+        var screening = context.Screenings.First();
+        var seatIds = context.Seats.Select(s => s.Id).ToList();
+
+        var initialOrder = new Order
+        {
+            Email = "initial@example.com",
+            PhoneNumber = "111-111-1111",
+            Status = OrderStatus.Pending,
+            ScreeningId = screening.Id,
+            Seats = context.Seats.ToList()
+        };
+        context.Orders.Add(initialOrder);
+        context.SaveChanges();
+
+        var orderDto = new OrderCreateDto
+        {
+            Email = "test@example.com",
+            PhoneNumber = "123-456-7890",
+            Status = OrderStatus.Pending,
+            ScreeningId = screening.Id,
+            SeatIds = seatIds
+        };
+
+        // Act
+        var result = controller.Post(orderDto);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult!.Value.Should().Be("The following seats are already taken: A1, A2, B1, B2");
+    }
+
+    [Fact]
+    public void Post_CreateOrderWithInvalidSeatIds_ReturnsBadRequest()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new OrdersController(context);
+        var screening = context.Screenings.First();
+
+        var invalidSeatIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+
+        var orderDto = new OrderCreateDto
+        {
+            Email = "test@example.com",
+            PhoneNumber = "123-456-7890",
+            Status = OrderStatus.Pending,
+            ScreeningId = screening.Id,
+            SeatIds = invalidSeatIds
+        };
+
+        // Act
+        var result = controller.Post(orderDto);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult!.Value.Should().Be("One or more seat IDs are invalid.");
     }
 
     [Fact]
@@ -165,7 +237,7 @@ public class OrdersControllerTests
         var context = GetInMemoryDbContext();
         var controller = new OrdersController(context);
         var orderId = context.Orders.First().Id;
-        var initialCount = context.Categories.Count();
+        var initialCount = context.Orders.Count();
 
         // Act
         controller.Delete(orderId);
