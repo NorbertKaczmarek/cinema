@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
+/// <summary>
+/// API Controller for managing movie categories.
+/// Provides endpoints for retrieving, creating, updating, and deleting categories.
+/// </summary>
 [Route("api/admin/[controller]")]
 [ApiController]
 public class CategoriesController : ControllerBase
@@ -19,8 +23,9 @@ public class CategoriesController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves all categories with optional pagination and search.
+    /// Retrieves all categories with optional pagination and search functionality.
     /// </summary>
+    /// <returns>A paginated list of categories or a full list if Size is set to 0.</returns>
     [HttpGet]
     public PageResult<Category> Get([FromQuery] PageQuery query)
     {
@@ -51,8 +56,17 @@ public class CategoriesController : ControllerBase
 
         return new PageResult<Category>(result, totalCount, query.Size);
     }
-    
+
+    /// <summary>
+    /// Retrieves a specific category by its ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the category to retrieve.</param>
+    /// <returns>
+    /// The requested category if found; otherwise, a 404 Not Found response.
+    /// </returns>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(Category), 200)]
+    [ProducesResponseType(typeof(string), 404)]
     public ActionResult Get(Guid id)
     {
         var category = getById(id);
@@ -65,7 +79,21 @@ public class CategoriesController : ControllerBase
         return _context.Categories.FirstOrDefault(m => m.Id == id);
     }
 
+    /// <summary>
+    /// Creates a new category.
+    /// </summary>
+    /// <param name="dto">An object containing the category name:
+    /// <list type="bullet">
+    /// <item><term>CategoryName</term>: The name of the category to be created (required).</item>
+    /// </list>
+    /// </param>
+    /// <returns>
+    /// The created category if successful; otherwise, a 400 Bad Request or 409 Conflict response.
+    /// </returns>
     [HttpPost]
+    [ProducesResponseType(typeof(Category), 201)]
+    [ProducesResponseType(typeof(string) ,400)]
+    [ProducesResponseType(typeof(string), 409)]
     public ActionResult Post([FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
@@ -81,7 +109,22 @@ public class CategoriesController : ControllerBase
         return Created($"/api/admin/categories/{newCategory.Id}", newCategory);
     }
 
+    /// <summary>
+    /// Updates an existing category by its ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the category to update.</param>
+    /// <param name="dto">An object containing the updated category name:
+    /// <list type="bullet">
+    /// <item><term>CategoryName</term>: The new name for the category (required).</item>
+    /// </list>
+    /// </param>
+    /// <returns>
+    /// The updated category if successful; otherwise, a 400 Bad Request, 404 Not Found, or 409 Conflict response.
+    /// </returns>
     [HttpPut("{id}")]
+    [ProducesResponseType(typeof(Category), 201)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 409)]
     public ActionResult Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "")
@@ -100,7 +143,16 @@ public class CategoriesController : ControllerBase
         return Created($"/api/admin/categories/{existingCategory.Id}", existingCategory);
     }
 
+    /// <summary>
+    /// Deletes an existing category by its ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the category to delete.</param>
+    /// <returns>
+    /// A 204 No Content response if successful; otherwise, a 404 Not Found response if the category does not exist.
+    /// </returns>
     [HttpDelete("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(string), 404)]
     public ActionResult Delete(Guid id)
     {
         var category = getById(id);
