@@ -66,7 +66,7 @@ public class CategoriesController : ControllerBase
     public ActionResult Post([FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
-            return BadRequest("Invalid model.");
+            return BadRequest("Invalid category data.");
 
         var category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
         if (category != null) return Conflict("Category with that name already exists.");
@@ -81,7 +81,8 @@ public class CategoriesController : ControllerBase
     [HttpPut("{id}")]
     public ActionResult Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null) return BadRequest("Invalid category data.");
+        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "")
+            return BadRequest("Invalid category data.");
 
         var existingCategory = getById(id);
         if (existingCategory == null) return NotFound($"Category with id {id} not found.");
