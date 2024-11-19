@@ -58,7 +58,11 @@ public class CategoriesControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be("Action");
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult!.Value.Should().BeOfType<Category>();
+        var category = okResult.Value as Category;
+        category!.Name.Should().Be("Action");
     }
 
     [Fact]
@@ -72,7 +76,9 @@ public class CategoriesControllerTests
         var result = controller.Get(Guid.NewGuid());
 
         // Assert
-        result.Should().BeNull();
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var badRequestResult = result as NotFoundObjectResult;
+        badRequestResult!.Value.Should().Be("Category with that id was not found.");
     }
 
     [Theory]

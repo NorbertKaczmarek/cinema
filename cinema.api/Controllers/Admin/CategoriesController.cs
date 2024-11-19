@@ -49,14 +49,16 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public Category Get(Guid id)
+    public ActionResult Get(Guid id)
     {
-        return getById(id);
+        var category = getById(id);
+        if (category is null) return NotFound("Category with that id was not found.");
+        return Ok(category);
     }
 
-    private Category getById(Guid id)
+    private Category? getById(Guid id)
     {
-        return _context.Categories.FirstOrDefault(m => m.Id == id)!;
+        return _context.Categories.FirstOrDefault(m => m.Id == id);
     }
 
     [HttpPost]
