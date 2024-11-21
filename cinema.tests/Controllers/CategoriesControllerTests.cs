@@ -35,14 +35,15 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var initialCount = context.Categories.Count();
+        var query = new PageQuery { };
 
         // Act
-        var result = controller.Get(new PageQuery());
+        var result = controller.Get(query).Result as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalElements.Should().Be(initialCount);
+        var categories = result!.Value as PageResult<Category>;
+        categories!.Content.Should().HaveCount(3);
     }
 
     [Fact]
@@ -54,14 +55,12 @@ public class CategoriesControllerTests
         var categoryId = context.Categories.First().Id;
 
         // Act
-        var result = controller.Get(categoryId);
+        var result = controller.Get(categoryId).Result as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<OkObjectResult>();
-        var okResult = result as OkObjectResult;
-        okResult!.Value.Should().BeOfType<Category>();
-        var category = okResult.Value as Category;
+        var category = result!.Value as Category;
+        category.Should().NotBeNull();
         category!.Name.Should().Be("Action");
     }
 
@@ -73,7 +72,7 @@ public class CategoriesControllerTests
         var controller = new CategoriesController(context);
 
         // Act
-        var result = controller.Get(Guid.NewGuid());
+        var result = controller.Get(Guid.NewGuid()).Result;
 
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -93,15 +92,14 @@ public class CategoriesControllerTests
         var newCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
-        var result = controller.Post(newCategoryDto);
+        var result = controller.Post(newCategoryDto).Result as CreatedResult;
 
         // Assert
-        result.Should().BeOfType<CreatedResult>();
-        var createdCategoryId = (result as CreatedResult)!.Location!;
-        var createdCategory = context.Categories.Find(new Guid(createdCategoryId.Split('/').Last()))!;
-
-        createdCategory.Should().NotBeNull();
-        createdCategory.Name.Should().Be(categoryName);
+        var category = result!.Value as Category;
+        category.Should().NotBeNull();
+        category!.Name.Should().Be(categoryName);
+        var createdCategoryId = result.Location!;
+        category.Id.Should().Be(new Guid(createdCategoryId.Split('/').Last()));
     }
 
     [Theory]
@@ -116,7 +114,7 @@ public class CategoriesControllerTests
         var existingCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
-        var result = controller.Post(existingCategoryDto);
+        var result = controller.Post(existingCategoryDto).Result;
 
         // Assert
         result.Should().BeOfType<ConflictObjectResult>();
@@ -136,7 +134,7 @@ public class CategoriesControllerTests
         var invalidCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
-        var result = controller.Post(invalidCategoryDto);
+        var result = controller.Post(invalidCategoryDto).Result;
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -155,7 +153,7 @@ public class CategoriesControllerTests
         var updatedCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
-        var result = controller.Put(existingCategory.Id, updatedCategoryDto);
+        var result = controller.Put(existingCategory.Id, updatedCategoryDto).Result;
 
         // Assert
         result.Should().BeOfType<CreatedResult>();
@@ -177,7 +175,7 @@ public class CategoriesControllerTests
         var updatedCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
-        var result = controller.Put(nonExistentCategoryId, updatedCategoryDto);
+        var result = controller.Put(nonExistentCategoryId, updatedCategoryDto).Result;
 
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -201,12 +199,12 @@ public class CategoriesControllerTests
         var updatedCategoryDto = new CategoryCreateDto { CategoryName = editedcategoryNewName };
 
         // Act
-        var result = controller.Put(existingCategory.Id, updatedCategoryDto);
+        var result = controller.Put(existingCategory.Id, updatedCategoryDto).Result;
 
         // Assert
         result.Should().BeOfType<ConflictObjectResult>();
-        var conflictResult = result as ConflictObjectResult;
-        conflictResult!.Value.Should().Be("Category with that name already exists.");
+        var conflictObjectResultResult = result as ConflictObjectResult;
+        conflictObjectResultResult!.Value.Should().Be("Category with that name already exists.");
     }
 
     [Fact]

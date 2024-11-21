@@ -21,11 +21,13 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <returns>A paginated list of categories or a full list if Size is set to 0.</returns>
     [HttpGet]
-    public PageResult<Category> Get([FromQuery] PageQuery query)
+    public ActionResult<PageResult<Category>> Get([FromQuery] PageQuery query)
     {
-        var baseQuery = _context
-            .Categories
-            .Where(
+        var baseQuery = _context.Categories.AsQueryable();
+
+        baseQuery = baseQuery
+            .Where
+            (
                 c => query.Phrase == null ||
                 (
                     c.Name.ToLower().Contains(query.Phrase.ToLower())
@@ -34,21 +36,11 @@ public class CategoriesController : ControllerBase
 
         var totalCount = baseQuery.Count();
 
-        List<Category> result;
+        var result = query.Size == 0
+            ? baseQuery.ToList()
+            : baseQuery.Skip(query.Size * query.Page).Take(query.Size).ToList();
 
-        if (query.Size == 0)
-        {
-            result = baseQuery.ToList();
-        }
-        else
-        {
-            result = baseQuery
-                .Skip(query.Size * query.Page)
-                .Take(query.Size)
-                .ToList();
-        }
-
-        return new PageResult<Category>(result, totalCount, query.Size);
+        return Ok(new PageResult<Category>(result, totalCount, query.Size));
     }
 
     /// <summary>
@@ -61,7 +53,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Category), 200)]
     [ProducesResponseType(typeof(string), 404)]
-    public ActionResult Get(Guid id)
+    public ActionResult<Category> Get(Guid id)
     {
         var category = getById(id);
         if (category is null) return NotFound("Category with that id was not found.");
@@ -88,7 +80,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string) ,400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult Post([FromBody] CategoryCreateDto dto)
+    public ActionResult<Category> Post([FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
             return BadRequest("Invalid category data.");
@@ -119,7 +111,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult Put(Guid id, [FromBody] CategoryCreateDto dto)
+    public ActionResult<Category> Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "")
             return BadRequest("Invalid category data.");
