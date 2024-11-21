@@ -3,6 +3,7 @@ using cinema.context.Entities;
 using cinema.context;
 using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.tests.Controllers;
 
@@ -42,7 +43,8 @@ public class SeatsControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Count().Should().Be(6);
+        var seats = (result.Result as OkObjectResult)!.Value as IEnumerable<Seat>;
+        seats!.Count().Should().Be(6);
     }
 
     [Fact]
@@ -57,9 +59,11 @@ public class SeatsControllerTests
         var result = controller.Get(seatId);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Row.Should().Be('A');
-        result.Number.Should().Be(1);
+        result.Result.Should().BeOfType<OkObjectResult>();
+        var seat = (result.Result as OkObjectResult)?.Value as Seat;
+        seat.Should().NotBeNull();
+        seat!.Row.Should().Be('A');
+        seat.Number.Should().Be(1);
     }
 
     [Fact]
@@ -68,12 +72,15 @@ public class SeatsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new SeatsController(context);
+        var invalidId = Guid.NewGuid();
 
         // Act
-        var result = controller.Get(Guid.NewGuid());
+        var result = controller.Get(invalidId);
 
         // Assert
-        result.Should().BeNull();
+        result.Result.Should().BeOfType<NotFoundObjectResult>();
+        var message = (result.Result as NotFoundObjectResult)?.Value as string;
+        message.Should().Be($"Seat with ID {invalidId} not found.");
     }
 
     [Fact]
@@ -87,9 +94,11 @@ public class SeatsControllerTests
         var result = controller.GetByRowAndNumber('B', 2);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Row.Should().Be('B');
-        result.Number.Should().Be(2);
+        result.Result.Should().BeOfType<OkObjectResult>();
+        var seat = (result.Result as OkObjectResult)?.Value as Seat;
+        seat.Should().NotBeNull();
+        seat!.Row.Should().Be('B');
+        seat.Number.Should().Be(2);
     }
 
     [Fact]
@@ -103,6 +112,8 @@ public class SeatsControllerTests
         var result = controller.GetByRowAndNumber('D', 4);
 
         // Assert
-        result.Should().BeNull();
+        result.Result.Should().BeOfType<NotFoundObjectResult>();
+        var message = (result.Result as NotFoundObjectResult)?.Value as string;
+        message.Should().Be("Seat in row 'D' with number '4' not found.");
     }
 }
