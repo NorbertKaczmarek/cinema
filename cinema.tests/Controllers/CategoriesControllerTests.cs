@@ -35,13 +35,14 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
+        var initialCount = context.Categories.Count();
 
         // Act
         var result = controller.Get(new PageQuery());
 
         // Assert
         result.Should().NotBeNull();
-        result.TotalElements.Should().Be(3);
+        result.TotalElements.Should().Be(initialCount);
     }
 
     [Fact]
@@ -57,7 +58,11 @@ public class CategoriesControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Name.Should().Be("Action");
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult!.Value.Should().BeOfType<Category>();
+        var category = okResult.Value as Category;
+        category!.Name.Should().Be("Action");
     }
 
     [Fact]
@@ -71,7 +76,9 @@ public class CategoriesControllerTests
         var result = controller.Get(Guid.NewGuid());
 
         // Assert
-        result.Should().BeNull();
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var badRequestResult = result as NotFoundObjectResult;
+        badRequestResult!.Value.Should().Be("Category with that id was not found.");
     }
 
     [Theory]
@@ -112,22 +119,27 @@ public class CategoriesControllerTests
         var result = controller.Post(existingCategoryDto);
 
         // Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<ConflictObjectResult>();
+        var conflictResult = result as ConflictObjectResult;
+        conflictResult!.Value.Should().Be("Category with that name already exists.");
     }
 
-    [Fact]
-    public void Post_WithNullCategoryName_ShouldReturnBadRequest()
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void Post_WithInvalidCategoryName_ShouldReturnBadRequest(string categoryName)
     {
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var invalidCategoryDto = new CategoryCreateDto { CategoryName = null! };
+        var invalidCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
 
         // Act
         var result = controller.Post(invalidCategoryDto);
 
         // Assert
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Theory]
@@ -146,7 +158,7 @@ public class CategoriesControllerTests
         var result = controller.Put(existingCategory.Id, updatedCategoryDto);
 
         // Assert
-        result.Should().BeOfType<OkObjectResult>();
+        result.Should().BeOfType<CreatedResult>();
         var updatedCategory = context.Categories.Find(existingCategory.Id)!;
         updatedCategory.Should().NotBeNull();
         updatedCategory.Name.Should().Be(categoryName);
@@ -172,17 +184,45 @@ public class CategoriesControllerTests
     }
 
     [Fact]
+    public void Put_WithExistingCategoryName_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new CategoriesController(context);
+        var existingcategoryName = (new Guid()).ToString();
+        var editedcategoryOldName = (new Guid()).ToString();
+        var editedcategoryNewName = (new Guid()).ToString();
+
+        var existingCategory = new Category { Name = existingcategoryName };
+        var editedCategory = new Category { Name = editedcategoryOldName };
+        context.Categories.AddRange(existingCategory, editedCategory);
+        context.SaveChanges();
+
+        var updatedCategoryDto = new CategoryCreateDto { CategoryName = editedcategoryNewName };
+
+        // Act
+        var result = controller.Put(existingCategory.Id, updatedCategoryDto);
+
+        // Assert
+        result.Should().BeOfType<ConflictObjectResult>();
+        var conflictResult = result as ConflictObjectResult;
+        conflictResult!.Value.Should().Be("Category with that name already exists.");
+    }
+
+    [Fact]
     public void Delete_WithValidId_ShouldDeleteCategory()
     {
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var categoryToDelete = context.Categories.First();
+        var initialCount = context.Categories.Count();
 
         // Act
         controller.Delete(categoryToDelete.Id);
 
         // Assert
+        context.Categories.Count().Should().Be(initialCount - 1);
         var deletedCategory = context.Categories.Find(categoryToDelete.Id);
         deletedCategory.Should().BeNull();
     }
@@ -194,11 +234,13 @@ public class CategoriesControllerTests
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var invalidCategoryId = Guid.NewGuid();
+        var initialCount = context.Categories.Count();
 
         // Act
         controller.Delete(invalidCategoryId);
 
         // Assert
+        context.Categories.Count().Should().Be(initialCount);
         var category = context.Categories.First();
         category.Should().NotBeNull();
     }

@@ -1,10 +1,10 @@
+using cinema.api.Helpers.EmailSender;
 using cinema.context;
-using cinema.context.Entities;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +12,9 @@ var configuration = builder.Configuration;
 
 var authenticationOptions = configuration.GetSection(nameof(cinema.api.AuthenticationOptions)).Get<cinema.api.AuthenticationOptions>()!;
 builder.Services.AddSingleton(authenticationOptions);
+
+var emailOptions = configuration.GetSection(nameof(cinema.api.EmailOptions)).Get<cinema.api.EmailOptions>()!;
+builder.Services.AddSingleton(emailOptions);
 
 // CORS
 builder.Services.AddCors(options =>
@@ -47,15 +50,25 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add services to the container.
-
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.DescribeAllParametersInCamelCase();
+    options.DescribeAllParametersInCamelCase();
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, 
+        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Cinema API",
+        Description = "An ASP.NET Core Web API for managing a small cienema.",
+    });
 });
+
+// EmailSender
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Seeder
 builder.Services.AddScoped<Seeder>();
