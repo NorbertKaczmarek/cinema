@@ -1,3 +1,4 @@
+using cinema.api.Helpers.EmailSender;
 using cinema.context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,9 @@ var configuration = builder.Configuration;
 
 var authenticationOptions = configuration.GetSection(nameof(cinema.api.AuthenticationOptions)).Get<cinema.api.AuthenticationOptions>()!;
 builder.Services.AddSingleton(authenticationOptions);
+
+var emailOptions = configuration.GetSection(nameof(cinema.api.EmailOptions)).Get<cinema.api.EmailOptions>()!;
+builder.Services.AddSingleton(emailOptions);
 
 // CORS
 builder.Services.AddCors(options =>
@@ -46,7 +50,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add services to the container.
-
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
@@ -63,6 +66,9 @@ builder.Services.AddSwaggerGen(options =>
         Description = "An ASP.NET Core Web API for managing a small cienema.",
     });
 });
+
+// EmailSender
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Seeder
 builder.Services.AddScoped<Seeder>();

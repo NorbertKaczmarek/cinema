@@ -1,10 +1,13 @@
-﻿using cinema.api.Controllers.Admin;
+﻿using cinema.api;
+using cinema.api.Controllers.Admin;
+using cinema.api.Helpers.EmailSender;
 using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace cinema.tests.Controllers;
 
@@ -72,7 +75,9 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
         var orderId = context.Orders.First().Id;
 
         // Act
@@ -89,7 +94,9 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
 
         // Act
         var result = controller.Get(Guid.NewGuid());
@@ -103,7 +110,9 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
 
         var movie = context.Movies.First();
         var screening = new Screening
@@ -141,7 +150,10 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+
         var screening = context.Screenings.First();
         var seatIds = context.Seats.Select(s => s.Id).ToList();
 
@@ -179,7 +191,10 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+
         var screening = context.Screenings.First();
 
         var invalidSeatIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
@@ -207,7 +222,10 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+
         var existingOrder = context.Orders.First();
         var newSeatIds = context.Seats.Select(s => s.Id).ToList();
         var updatedOrderDto = new OrderCreateDto
@@ -235,7 +253,10 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new OrdersController(context);
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+
         var orderId = context.Orders.First().Id;
         var initialCount = context.Orders.Count();
 

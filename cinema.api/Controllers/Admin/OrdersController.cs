@@ -3,6 +3,7 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cinema.api.Models;
+using cinema.api.Helpers.EmailSender;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -11,10 +12,14 @@ namespace cinema.api.Controllers.Admin;
 public class OrdersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly EmailOptions _emailOptions;
+    private readonly IEmailSender _emailSender;
 
-    public OrdersController(CinemaDbContext context)
+    public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender)
     {
         _context = context;
+        _emailOptions = emailOptions;
+        _emailSender = emailSender;
     }
 
     [HttpGet]
@@ -56,6 +61,35 @@ public class OrdersController : ControllerBase
     public Order Get(Guid id)
     {
         return getById(id);
+    }
+
+    [HttpGet("{id}/email")]
+    public Order SentTestEmail(Guid id)
+    {
+        var order = getById(id);
+
+        var senderInfo = new SenderInfo
+        {
+            Email = _emailOptions.Email,
+            DisplayName = _emailOptions.DisplayName,
+            AppPassword = _emailOptions.AppPassword,
+            SmtpClientHost = _emailOptions.SmtpClientHost,
+            SmtpClientPort = _emailOptions.SmtpClientPort,
+        };
+
+        var ticketInfo = new TicketInfo
+        {
+            MovieName = order.Screening!.Movie!.Title,
+            Date = order.Screening!.StartDateTime.ToString("yyyy-MM-dd"),
+            Time = order.Screening!.StartDateTime.ToString("HH:mm"),
+            SeatNumbers = string.Join(", ", order.Seats!.Select(s => $"{s.Row}{s.Number}")),
+            WebsiteUrl = _emailOptions.WebsiteUrl,
+            Code = "0000"  // TODO unique code
+        };
+
+        _emailSender.sendEmailAsync(senderInfo, senderInfo.Email, ticketInfo);  // TODO order.Email
+
+        return order;
     }
 
     private Order getById(Guid id)
