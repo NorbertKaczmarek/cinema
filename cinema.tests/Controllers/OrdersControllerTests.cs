@@ -70,14 +70,20 @@ public class OrdersControllerTests
         return context;
     }
 
+    private OrdersController CreateController(CinemaDbContext context)
+    {
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
+        return new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+    }
+
     [Fact]
     public void Get_WithValidId_ReturnsOrder()
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
+
         var orderId = context.Orders.First().Id;
 
         // Act
@@ -94,9 +100,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get(Guid.NewGuid());
@@ -110,9 +114,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         var movie = context.Movies.First();
         var screening = new Screening
@@ -150,9 +152,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         var screening = context.Screenings.First();
         var seatIds = context.Seats.Select(s => s.Id).ToList();
@@ -191,9 +191,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         var screening = context.Screenings.First();
 
@@ -222,9 +220,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         var existingOrder = context.Orders.First();
         var newSeatIds = context.Seats.Select(s => s.Id).ToList();
@@ -253,9 +249,7 @@ public class OrdersControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var emailOptionsMock = new Mock<EmailOptions>();
-        var emailSenderMock = new Mock<IEmailSender>();
-        var controller = new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object);
+        var controller = CreateController(context);
 
         var orderId = context.Orders.First().Id;
         var initialCount = context.Orders.Count();
