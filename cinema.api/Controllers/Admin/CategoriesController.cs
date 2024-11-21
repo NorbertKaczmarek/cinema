@@ -1,16 +1,10 @@
 ﻿using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-/// <summary>
-/// API Controller for managing movie categories.
-/// Provides endpoints for retrieving, creating, updating, and deleting categories.
-/// </summary>
 [Route("api/admin/[controller]")]
 [ApiController]
 public class CategoriesController : ControllerBase
