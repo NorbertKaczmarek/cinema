@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode } from 'react';
 
 import { Button, ButtonVariant } from 'Components/Button';
+import { MobileMenu } from 'Components/MobileMenu';
 import { ProfileMenu } from 'Components/ProfileMenu';
 import { MenuGroup } from 'Types/menu';
 
@@ -12,15 +13,17 @@ export interface NavItem {
 }
 
 export interface NavbarProps {
+  mobileMenu?: MenuGroup[];
   navItems?: NavItem[];
   profileMenus?: MenuGroup[];
   actions?: ReactNode;
 }
 
-export const Navbar = ({ navItems, profileMenus, actions }: NavbarProps) => (
+export const Navbar = ({ mobileMenu, navItems, profileMenus, actions }: NavbarProps) => (
   <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
     <div className="flex h-14 w-full items-center justify-between px-4 lg:container sm:px-8 lg:mx-auto">
       <div className="flex items-center space-x-2 lg:space-x-0">
+        <MobileMenu menus={mobileMenu} />
         {navItems?.map(({ label, href, icon, onClick }) => (
           <Button
             variant={ButtonVariant.Ghost}

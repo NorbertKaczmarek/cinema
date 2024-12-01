@@ -98,9 +98,7 @@ export const ProfileMenu = ({ placeholder = 'Profile menu', profileMenus }: Prop
         </Trigger>
       }
       side="bottom"
-    >
-      {placeholder}
-    </Tooltip>
+    />
     <BaseContent side="bottom" align="end" className="w-40">
       <BaseLabel className="max-w-[190px] truncate">{placeholder}</BaseLabel>
       <BaseSeparator />

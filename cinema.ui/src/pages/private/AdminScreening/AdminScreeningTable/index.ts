@@ -1,0 +1,1 @@
+export { AdminScreeningTable } from './AdminScreeningTable';

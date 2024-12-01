@@ -1,6 +1,6 @@
 import { Row } from '@tanstack/table-core/src/types';
 
-import { RedirectCell } from 'Components/RedirectCell';
+import { RedirectCell } from 'Components/Cells';
 import { Movie } from 'Types/movie';
 import { formatDuration } from 'Utils/formatDuration';
 
@@ -12,7 +12,7 @@ export const columns = [
     minSize: 200,
     enableSorting: true,
     cell: ({ row }: { row: Row<Movie> }) => (
-      <RedirectCell path={`/admin/movies/${row.getValue('id')}`}>
+      <RedirectCell route={`/admin/movies/${row.getValue('id')}`}>
         {row.getValue('title')}
       </RedirectCell>
     ),

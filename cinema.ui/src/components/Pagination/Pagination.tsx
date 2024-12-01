@@ -32,7 +32,7 @@ interface Props {
   >;
 }
 
-const DEFAULT_PAGINATION_VALUES = ['5', '10', '20', '50', '100'];
+const DEFAULT_PAGINATION_VALUES = ['5', '10', '20'];
 
 export const Pagination = ({
   navButtonClass,

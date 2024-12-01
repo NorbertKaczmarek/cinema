@@ -16,9 +16,9 @@ interface Props {
 }
 
 export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
-  const { data } = useAdminCategories({ page: 0, size: 5 });
+  const { data } = useAdminCategories({ page: 0, size: 0 });
 
-  const categoryOptions = (data || []).map(({ name, id }) => ({ label: name, value: id }));
+  const categoryOptions = (data?.content || []).map(({ name, id }) => ({ label: name, value: id }));
 
   return (
     <Card>

@@ -3,8 +3,8 @@ import { ActionButtons } from 'Components/ActionButtons';
 import { Header } from 'Components/Header';
 import { Spinner } from 'Components/Spinner';
 import { useDictionaryState } from 'Hooks/useDictionaryState';
-import { MovieForm } from 'Pages/private/components';
-import { MOVIE_DICT_STATE } from 'Pages/private/constants';
+import { MovieForm } from 'Pages/private/AdminMovie/components';
+import { MOVIE_DICT_STATE } from 'Pages/private/AdminMovie/constants';
 import { Movie } from 'Types/movie';
 
 export const AdminMovieDetails = () => {
@@ -20,7 +20,7 @@ export const AdminMovieDetails = () => {
     handleRedirect,
   } = useDictionaryState<Movie>(MOVIE_DICT_STATE);
 
-  const { isFetching } = useAdminCategories({ page: 0, size: 5 });
+  const { isFetching } = useAdminCategories({ page: 0, size: 0 });
 
   return (
     <Spinner isSpinning={isSpinning || isFetching}>

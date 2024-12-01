@@ -19,6 +19,6 @@ export const MOVIE_DICT_STATE = {
     durationMinutes: 0,
     title: '',
   },
-  listUrl: ROUTES.private.MOVIES_TABLE,
+  listUrl: ROUTES.private.MOVIE.TABLE,
   queryKey: (id = 'new') => ['admin', 'dictionary', 'movie', id],
 };
