@@ -1,8 +1,8 @@
-﻿using cinema.api.Models;
+﻿using cinema.api.Helpers;
+using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace cinema.tests;
@@ -13,7 +13,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _scopedServices;
     private readonly CinemaDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly string _endpoint = "/api/auth";
 
     public AuthControllerTests(CustomWebApplicationFactory<Program> factory)
     {
@@ -21,21 +21,21 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         _scope = factory.Services.CreateScope();
         _scopedServices = _scope.ServiceProvider;
         _context = _scopedServices.GetRequiredService<CinemaDbContext>();
-        _passwordHasher = _scopedServices.GetRequiredService<IPasswordHasher<User>>();
     }
 
     private async Task<Guid> seedUser(UserCreateDto dto)
     {
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+
         User newUser = new User
         {
             IsAdmin = dto.IsAdmin,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            PasswordHash = ""
+            Salt = saltText,
+            SaltedHashedPassword = saltedHashedPassword,
         };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
-        newUser.PasswordHash = hashedPasword;
 
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
@@ -48,16 +48,17 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         string email = "admin@test.com";
         string password = "AdminPassword123";
 
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
+
         User newUser = new User
         {
             IsAdmin = isAdmin,
             Email = email,
             FirstName = "Admin",
             LastName = "Test",
-            PasswordHash = ""
+            Salt = saltText,
+            SaltedHashedPassword = saltedHashedPassword,
         };
-        var hashedPasword = _passwordHasher.HashPassword(newUser, password);
-        newUser.PasswordHash = hashedPasword;
 
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
@@ -69,7 +70,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         };
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
-        var response = await _client.PostAsync("/api/Auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
         var token = await response.Content.ReadAsStringAsync();
 
         return token;
@@ -99,7 +100,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
         // Act
-        var response = await _client.PostAsync("/api/Auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -132,7 +133,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
         // Act
-        var response = await _client.PostAsync("/api/Auth/login", loginContent);
+        var response = await _client.PostAsync($"{_endpoint}/login", loginContent);
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);

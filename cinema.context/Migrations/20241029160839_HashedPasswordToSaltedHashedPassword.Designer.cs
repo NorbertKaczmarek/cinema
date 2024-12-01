@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cinema.context;
 
@@ -11,9 +12,11 @@ using cinema.context;
 namespace cinema.context.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    partial class CinemaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241029160839_HashedPasswordToSaltedHashedPassword")]
+    partial class HashedPasswordToSaltedHashedPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,10 +61,6 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("BackgroundUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Cast")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -77,8 +76,8 @@ namespace cinema.context.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("PosterUrl")
                         .IsRequired()
@@ -90,10 +89,6 @@ namespace cinema.context.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
-
-                    b.Property<string>("TrailerUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

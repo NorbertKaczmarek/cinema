@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-
-namespace cinema.tests;
+﻿namespace cinema.tests;
 
 public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
@@ -15,11 +13,11 @@ public class BasicTests : IClassFixture<CustomWebApplicationFactory<Program>>
 
     [Theory]
     [InlineData("/swagger")]
-    [InlineData("/api/categories")]
-    [InlineData("/api/Movies")]
-    [InlineData("/api/Orders")]
-    [InlineData("/api/Screenings")]
-    [InlineData("/api/Seats")]
+    [InlineData("/api/admin/categories")]
+    [InlineData("/api/admin/movies")]
+    [InlineData("/api/admin/orders")]
+    [InlineData("/api/admin/screenings")]
+    [InlineData("/api/admin/seats")]
     public async Task Get_Endpoints_ReturnsSuccessStatusCode(string url)
     {
         var response = await _client.GetAsync(url);
