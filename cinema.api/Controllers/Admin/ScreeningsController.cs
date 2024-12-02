@@ -20,6 +20,8 @@ public class ScreeningsController : ControllerBase
     [HttpGet]
     public PageResult<Screening> Get([FromQuery] PageQuery query)
     {
+        DateTime.TryParse(query.Phrase, out var parsedDate);
+
         var baseQuery = _context
             .Screenings
             .Include(s => s.Movie)
@@ -27,7 +29,8 @@ public class ScreeningsController : ControllerBase
             .Where(
                 s => query.Phrase == null ||
                 (
-                    s!.Movie!.Title.ToLower().Contains(query.Phrase.ToLower())
+                    s.Movie!.Title.ToLower().Contains(query.Phrase.ToLower()) ||
+                    s.StartDateTime.Date == parsedDate.Date
                 )
             );
 
@@ -112,10 +115,25 @@ public class ScreeningsController : ControllerBase
     {
         if (dto == null) return BadRequest();
 
+        var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
+        if (movie == null) return BadRequest("Movie not found.");
+
+        var newStartDateTime = dto.StartDateTime;
+        var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
+
+        var overlappingScreening = _context
+            .Screenings
+            .Any(s =>
+                s.StartDateTime - TimeSpan.FromMinutes(30) < newEndDateTime &&
+                s.EndDateTime + TimeSpan.FromMinutes(30) > newStartDateTime
+            );
+
+        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+
         var screening = new Screening()
         {
-            StartDateTime = dto.StartDateTime,
-            EndDateTime = dto.EndDateTime,
+            StartDateTime = newStartDateTime,
+            EndDateTime = newEndDateTime,
             MovieId = dto.MovieId
         };
 
@@ -130,8 +148,24 @@ public class ScreeningsController : ControllerBase
         var existingScreening = getById(id);
         if (existingScreening == null) return NotFound("Screening not found.");
 
-        existingScreening.StartDateTime = dto.StartDateTime;
-        existingScreening.EndDateTime = dto.EndDateTime;
+        var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
+        if (movie == null) return BadRequest("Movie not found.");
+
+        var newStartDateTime = dto.StartDateTime;
+        var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
+
+        var overlappingScreening = _context
+            .Screenings
+            .Where(s => s.Id != id)
+            .Any(s =>
+                s.StartDateTime < newEndDateTime &&
+                s.EndDateTime > newStartDateTime
+            );
+
+        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+
+        existingScreening.StartDateTime = newStartDateTime;
+        existingScreening.EndDateTime = newEndDateTime;
         existingScreening.MovieId = dto.MovieId;
 
         _context.SaveChanges();
