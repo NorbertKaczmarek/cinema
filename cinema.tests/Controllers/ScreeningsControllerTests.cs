@@ -121,24 +121,20 @@ public class ScreeningsControllerTests
     }
 
     [Theory]
-    [InlineData("2024-11-18T10:00:00", "2024-11-18T12:00:00")]
-    [InlineData("2024-11-19T14:00:00", "2024-11-19T16:00:00")]
-    public void Post_CreateScreeningWithValidModel_ReturnsCreatedStatus(
-            string startDateTimeStr,
-            string endDateTimeStr)
+    [InlineData("2024-11-18T10:00:00")]
+    [InlineData("2024-11-19T14:00:00")]
+    public void Post_CreateScreeningWithValidModel_ReturnsCreatedStatus(string startDateTimeStr)
     {
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new ScreeningsController(context);
         var initialCount = context.Screenings.Count();
         var startDateTime = DateTime.Parse(startDateTimeStr);
-        var endDateTime = DateTime.Parse(endDateTimeStr);
         var movieId = context.Movies.First().Id;
 
         var newScreeningDto = new ScreeningCreateDto
         {
             StartDateTime = startDateTime,
-            EndDateTime = endDateTime,
             MovieId = movieId
         };
 
@@ -157,11 +153,11 @@ public class ScreeningsControllerTests
         var context = GetInMemoryDbContext();
         var controller = new ScreeningsController(context);
         var screeningId = context.Screenings.First().Id;
+        var movie = context.Movies.First();
         var updatedDto = new ScreeningCreateDto
         {
             StartDateTime = DateTime.Now.AddDays(2),
-            EndDateTime = DateTime.Now.AddDays(2).AddHours(2),
-            MovieId = context.Movies.First().Id
+            MovieId = movie.Id
         };
 
         // Act
@@ -171,6 +167,7 @@ public class ScreeningsControllerTests
         result.Should().BeOfType<OkObjectResult>();
         var updatedScreening = context.Screenings.First(s => s.Id == screeningId);
         updatedScreening.StartDateTime.Should().BeCloseTo(updatedDto.StartDateTime, TimeSpan.FromSeconds(1));
+        updatedScreening.EndDateTime.Should().BeCloseTo(updatedDto.StartDateTime.AddMinutes(movie.DurationMinutes), TimeSpan.FromSeconds(1));
     }
 
     [Fact]

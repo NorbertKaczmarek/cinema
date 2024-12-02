@@ -110,12 +110,16 @@ public class ScreeningsController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
+        // TODO check if at that time the room is free (end + 30min?)
         if (dto == null) return BadRequest();
+
+        var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
+        if (movie == null) return BadRequest("Movie not found.");
 
         var screening = new Screening()
         {
             StartDateTime = dto.StartDateTime,
-            EndDateTime = dto.EndDateTime,
+            EndDateTime = dto.StartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes),
             MovieId = dto.MovieId
         };
 
@@ -130,8 +134,11 @@ public class ScreeningsController : ControllerBase
         var existingScreening = getById(id);
         if (existingScreening == null) return NotFound("Screening not found.");
 
+        var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
+        if (movie == null) return BadRequest("Movie not found.");
+
         existingScreening.StartDateTime = dto.StartDateTime;
-        existingScreening.EndDateTime = dto.EndDateTime;
+        existingScreening.EndDateTime = dto.StartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes);
         existingScreening.MovieId = dto.MovieId;
 
         _context.SaveChanges();
