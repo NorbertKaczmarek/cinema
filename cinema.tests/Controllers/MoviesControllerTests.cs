@@ -105,8 +105,12 @@ public class MoviesControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Title.Should().Be("Movie 1");
-        result.Rating.Should().Be(1.1);
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult!.Value.Should().BeOfType<Movie>();
+        var movie = okResult.Value as Movie;
+        movie!.Title.Should().Be("Movie 1");
+        movie!.Rating.Should().Be(1.1);
     }
 
     [Fact]
@@ -120,7 +124,9 @@ public class MoviesControllerTests
         var result = controller.Get(Guid.NewGuid());
 
         // Assert
-        result.Should().BeNull();
+        result.Should().BeOfType<NotFoundObjectResult>();
+        var badRequestResult = result as NotFoundObjectResult;
+        badRequestResult!.Value.Should().Be("Movie with that id was not found.");
     }
 
     [Theory]
@@ -188,7 +194,7 @@ public class MoviesControllerTests
         var result = controller.Put(existingMovie.Id, updatedMovieDto);
 
         // Assert
-        result.Should().BeOfType<OkObjectResult>();
+        result.Should().BeOfType<CreatedResult>();
         var updatedMovie = context.Movies.First(m => m.Id == existingMovie.Id);
         updatedMovie.Title.Should().Be("Updated Movie");
         updatedMovie.Rating.Should().Be(5.0);

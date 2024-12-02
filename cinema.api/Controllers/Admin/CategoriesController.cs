@@ -1,16 +1,10 @@
 ﻿using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-/// <summary>
-/// API Controller for managing movie categories.
-/// Provides endpoints for retrieving, creating, updating, and deleting categories.
-/// </summary>
 [Route("api/admin/[controller]")]
 [ApiController]
 public class CategoriesController : ControllerBase
@@ -27,11 +21,13 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <returns>A paginated list of categories or a full list if Size is set to 0.</returns>
     [HttpGet]
-    public PageResult<Category> Get([FromQuery] PageQuery query)
+    public ActionResult<PageResult<Category>> Get([FromQuery] PageQuery query)
     {
-        var baseQuery = _context
-            .Categories
-            .Where(
+        var baseQuery = _context.Categories.AsQueryable();
+
+        baseQuery = baseQuery
+            .Where
+            (
                 c => query.Phrase == null ||
                 (
                     c.Name.ToLower().Contains(query.Phrase.ToLower())
@@ -40,21 +36,11 @@ public class CategoriesController : ControllerBase
 
         var totalCount = baseQuery.Count();
 
-        List<Category> result;
+        var result = query.Size == 0
+            ? baseQuery.ToList()
+            : baseQuery.Skip(query.Size * query.Page).Take(query.Size).ToList();
 
-        if (query.Size == 0)
-        {
-            result = baseQuery.ToList();
-        }
-        else
-        {
-            result = baseQuery
-                .Skip(query.Size * query.Page)
-                .Take(query.Size)
-                .ToList();
-        }
-
-        return new PageResult<Category>(result, totalCount, query.Size);
+        return Ok(new PageResult<Category>(result, totalCount, query.Size));
     }
 
     /// <summary>
@@ -67,7 +53,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Category), 200)]
     [ProducesResponseType(typeof(string), 404)]
-    public ActionResult Get(Guid id)
+    public ActionResult<Category> Get(Guid id)
     {
         var category = getById(id);
         if (category is null) return NotFound("Category with that id was not found.");
@@ -84,7 +70,7 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <param name="dto">An object containing the category name:
     /// <list type="bullet">
-    /// <item><term>CategoryName</term>: The name of the category to be created (required).</item>
+    /// <item><term>Name</term>: The name of the category to be created (required).</item>
     /// </list>
     /// </param>
     /// <returns>
@@ -94,15 +80,15 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string) ,400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult Post([FromBody] CategoryCreateDto dto)
+    public ActionResult<Category> Post([FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
+        if (dto == null || dto.Name == null || dto.Name.Trim() == "") 
             return BadRequest("Invalid category data.");
 
-        var category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        var category = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
         if (category != null) return Conflict("Category with that name already exists.");
 
-        var newCategory = new Category { Name = dto.CategoryName };
+        var newCategory = new Category { Name = dto.Name };
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
 
@@ -115,7 +101,7 @@ public class CategoriesController : ControllerBase
     /// <param name="id">The unique identifier of the category to update.</param>
     /// <param name="dto">An object containing the updated category name:
     /// <list type="bullet">
-    /// <item><term>CategoryName</term>: The new name for the category (required).</item>
+    /// <item><term>Name</term>: The new name for the category (required).</item>
     /// </list>
     /// </param>
     /// <returns>
@@ -125,19 +111,19 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult Put(Guid id, [FromBody] CategoryCreateDto dto)
+    public ActionResult<Category> Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "")
+        if (dto == null || dto.Name == null || dto.Name.Trim() == "")
             return BadRequest("Invalid category data.");
 
         var existingCategory = getById(id);
         if (existingCategory == null) return NotFound($"Category with id {id} not found.");
 
-        var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
         if (categoryWithThatName != null && categoryWithThatName.Id != id) 
             return Conflict("Category with that name already exists.");
 
-        existingCategory.Name = dto.CategoryName;
+        existingCategory.Name = dto.Name;
         _context.SaveChanges();
 
         return Created($"/api/admin/categories/{existingCategory.Id}", existingCategory);
