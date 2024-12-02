@@ -89,7 +89,7 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var newCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
+        var newCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Post(newCategoryDto).Result as CreatedResult;
@@ -111,7 +111,7 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var existingCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
+        var existingCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Post(existingCategoryDto).Result;
@@ -131,7 +131,7 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
-        var invalidCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
+        var invalidCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Post(invalidCategoryDto).Result;
@@ -150,7 +150,7 @@ public class CategoriesControllerTests
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var existingCategory = context.Categories.First();
-        var updatedCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
+        var updatedCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Put(existingCategory.Id, updatedCategoryDto).Result;
@@ -172,7 +172,7 @@ public class CategoriesControllerTests
         var context = GetInMemoryDbContext();
         var controller = new CategoriesController(context);
         var nonExistentCategoryId = Guid.NewGuid();
-        var updatedCategoryDto = new CategoryCreateDto { CategoryName = categoryName };
+        var updatedCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Put(nonExistentCategoryId, updatedCategoryDto).Result;
@@ -196,7 +196,7 @@ public class CategoriesControllerTests
         context.Categories.AddRange(existingCategory, editedCategory);
         context.SaveChanges();
 
-        var updatedCategoryDto = new CategoryCreateDto { CategoryName = editedcategoryNewName };
+        var updatedCategoryDto = new CategoryCreateDto { Name = editedcategoryNewName };
 
         // Act
         var result = controller.Put(existingCategory.Id, updatedCategoryDto).Result;

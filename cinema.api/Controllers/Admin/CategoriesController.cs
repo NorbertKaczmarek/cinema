@@ -70,7 +70,7 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <param name="dto">An object containing the category name:
     /// <list type="bullet">
-    /// <item><term>CategoryName</term>: The name of the category to be created (required).</item>
+    /// <item><term>Name</term>: The name of the category to be created (required).</item>
     /// </list>
     /// </param>
     /// <returns>
@@ -82,13 +82,13 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(string), 409)]
     public ActionResult<Category> Post([FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "") 
+        if (dto == null || dto.Name == null || dto.Name.Trim() == "") 
             return BadRequest("Invalid category data.");
 
-        var category = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        var category = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
         if (category != null) return Conflict("Category with that name already exists.");
 
-        var newCategory = new Category { Name = dto.CategoryName };
+        var newCategory = new Category { Name = dto.Name };
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
 
@@ -101,7 +101,7 @@ public class CategoriesController : ControllerBase
     /// <param name="id">The unique identifier of the category to update.</param>
     /// <param name="dto">An object containing the updated category name:
     /// <list type="bullet">
-    /// <item><term>CategoryName</term>: The new name for the category (required).</item>
+    /// <item><term>Name</term>: The new name for the category (required).</item>
     /// </list>
     /// </param>
     /// <returns>
@@ -113,17 +113,17 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(string), 409)]
     public ActionResult<Category> Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.CategoryName == null || dto.CategoryName.Trim() == "")
+        if (dto == null || dto.Name == null || dto.Name.Trim() == "")
             return BadRequest("Invalid category data.");
 
         var existingCategory = getById(id);
         if (existingCategory == null) return NotFound($"Category with id {id} not found.");
 
-        var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.CategoryName);
+        var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
         if (categoryWithThatName != null && categoryWithThatName.Id != id) 
             return Conflict("Category with that name already exists.");
 
-        existingCategory.Name = dto.CategoryName;
+        existingCategory.Name = dto.Name;
         _context.SaveChanges();
 
         return Created($"/api/admin/categories/{existingCategory.Id}", existingCategory);
