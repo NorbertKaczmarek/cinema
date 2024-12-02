@@ -20,6 +20,8 @@ public class ScreeningsController : ControllerBase
     [HttpGet]
     public PageResult<Screening> Get([FromQuery] PageQuery query)
     {
+        DateTime.TryParse(query.Phrase, out var parsedDate);
+
         var baseQuery = _context
             .Screenings
             .Include(s => s.Movie)
@@ -27,7 +29,8 @@ public class ScreeningsController : ControllerBase
             .Where(
                 s => query.Phrase == null ||
                 (
-                    s!.Movie!.Title.ToLower().Contains(query.Phrase.ToLower())
+                    s.Movie!.Title.ToLower().Contains(query.Phrase.ToLower()) ||
+                    s.StartDateTime.Date == parsedDate.Date
                 )
             );
 
