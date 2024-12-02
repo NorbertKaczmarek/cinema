@@ -167,7 +167,7 @@ public class ScreeningsControllerTests
         result.Should().BeOfType<OkObjectResult>();
         var updatedScreening = context.Screenings.First(s => s.Id == screeningId);
         updatedScreening.StartDateTime.Should().BeCloseTo(updatedDto.StartDateTime, TimeSpan.FromSeconds(1));
-        updatedScreening.EndDateTime.Should().BeCloseTo(updatedDto.StartDateTime.AddMinutes(movie.DurationMinutes), TimeSpan.FromSeconds(1));
+        updatedScreening.EndDateTime.Should().BeCloseTo(updatedDto.StartDateTime.AddMinutes(movie.DurationMinutes + 30), TimeSpan.FromSeconds(1));
     }
 
     [Fact]
@@ -226,5 +226,40 @@ public class ScreeningsControllerTests
         result.AvailableSeats.Should().Be(4);
         result.Seats.Count.Should().Be(4);
         result.Seats.All(s => !s.IsTaken).Should().BeTrue();
+    }
+
+    [Fact]
+    public void Post_CreateScreeningWithInvalidOverlappingTime_ReturnsBadRequest()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new ScreeningsController(context);
+        var initialCount = context.Screenings.Count();
+        var movie = context.Movies.First();
+
+        var screening = new Screening
+        {
+            Id = Guid.NewGuid(),
+            StartDateTime = new DateTimeOffset(2024, 3, 10, 8, 30, 0, TimeSpan.Zero),
+            EndDateTime = DateTime.Now.AddHours(2),
+            MovieId = movie.Id
+        };
+        context.Screenings.Add(screening);
+        context.SaveChanges();
+
+        var startDateTime = new DateTimeOffset(2024, 3, 10, 8, 40, 0, TimeSpan.Zero);
+
+        var newScreeningDto = new ScreeningCreateDto
+        {
+            StartDateTime = startDateTime,
+            MovieId = movie.Id
+        };
+
+        // Act
+        var result = controller.Post(newScreeningDto);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        context.Screenings.Count().Should().Be(initialCount + 1);
     }
 }

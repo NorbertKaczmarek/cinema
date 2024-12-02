@@ -110,16 +110,27 @@ public class ScreeningsController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
-        // TODO check if at that time the room is free (end + 30min?)
         if (dto == null) return BadRequest();
 
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
         if (movie == null) return BadRequest("Movie not found.");
 
+        var newStartDateTime = dto.StartDateTime;
+        var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
+
+        var overlappingScreening = _context
+            .Screenings
+            .Any(s =>
+                s.StartDateTime - TimeSpan.FromMinutes(30) < newEndDateTime &&
+                s.EndDateTime + TimeSpan.FromMinutes(30) > newStartDateTime
+            );
+
+        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+
         var screening = new Screening()
         {
-            StartDateTime = dto.StartDateTime,
-            EndDateTime = dto.StartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes),
+            StartDateTime = newStartDateTime,
+            EndDateTime = newEndDateTime,
             MovieId = dto.MovieId
         };
 
@@ -137,8 +148,21 @@ public class ScreeningsController : ControllerBase
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
         if (movie == null) return BadRequest("Movie not found.");
 
-        existingScreening.StartDateTime = dto.StartDateTime;
-        existingScreening.EndDateTime = dto.StartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes);
+        var newStartDateTime = dto.StartDateTime;
+        var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
+
+        var overlappingScreening = _context
+            .Screenings
+            .Where(s => s.Id != id)
+            .Any(s =>
+                s.StartDateTime < newEndDateTime &&
+                s.EndDateTime > newStartDateTime
+            );
+
+        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+
+        existingScreening.StartDateTime = newStartDateTime;
+        existingScreening.EndDateTime = newEndDateTime;
         existingScreening.MovieId = dto.MovieId;
 
         _context.SaveChanges();
