@@ -1,9 +1,10 @@
-﻿using cinema.context.Entities;
+﻿using AutoMapper;
+using cinema.api.Helpers.EmailSender;
+using cinema.api.Models;
 using cinema.context;
+using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cinema.api.Models;
-using cinema.api.Helpers.EmailSender;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -14,16 +15,18 @@ public class OrdersController : ControllerBase
     private readonly CinemaDbContext _context;
     private readonly EmailOptions _emailOptions;
     private readonly IEmailSender _emailSender;
+    private readonly IMapper _mapper;
 
-    public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender)
+    public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
     {
         _context = context;
         _emailOptions = emailOptions;
         _emailSender = emailSender;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public PageResult<Order> Get([FromQuery] PageQuery query)
+    public PageResult<OrderDto> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context
             .Orders
@@ -54,17 +57,22 @@ public class OrdersController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<Order>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<OrderDto>>(result);
+
+        return new PageResult<OrderDto>(resultDto, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
-    public Order Get(Guid id)
+    public OrderDto Get(Guid id)
     {
-        return getById(id);
+        var order = getById(id);
+        if (order is null) return null; //NotFound("Order with that id was not found.");
+        var orderDto = _mapper.Map<OrderDto>(order);
+        return orderDto;
     }
 
     [HttpGet("{id}/email")]
-    public Order SentTestEmail(Guid id)
+    public OrderDto SentTestEmail(Guid id)
     {
         var order = getById(id);
 
@@ -89,7 +97,7 @@ public class OrdersController : ControllerBase
 
         _emailSender.sendEmailAsync(senderInfo, senderInfo.Email, ticketInfo);  // TODO order.Email
 
-        return order;
+        return _mapper.Map<OrderDto>(order);
     }
 
     private Order getById(Guid id)
@@ -131,7 +139,9 @@ public class OrdersController : ControllerBase
         {
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
-            Status = dto.Status,
+            Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
+                ? parsedStatus
+                : throw new ArgumentException($"Invalid order status: {dto.Status}"),
             Screening = screening,
             Seats = requestedSeats,
         };
@@ -139,7 +149,9 @@ public class OrdersController : ControllerBase
         _context.Orders.Add(newOrder);
         _context.SaveChanges();
 
-        return Created($"/api/admin/orders/{newOrder.Id}", newOrder);
+        var newOrderDto = _mapper.Map<OrderDto>(newOrder);
+
+        return Created($"/api/admin/orders/{newOrder.Id}", newOrderDto);
     }
 
     [HttpPut("{id}")]
@@ -162,11 +174,13 @@ public class OrdersController : ControllerBase
 
         existingOrder.Email = dto.Email;
         existingOrder.PhoneNumber = dto.PhoneNumber;
-        existingOrder.Status = dto.Status;
+        existingOrder.Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
+                ? parsedStatus
+                : throw new ArgumentException($"Invalid order status: {dto.Status}");
 
         _context.SaveChanges();
 
-        return Ok(existingOrder);
+        return Ok(_mapper.Map<OrderDto>(existingOrder));
     }
 
     [HttpDelete("{id}")]

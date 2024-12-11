@@ -78,11 +78,11 @@ public class CategoriesController : ControllerBase
     /// </returns>
     [HttpPost]
     [ProducesResponseType(typeof(Category), 201)]
-    [ProducesResponseType(typeof(string) ,400)]
+    [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 409)]
     public ActionResult<Category> Post([FromBody] CategoryCreateDto dto)
     {
-        if (dto == null || dto.Name == null || dto.Name.Trim() == "") 
+        if (dto == null || dto.Name == null || dto.Name.Trim() == "")
             return BadRequest("Invalid category data.");
 
         var category = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
@@ -120,7 +120,7 @@ public class CategoriesController : ControllerBase
         if (existingCategory == null) return NotFound($"Category with id {id} not found.");
 
         var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
-        if (categoryWithThatName != null && categoryWithThatName.Id != id) 
+        if (categoryWithThatName != null && categoryWithThatName.Id != id)
             return Conflict("Category with that name already exists.");
 
         existingCategory.Name = dto.Name;

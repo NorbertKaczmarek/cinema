@@ -1,3 +1,4 @@
+using cinema.api.Helpers;
 using cinema.api.Helpers.EmailSender;
 using cinema.context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,7 +36,8 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options => {
+.AddJwtBearer(options =>
+{
     options.IncludeErrorDetails = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -57,7 +59,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.DescribeAllParametersInCamelCase();
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, 
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
         $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     options.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -77,6 +79,9 @@ builder.Services.AddScoped<Seeder>();
 var connectionString = configuration.GetConnectionString("MySql")!;
 builder.Services.AddDbContext<CinemaDbContext>
     (options => options.UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql")));
+
+// Automapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
