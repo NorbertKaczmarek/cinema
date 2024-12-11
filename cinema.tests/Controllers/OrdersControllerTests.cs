@@ -174,7 +174,7 @@ public class OrdersControllerTests
         {
             Email = "test@example.com",
             PhoneNumber = "123-456-7890",
-            Status = OrderStatus.Pending,
+            Status = "Pending",
             ScreeningId = screening.Id,
             SeatIds = seatIds
         };
@@ -212,7 +212,7 @@ public class OrdersControllerTests
         {
             Email = "test@example.com",
             PhoneNumber = "123-456-7890",
-            Status = OrderStatus.Pending,
+            Status = "Pending",
             ScreeningId = screening.Id,
             SeatIds = seatIds
         };
@@ -241,7 +241,7 @@ public class OrdersControllerTests
         {
             Email = "test@example.com",
             PhoneNumber = "123-456-7890",
-            Status = OrderStatus.Pending,
+            Status = "Pending",
             ScreeningId = screening.Id,
             SeatIds = invalidSeatIds
         };
@@ -268,7 +268,7 @@ public class OrdersControllerTests
         {
             Email = "updated@example.com",
             PhoneNumber = "1112223333",
-            Status = OrderStatus.Ready,
+            Status = "Ready",
             ScreeningId = existingOrder.ScreeningId!.Value,
             SeatIds = newSeatIds
         };

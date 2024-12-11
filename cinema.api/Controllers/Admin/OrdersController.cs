@@ -139,7 +139,9 @@ public class OrdersController : ControllerBase
         {
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
-            Status = dto.Status,
+            Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
+                ? parsedStatus
+                : throw new ArgumentException($"Invalid order status: {dto.Status}"),
             Screening = screening,
             Seats = requestedSeats,
         };
@@ -172,7 +174,9 @@ public class OrdersController : ControllerBase
 
         existingOrder.Email = dto.Email;
         existingOrder.PhoneNumber = dto.PhoneNumber;
-        existingOrder.Status = dto.Status;
+        existingOrder.Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
+                ? parsedStatus
+                : throw new ArgumentException($"Invalid order status: {dto.Status}");
 
         _context.SaveChanges();
 
