@@ -1,8 +1,8 @@
-﻿using cinema.context.Entities;
-using cinema.context;
-using Microsoft.AspNetCore.Mvc;
+﻿using cinema.api.Helpers;
 using cinema.api.Models;
-using cinema.api.Helpers;
+using cinema.context;
+using cinema.context.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
 namespace cinema.api.Controllers.Admin;
@@ -155,10 +155,10 @@ public class UsersController : ControllerBase
     }
 
     private static string generateRandomPassword(
-        int length = 12, 
-        bool includeUppercase = true, 
-        bool includeLowercase = true, 
-        bool includeNumbers = true, 
+        int length = 12,
+        bool includeUppercase = true,
+        bool includeLowercase = true,
+        bool includeNumbers = true,
         bool includeSpecialChars = true)
     {
         if (length <= 0)

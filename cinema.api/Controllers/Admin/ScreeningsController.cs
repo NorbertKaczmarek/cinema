@@ -1,8 +1,8 @@
-﻿using cinema.context.Entities;
+﻿using cinema.api.Models;
 using cinema.context;
+using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cinema.api.Models;
 
 namespace cinema.api.Controllers.Admin;
 
