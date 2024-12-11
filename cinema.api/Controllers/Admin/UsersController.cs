@@ -115,7 +115,7 @@ public class UsersController : ControllerBase
         if (existingUser == null) return NotFound("User not found.");
 
         var result = SalterAndHasher.CheckPassword(dto.OldPassword, existingUser.Salt, existingUser.SaltedHashedPassword);
-        if (result == false) return BadRequest();
+        if (result == false) return BadRequest("Incorrect password.");
 
         existingUser.FirstName = dto.FirstName;
         existingUser.LastName = dto.LastName;

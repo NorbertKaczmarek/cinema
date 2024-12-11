@@ -37,8 +37,8 @@ public class UsersControllerTests
                 FirstName = "Test",
                 LastName = "User1",
                 IsAdmin = false,
-                Salt = "sampleSalt",
-                SaltedHashedPassword = "samplePasswordHash"
+                Salt = "OpVnQG7P+2J2ZMxpWn4QOA==",
+                SaltedHashedPassword = "iHj0p3mQDQYhYMioLWCL/T6pbhyPzP9gkqeY8uAMJM8="
             });
 
             _context.Users.Add(new User
@@ -100,9 +100,7 @@ public class UsersControllerTests
             Email = "newuser@example.com",
             FirstName = "New",
             LastName = "User",
-            IsAdmin = false,
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            IsAdmin = false
         };
 
         // Act
@@ -122,9 +120,7 @@ public class UsersControllerTests
             Email = "test1@example.com",
             FirstName = "Duplicate",
             LastName = "User",
-            IsAdmin = false,
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            IsAdmin = false
         };
 
         // Act
@@ -139,12 +135,13 @@ public class UsersControllerTests
     {
         // Arrange
         var existingUser = _context.Users.First();
-        var updateUserDto = new UserCreateDto
+        var updateUserDto = new UserUpdateDto
         {
             Email = existingUser.Email,
             FirstName = "UpdatedFirstName",
             LastName = "UpdatedLastName",
             IsAdmin = existingUser.IsAdmin,
+            OldPassword = "test123!!!",
             Password = "NewPassword123",
             ConfirmPassword = "NewPassword123"
         };
@@ -164,12 +161,13 @@ public class UsersControllerTests
     public void Put_WithInvalidId_ShouldReturnNotFound()
     {
         // Arrange
-        var updateUserDto = new UserCreateDto
+        var updateUserDto = new UserUpdateDto
         {
             Email = "nonexistent@example.com",
             FirstName = "Nonexistent",
             LastName = "User",
             IsAdmin = false,
+            OldPassword = "NewPassword123",
             Password = "Password123",
             ConfirmPassword = "Password123"
         };
