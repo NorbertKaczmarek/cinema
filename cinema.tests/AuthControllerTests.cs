@@ -23,9 +23,10 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         _context = _scopedServices.GetRequiredService<CinemaDbContext>();
     }
 
-    private async Task<Guid> seedUser(UserCreateDto dto)
+    private async Task<(Guid, string)> seedUser(UserCreateDto dto)
     {
-        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+        string password = "test1";
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
 
         User newUser = new User
         {
@@ -40,7 +41,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
 
-        return newUser.Id;
+        return (newUser.Id, password);
     }
 
     private async Task<string> getValidToken(bool isAdmin = false)
@@ -86,16 +87,14 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
             IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
-            LastName = LastName,
-            Password = password,
-            ConfirmPassword = password,
+            LastName = LastName
         };
-        var userId = await seedUser(userCreateDto);
+        var (userId, password2) = await seedUser(userCreateDto);
 
         var loginDto = new UserLoginDto
         {
             Email = email,
-            Password = password
+            Password = password2
         };
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
@@ -118,11 +117,9 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
             IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
-            LastName = LastName,
-            Password = password,
-            ConfirmPassword = password,
+            LastName = LastName
         };
-        var userId = await seedUser(userCreateDto);
+        var (userId, password2) = await seedUser(userCreateDto);
         var content = HttpContentHelper.ToJsonHttpContent(userCreateDto);
 
         var loginDto = new UserLoginDto

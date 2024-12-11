@@ -3,7 +3,7 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using cinema.api.Models;
 using cinema.api.Helpers;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -75,10 +75,9 @@ public class UsersController : ControllerBase
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
         if (getUserByEmail(dto.Email) != null) return BadRequest("User already exists.");
-        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
-        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
 
-        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+        string password = generateAndSendNewPassword(dto.Email);
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
 
         var newUser = new User()
         {
@@ -95,12 +94,29 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("{id}/resetPassword")]
+    public void ResetUserPassword(Guid id)
+    {
+        // TODO check if sender is admin
+        var user = getById(id);
+
+        string password = generateAndSendNewPassword(user.Email);
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
+
+        user.Salt = saltText;
+        user.SaltedHashedPassword = saltedHashedPassword;
+        _context.SaveChanges();
+    }
+
     [HttpPut("{id}")]
-    public ActionResult Put(Guid id, [FromBody] UserCreateDto dto)
+    public ActionResult Put(Guid id, [FromBody] UserUpdateDto dto)
     {
         var existingUser = getById(id);
         if (existingUser == null) return NotFound("User not found.");
-        
+
+        var result = SalterAndHasher.CheckPassword(dto.OldPassword, existingUser.Salt, existingUser.SaltedHashedPassword);
+        if (result == false) return BadRequest("Incorrect password.");
+
         existingUser.FirstName = dto.FirstName;
         existingUser.LastName = dto.LastName;
         existingUser.IsAdmin = dto.IsAdmin;
@@ -124,5 +140,54 @@ public class UsersController : ControllerBase
 
         _context.Users.Remove(user);
         _context.SaveChanges();
+    }
+
+    private string generateAndSendNewPassword(string email)
+    {
+        string password = generateRandomPassword(8, includeSpecialChars: false);
+        sendEmailWithPassword(email, password);
+        return password;
+    }
+
+    private void sendEmailWithPassword(string email, string password)
+    {
+        // TODO
+    }
+
+    private static string generateRandomPassword(
+        int length = 12, 
+        bool includeUppercase = true, 
+        bool includeLowercase = true, 
+        bool includeNumbers = true, 
+        bool includeSpecialChars = true)
+    {
+        if (length <= 0)
+            throw new ArgumentException("Password length must be greater than 0.");
+
+        const string upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+        const string numberChars = "0123456789";
+        const string specialChars = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/";
+
+        StringBuilder characterPool = new StringBuilder();
+
+        if (includeUppercase) characterPool.Append(upperCaseChars);
+        if (includeLowercase) characterPool.Append(lowerCaseChars);
+        if (includeNumbers) characterPool.Append(numberChars);
+        if (includeSpecialChars) characterPool.Append(specialChars);
+
+        if (characterPool.Length == 0)
+            throw new ArgumentException("At least one character set must be selected.");
+
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < length; i++)
+        {
+            int randomIndex = random.Next(characterPool.Length);
+            password.Append(characterPool[randomIndex]);
+        }
+
+        return password.ToString();
     }
 }
