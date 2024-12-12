@@ -1,8 +1,8 @@
 import {
+  CalendarDays,
   Clapperboard,
   ListIcon,
   LogOut,
-  PanelsTopLeft,
   ProjectorIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -28,29 +28,34 @@ export const adminSidebarMenus = [
         href: ROUTES.private.SCREENING.TABLE,
         icon: <ProjectorIcon />,
       },
+      {
+        label: 'Pracownicy',
+        href: ROUTES.private.USER.TABLE,
+        icon: <UsersIcon />,
+      },
+      {
+        label: 'Zamówienia',
+        href: ROUTES.private.ORDER.TABLE,
+        icon: <CalendarDays />,
+      },
     ],
   },
 ];
 
-export const adminProfileMenus = [
+export const getAdminProfileMenus = (userId: string) => [
   {
     items: [
       {
-        label: 'Account',
-        href: '/account',
+        label: 'Profil',
+        href: `/admin/users/${userId}`,
         icon: <UsersIcon />,
-      },
-      {
-        label: 'Dashboard',
-        href: '/dashboard',
-        icon: <PanelsTopLeft />,
       },
     ],
   },
   {
     items: [
       {
-        label: 'Sign Out',
+        label: 'Wyloguj się',
         href: '/signOut',
         icon: <LogOut />,
       },

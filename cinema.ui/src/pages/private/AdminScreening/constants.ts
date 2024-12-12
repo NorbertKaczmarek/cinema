@@ -16,4 +16,5 @@ export const SCREENING_DICT_STATE = {
   },
   listUrl: ROUTES.private.SCREENING.TABLE,
   queryKey: (id = 'new') => ['admin', 'dictionary', 'screening', id],
+  listQueryKey: ['admin', 'screenings'],
 };

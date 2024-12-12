@@ -84,7 +84,7 @@ interface Props {
   children?: ReactNode;
 }
 
-export const ProfileMenu = ({ placeholder = 'Profile menu', profileMenus }: Props) => (
+export const ProfileMenu = ({ placeholder = 'Moje konto', profileMenus }: Props) => (
   <Root>
     <Tooltip
       trigger={

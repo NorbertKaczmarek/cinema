@@ -7,11 +7,13 @@ import {
   AdminCategoryTable,
 } from 'Pages/private/AdminCategory';
 import { AdminMovieAdd, AdminMovieDetails, AdminMovieTable } from 'Pages/private/AdminMovie';
+import { AdminOrderTable } from 'Pages/private/AdminOrders';
 import {
   AdminScreeningAdd,
   AdminScreeningDetails,
   AdminScreeningTable,
 } from 'Pages/private/AdminScreening';
+import { AdminUserAdd, AdminUserDetails, AdminUserTable } from 'Pages/private/AdminUsers';
 import { MockHome } from 'Routing/MockHome';
 import { ROUTES } from 'Routing/routes';
 
@@ -66,6 +68,22 @@ export const router = createBrowserRouter([
             children: [
               { path: ROUTES.private.SCREENING.DETAILS, element: <AdminScreeningDetails /> },
             ],
+          },
+          {
+            element: <PrivateRoute />,
+            children: [{ path: ROUTES.private.USER.TABLE, element: <AdminUserTable /> }],
+          },
+          {
+            element: <PrivateRoute />,
+            children: [{ path: ROUTES.private.USER.DETAILS, element: <AdminUserDetails /> }],
+          },
+          {
+            element: <PrivateRoute />,
+            children: [{ path: ROUTES.private.USER.ADD, element: <AdminUserAdd /> }],
+          },
+          {
+            element: <PrivateRoute />,
+            children: [{ path: ROUTES.private.ORDER.TABLE, element: <AdminOrderTable /> }],
           },
         ],
       },

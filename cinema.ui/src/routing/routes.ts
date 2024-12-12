@@ -16,6 +16,14 @@ export const ROUTES = {
       ADD: '/admin/screenings/add',
       DETAILS: '/admin/screenings/:id',
     },
+    USER: {
+      TABLE: '/admin/users',
+      ADD: '/admin/users/add',
+      DETAILS: '/admin/users/:id',
+    },
+    ORDER: {
+      TABLE: '/admin/orders',
+    },
   },
   public: {
     HOME: '/',
