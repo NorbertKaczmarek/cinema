@@ -14,4 +14,5 @@ export const CATEGORY_DICT_STATE = {
   },
   listUrl: ROUTES.private.CATEGORY.TABLE,
   queryKey: (id = 'new') => ['admin', 'dictionary', 'category', id],
+  listQueryKey: ['admin', 'categories'],
 };

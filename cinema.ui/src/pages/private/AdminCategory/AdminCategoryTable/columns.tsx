@@ -12,16 +12,9 @@ export const columns: ColumnDef<Category>[] = [
     minSize: 200,
     enableSorting: true,
     cell: ({ row }: { row: Row<Category> }) => (
-      <RedirectCell route={`/admin/categories/${row.getValue('id')}`}>
+      <RedirectCell route={`/admin/categories/${row.original.id}`}>
         {row.getValue('name')}
       </RedirectCell>
     ),
-  },
-  {
-    id: 'id',
-    accessorKey: 'id',
-    header: '',
-    size: 1,
-    cell: () => null,
   },
 ];

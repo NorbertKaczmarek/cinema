@@ -4,6 +4,7 @@ import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import queryClient from 'Configs/queryClient';
 import { queryHelpers } from 'Hooks/queryHelpers';
 import { useEdit } from 'Hooks/useEdit';
 import { useIsMounted } from 'Hooks/useIsMounted';
@@ -19,6 +20,7 @@ interface UseDictionaryStateProps<T> {
   queryKey: (id?: string) => string[];
   listUrl: string;
   staleTime?: number;
+  listQueryKey: string[];
 }
 
 export const useDictionaryState = <T extends FieldValues>({
@@ -27,6 +29,7 @@ export const useDictionaryState = <T extends FieldValues>({
   queryKey,
   listUrl,
   staleTime = 0,
+  listQueryKey,
 }: UseDictionaryStateProps<T>): UseDictionaryState<T> => {
   const [dictData, setDictData] = useState<T>(initialData);
   const isMounted = useIsMounted();
@@ -36,6 +39,10 @@ export const useDictionaryState = <T extends FieldValues>({
   const { id } = useParams<{ id: string }>();
 
   const handleRedirect = () => navigate(listUrl);
+
+  const handleInvalidate = async () => {
+    await queryClient.invalidateQueries(listQueryKey);
+  };
 
   const { isFetching } = queryHelpers.GET(paths.getData, id, queryKey(id), {
     queryKey: queryKey(id),
@@ -50,8 +57,9 @@ export const useDictionaryState = <T extends FieldValues>({
   const { mutate: createDictElem, isLoading: isLoadingCreate } = queryHelpers.POST(
     paths.createData,
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success('Pomyślnie utworzono element');
+        await handleInvalidate();
         handleRedirect();
       },
     }
@@ -61,10 +69,11 @@ export const useDictionaryState = <T extends FieldValues>({
     paths.updateData,
     id,
     {
-      onSuccess: data => {
+      onSuccess: async data => {
         toast.success('Pomyślnie zaaktualizowano element');
         closeEdit();
         setDictData(prevState => ({ ...prevState, ...(data as T) }));
+        await handleInvalidate();
       },
     }
   );
@@ -73,8 +82,9 @@ export const useDictionaryState = <T extends FieldValues>({
     paths.deleteData,
     id,
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success('Pomyślnie usunięto element');
+        await handleInvalidate();
         handleRedirect();
       },
     }

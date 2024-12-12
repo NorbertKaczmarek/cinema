@@ -12,7 +12,7 @@ export const columns = [
     minSize: 200,
     enableSorting: true,
     cell: ({ row }: { row: Row<Movie> }) => (
-      <RedirectCell route={`/admin/movies/${row.getValue('id')}`}>
+      <RedirectCell route={`/admin/movies/${row.original.id}`}>
         {row.getValue('title')}
       </RedirectCell>
     ),
@@ -33,12 +33,5 @@ export const columns = [
     header: 'oceny',
     size: 100,
     enableSorting: true,
-  },
-  {
-    id: 'id',
-    accessorKey: 'id',
-    header: '',
-    size: 1,
-    cell: () => null,
   },
 ];
