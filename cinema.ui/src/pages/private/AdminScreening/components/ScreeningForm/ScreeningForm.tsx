@@ -1,11 +1,12 @@
 import { FC } from 'react';
 
+import { pl } from 'date-fns/locale';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 
 import { useAdminMovies } from 'Api/queries/useAdminMovies';
 import { Card } from 'Components/Card';
+import { DateTimePicker } from 'Components/DatetimePicker';
 import { FormField } from 'Components/FormField';
-import { Input } from 'Components/Input';
 import { Select } from 'Components/Select';
 import { Screening } from 'Types/screening';
 
@@ -27,7 +28,7 @@ export const ScreeningForm: FC<Props> = ({ form, isDisabled = false }) => {
             <Select options={movieOptions} disabled={isDisabled} />
           </FormField>
           <FormField name="startDateTime" label="Data rozpoczęcia seansu" control={form.control}>
-            <Input isDisabled={isDisabled} />
+            <DateTimePicker placeholder="Wybierz datę" locale={pl} disabled={isDisabled} />
           </FormField>
         </form>
       </FormProvider>

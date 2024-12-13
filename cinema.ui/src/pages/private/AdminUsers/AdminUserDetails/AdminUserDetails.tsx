@@ -16,7 +16,7 @@ export const AdminUserDetails = () => {
     <Spinner isSpinning={isSpinning}>
       <div className="flex flex-col gap-6">
         <Header title="Podgląd pracownika" onClick={handleRedirect} />
-        <UserForm form={form} isDisabled={!isEdit} />
+        <UserForm form={form} isDisabled={!isEdit} isWithPassword />
         <ActionButtons
           isEdit={isEdit}
           onCancel={handleCancel}

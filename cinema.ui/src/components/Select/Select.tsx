@@ -148,7 +148,7 @@ interface SelectOption {
 }
 
 interface Props extends SelectProps {
-  options: SelectOption[];
+  options?: SelectOption[];
   label?: string;
   value?: string;
   classNames?: ClassNames<
@@ -160,7 +160,16 @@ interface Props extends SelectProps {
 
 export const Select = forwardRef<HTMLDivElement, Props>(
   (
-    { label, options, placeholder = 'Wybierz', value, onChange, classNames, ...rest }: Props,
+    {
+      label,
+      options,
+      placeholder = 'Wybierz',
+      value,
+      onChange,
+      classNames,
+      children,
+      ...rest
+    }: Props,
     ref
   ) => (
     <BaseWrapper onValueChange={onChange} value={value} {...rest}>
@@ -175,12 +184,22 @@ export const Select = forwardRef<HTMLDivElement, Props>(
         />
       </BaseTrigger>
       <BaseContent className={classNames?.content} ref={ref}>
-        {options.map(({ label, value, isDisabled }, index) => (
-          <BaseItem key={`${index}-${label}`} value={value.toString()} disabled={isDisabled}>
-            {label || value}
-          </BaseItem>
-        ))}
+        {options?.length
+          ? options.map(({ label, value, isDisabled }, index) => (
+              <BaseItem key={`${index}-${label}`} value={value.toString()} disabled={isDisabled}>
+                {label || value}
+              </BaseItem>
+            ))
+          : children}
       </BaseContent>
     </BaseWrapper>
   )
 );
+
+export const BaseSelect = {
+  Wrapper: BaseWrapper,
+  Trigger: BaseTrigger,
+  Value: BaseValue,
+  Content: BaseContent,
+  Item: BaseItem,
+};
