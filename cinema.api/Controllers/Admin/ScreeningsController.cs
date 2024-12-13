@@ -122,11 +122,13 @@ public class ScreeningsController : ControllerBase
         var newStartDateTime = dto.StartDateTime;
         var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
 
+        var bufferedNewStart = newStartDateTime - TimeSpan.FromMinutes(30);
+        var bufferedNewEnd = newEndDateTime + TimeSpan.FromMinutes(30);
+
         var overlappingScreening = _context
             .Screenings
             .Any(s =>
-                s.StartDateTime - TimeSpan.FromMinutes(30) < newEndDateTime &&
-                s.EndDateTime + TimeSpan.FromMinutes(30) > newStartDateTime
+                (bufferedNewStart < s.EndDateTime && bufferedNewEnd > s.StartDateTime)
             );
 
         if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
