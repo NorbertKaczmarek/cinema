@@ -1,5 +1,6 @@
 ﻿using cinema.context.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace cinema.context;
 
@@ -296,7 +297,7 @@ public class Seeder
                         Id = Guid.NewGuid(),
                         Email = $"customer{customerId}@example.com",
                         PhoneNumber = customerPhoneNumber,
-                        Status = OrderStatus.Ready,
+                        Status = (OrderStatus)_random.Next(Enum.GetValues(typeof(OrderStatus)).Length),
                         Screening = screening,
                         Seats = selectedSeats
                     });

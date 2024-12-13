@@ -32,7 +32,8 @@ public class ScreeningsController : ControllerBase
                     s.Movie!.Title.ToLower().Contains(query.Phrase.ToLower()) ||
                     s.StartDateTime.Date == parsedDate.Date
                 )
-            );
+            )
+            .OrderBy(s => s.StartDateTime);
 
         var totalCount = baseQuery.Count();
 
