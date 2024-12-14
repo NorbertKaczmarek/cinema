@@ -155,22 +155,26 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public ActionResult Put(Guid id, [FromBody] OrderCreateDto dto)
+    public ActionResult Put(Guid id, [FromBody] OrderUpdateDto dto)
     {
         if (dto == null) return BadRequest("Invalid order data.");
 
         var existingOrder = getById(id);
         if (existingOrder == null) return NotFound($"Order with id {id} not found.");
 
-        var newScreening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
-        if (newScreening == null) return BadRequest("Invalid screening ID.");
+        if (dto.ScreeningId != null)
+        {
+            var newScreening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
+            if (newScreening == null) return BadRequest("Invalid screening ID.");
+            existingOrder.Screening = newScreening;
+        }
 
-        existingOrder.Screening = newScreening;
-
-        var newSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
-        if (newSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
-
-        existingOrder.Seats = newSeats;
+        if (dto.SeatIds != null)
+        {
+            var newSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
+            if (newSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+            existingOrder.Seats = newSeats;
+        }
 
         existingOrder.Email = dto.Email ?? existingOrder.Email;
         existingOrder.PhoneNumber = dto.PhoneNumber ?? existingOrder.PhoneNumber;

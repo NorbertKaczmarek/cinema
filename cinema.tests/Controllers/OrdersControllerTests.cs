@@ -264,7 +264,7 @@ public class OrdersControllerTests
 
         var existingOrder = context.Orders.First();
         var newSeatIds = context.Seats.Select(s => s.Id).ToList();
-        var updatedOrderDto = new OrderCreateDto
+        var updatedOrderDto = new OrderUpdateDto
         {
             Email = "updated@example.com",
             PhoneNumber = "1112223333",
