@@ -30,7 +30,7 @@ export const OrderActionCell = ({ orderId, orderStatus }: Props) => {
         variant={ButtonVariant.Success}
         isLoading={isLoadingUpdate}
         isDisabled={orderStatus === OrderStatus.READY}
-        onClick={() => updateOrder({ orderStatus: OrderStatus.READY })}
+        onClick={() => updateOrder({ status: OrderStatus.READY })}
       >
         Opłać
       </Button>
@@ -39,7 +39,7 @@ export const OrderActionCell = ({ orderId, orderStatus }: Props) => {
         variant={ButtonVariant.Danger}
         isLoading={isLoadingUpdate}
         isDisabled={orderStatus === OrderStatus.CANCELLED}
-        onClick={() => updateOrder({ orderStatus: OrderStatus.CANCELLED })}
+        onClick={() => updateOrder({ status: OrderStatus.CANCELLED })}
       >
         Anuluj
       </Button>

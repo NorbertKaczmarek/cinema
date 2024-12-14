@@ -20,6 +20,5 @@ const statusMap = {
 } as const;
 
 export const OrderStatusCell = ({ status }: Props) => {
-  // @TODO classname WITH color
   return <span className={statusMap[status].className}>{statusMap[status].title ?? ''}</span>;
 };
