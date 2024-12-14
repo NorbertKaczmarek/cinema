@@ -30,7 +30,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
 
         User newUser = new User
         {
-            IsAdmin = dto.IsAdmin,
+            IsAdmin = false,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -78,13 +78,12 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData(false, "validuser@example.com", "ValidPassword123!", "Test", "User")]
-    public async Task Login_WithValidCredentials_ReturnsToken(bool isAdmin, string email, string firstName, string LastName, string password)
+    [InlineData("validuser@example.com", "ValidPassword123!", "Test", "User")]
+    public async Task Login_WithValidCredentials_ReturnsToken(string email, string firstName, string LastName, string password)
     {
         // Arrange
         var userCreateDto = new UserCreateDto
         {
-            IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
             LastName = LastName
@@ -108,13 +107,12 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData(false, "test4@example.com", "Password123!", "Bob", "Brown")]
-    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(bool isAdmin, string email, string firstName, string LastName, string password)
+    [InlineData("test4@example.com", "Password123!", "Bob", "Brown")]
+    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(string email, string firstName, string LastName, string password)
     {
         // Arrange
         var userCreateDto = new UserCreateDto
         {
-            IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
             LastName = LastName

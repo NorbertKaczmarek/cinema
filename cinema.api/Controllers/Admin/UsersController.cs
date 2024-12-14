@@ -81,7 +81,7 @@ public class UsersController : ControllerBase
 
         var newUser = new User()
         {
-            IsAdmin = dto.IsAdmin,
+            IsAdmin = false,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -114,19 +114,22 @@ public class UsersController : ControllerBase
         var existingUser = getById(id);
         if (existingUser == null) return NotFound("User not found.");
 
-        var result = SalterAndHasher.CheckPassword(dto.OldPassword, existingUser.Salt, existingUser.SaltedHashedPassword);
+        var result = SalterAndHasher.CheckPassword(dto.Password, existingUser.Salt, existingUser.SaltedHashedPassword);
         if (result == false) return BadRequest("Incorrect password.");
 
-        existingUser.FirstName = dto.FirstName;
-        existingUser.LastName = dto.LastName;
-        existingUser.IsAdmin = dto.IsAdmin;
+        existingUser.FirstName = dto.FirstName ?? existingUser.FirstName;
+        existingUser.LastName = dto.LastName ?? existingUser.LastName;
 
-        if (string.IsNullOrWhiteSpace(dto.Password)) return BadRequest("Password is empty.");
-        if (dto.Password != dto.ConfirmPassword) return BadRequest("Passwords do not match.");
+        if (!string.IsNullOrWhiteSpace(dto.NewPassword))
+        {
+            if (string.IsNullOrWhiteSpace(dto.ConfirmNewPassword)) return BadRequest("Confirm new password is empty.");
 
-        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
-        existingUser.Salt = saltText;
-        existingUser.SaltedHashedPassword = saltedHashedPassword;
+            if (dto.NewPassword != dto.ConfirmNewPassword) return BadRequest("Passwords do not match.");
+
+            (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.NewPassword);
+            existingUser.Salt = saltText;
+            existingUser.SaltedHashedPassword = saltedHashedPassword;
+        }
 
         _context.SaveChanges();
         return Ok(existingUser);

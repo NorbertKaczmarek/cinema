@@ -99,8 +99,7 @@ public class UsersControllerTests
         {
             Email = "newuser@example.com",
             FirstName = "New",
-            LastName = "User",
-            IsAdmin = false
+            LastName = "User"
         };
 
         // Act
@@ -119,8 +118,7 @@ public class UsersControllerTests
         {
             Email = "test1@example.com",
             FirstName = "Duplicate",
-            LastName = "User",
-            IsAdmin = false
+            LastName = "User"
         };
 
         // Act
@@ -140,10 +138,9 @@ public class UsersControllerTests
             Email = existingUser.Email,
             FirstName = "UpdatedFirstName",
             LastName = "UpdatedLastName",
-            IsAdmin = existingUser.IsAdmin,
-            OldPassword = "test123!!!",
-            Password = "NewPassword123",
-            ConfirmPassword = "NewPassword123"
+            Password = "test123!!!",
+            NewPassword = "NewPassword123",
+            ConfirmNewPassword = "NewPassword123"
         };
 
         // Act
@@ -166,10 +163,9 @@ public class UsersControllerTests
             Email = "nonexistent@example.com",
             FirstName = "Nonexistent",
             LastName = "User",
-            IsAdmin = false,
-            OldPassword = "NewPassword123",
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            Password = "NewPassword123",
+            NewPassword = "Password123",
+            ConfirmNewPassword = "Password123"
         };
 
         // Act
