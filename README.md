@@ -76,3 +76,15 @@ erDiagram
         varchar(100)    SaltedHashedPassword	"Zabezpieczone hasło użytkownika"
     }
 ```
+
+![Screenshot 1](images/image1.png)
+*Zrzut ekranu nr 1: Strona do zarządzania filmami.*
+
+![Screenshot 2](images/image2.png)
+*Zrzut ekranu nr 2: Strona do edytowania konkretnego filmu.*
+
+![Screenshot 3](images/image3.png)
+*Zrzut ekranu nr 3: Strona do tworzenia seansu.*
+
+![ImScreenshotage 4](images/image4.png)
+*Zrzut ekranu nr 4: Strona do zarzadzania zamówieniami.*
