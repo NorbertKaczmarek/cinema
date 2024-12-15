@@ -88,3 +88,6 @@ erDiagram
 
 ![ImScreenshotage 4](images/image4.png)
 *Zrzut ekranu nr 4: Strona do zarzadzania zamówieniami.*
+
+![ImScreenshotage 5](images/image5.png)
+*Zrzut ekranu nr 5: Przykładowy bilet.*
