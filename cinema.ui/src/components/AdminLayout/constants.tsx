@@ -1,4 +1,11 @@
-import { Clapperboard, LogOut, PanelsTopLeft, UsersIcon } from 'lucide-react';
+import {
+  CalendarDays,
+  Clapperboard,
+  ListIcon,
+  LogOut,
+  ProjectorIcon,
+  UsersIcon,
+} from 'lucide-react';
 
 import { ROUTES } from 'Routing/routes';
 
@@ -8,32 +15,47 @@ export const adminSidebarMenus = [
     items: [
       {
         label: 'Filmy',
-        href: ROUTES.private.MOVIES_TABLE,
+        href: ROUTES.private.MOVIE.TABLE,
         icon: <Clapperboard />,
+      },
+      {
+        label: 'Kategorie',
+        href: ROUTES.private.CATEGORY.TABLE,
+        icon: <ListIcon />,
+      },
+      {
+        label: 'Seanse',
+        href: ROUTES.private.SCREENING.TABLE,
+        icon: <ProjectorIcon />,
+      },
+      {
+        label: 'Pracownicy',
+        href: ROUTES.private.USER.TABLE,
+        icon: <UsersIcon />,
+      },
+      {
+        label: 'Zamówienia',
+        href: ROUTES.private.ORDER.TABLE,
+        icon: <CalendarDays />,
       },
     ],
   },
 ];
 
-export const adminProfileMenus = [
+export const getAdminProfileMenus = (userId: string) => [
   {
     items: [
       {
-        label: 'Account',
-        href: '/account',
+        label: 'Profil',
+        href: `/admin/users/${userId}`,
         icon: <UsersIcon />,
-      },
-      {
-        label: 'Dashboard',
-        href: '/dashboard',
-        icon: <PanelsTopLeft />,
       },
     ],
   },
   {
     items: [
       {
-        label: 'Sign Out',
+        label: 'Wyloguj się',
         href: '/signOut',
         icon: <LogOut />,
       },

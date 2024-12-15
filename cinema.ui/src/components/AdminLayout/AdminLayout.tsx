@@ -9,7 +9,7 @@ import { useSidebarContext } from 'Hooks/useSidebarContext';
 import { MenuGroup } from 'Types/menu';
 import { cn } from 'Utils/cn';
 
-import { adminProfileMenus, adminSidebarMenus } from './constants';
+import { adminSidebarMenus, getAdminProfileMenus } from './constants';
 import { generateMenuWithRedirect } from './utils';
 
 interface Props extends NavbarProps {
@@ -46,7 +46,7 @@ const BaseLayout = ({
         {page}
         {children && (
           <>
-            <Navbar profileMenus={profileMenus} actions={actions} />
+            <Navbar mobileMenu={sidebarMenus} profileMenus={profileMenus} actions={actions} />
             <div className="px-4 pb-8 pt-8 lg:container sm:px-8 lg:mx-auto">{children}</div>
           </>
         )}
@@ -65,6 +65,10 @@ const BaseLayout = ({
 
 export const AdminLayout = ({ children = <Outlet /> }: Props) => {
   const navigate = useNavigate();
+
+  const userId = '08dd1aa2-1132-4c56-8083-bace460b8ebd';
+
+  const adminProfileMenus = getAdminProfileMenus(userId);
 
   return (
     <BaseLayout

@@ -2,10 +2,12 @@
 
 ### main
 [cinema.nkaczmarek.pl](https://cinema.nkaczmarek.pl)\
+[admin panel](https://cinema.nkaczmarek.pl/admin)\
 [swagger](https://cinema.nkaczmarek.pl/swagger)
 
 ### develop
 [develop.cinema.nkaczmarek.pl](https://develop.cinema.nkaczmarek.pl)\
+[admin panel](https://develop.cinema.nkaczmarek.pl/admin)\
 [swagger](https://develop.cinema.nkaczmarek.pl/swagger)
 
 ## Database diagram
@@ -37,8 +39,10 @@ erDiagram
     MOVIE {
         char(36)        Id              PK  "Id filmu"
         varchar(100)    Title               "Nazwa filmu"
-        time(6)         Duration            "Czas trwania filmu"
+        int             DurationMinutes     "Czas trwania filmu"
         varchar(100)    PosterUrl           "Url plakatu"
+        varchar(100)    TrailerUrl          "Url zwiastunu"
+        varchar(100)    BackgroundUrl       "Url tła"
         varchar(100)    Director            "Reżyser"
         varchar(100)    Cast                "Obsada"
         varchar(1000)   Description         "Opis filmu"
@@ -72,3 +76,15 @@ erDiagram
         varchar(100)    SaltedHashedPassword	"Zabezpieczone hasło użytkownika"
     }
 ```
+
+![Screenshot 1](images/image1.png)
+*Zrzut ekranu nr 1: Strona do zarządzania filmami.*
+
+![Screenshot 2](images/image2.png)
+*Zrzut ekranu nr 2: Strona do edytowania konkretnego filmu.*
+
+![Screenshot 3](images/image3.png)
+*Zrzut ekranu nr 3: Strona do tworzenia seansu.*
+
+![ImScreenshotage 4](images/image4.png)
+*Zrzut ekranu nr 4: Strona do zarzadzania zamówieniami.*

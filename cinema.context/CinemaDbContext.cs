@@ -28,6 +28,8 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Title).HasColumnType("varchar(100)");
             eb.Property(eb => eb.DurationMinutes).HasColumnType("int");
             eb.Property(eb => eb.PosterUrl).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.TrailerUrl).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.BackgroundUrl).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Director).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Cast).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Description).HasColumnType("varchar(1000)");

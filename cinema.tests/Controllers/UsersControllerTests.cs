@@ -37,8 +37,8 @@ public class UsersControllerTests
                 FirstName = "Test",
                 LastName = "User1",
                 IsAdmin = false,
-                Salt = "sampleSalt",
-                SaltedHashedPassword = "samplePasswordHash"
+                Salt = "OpVnQG7P+2J2ZMxpWn4QOA==",
+                SaltedHashedPassword = "iHj0p3mQDQYhYMioLWCL/T6pbhyPzP9gkqeY8uAMJM8="
             });
 
             _context.Users.Add(new User
@@ -60,11 +60,11 @@ public class UsersControllerTests
     public void Get_ShouldReturnAllUsers()
     {
         // Act
-        var result = _controller.Get();
+        var result = _controller.Get(new PageQuery());
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.TotalElements.Should().Be(2);
     }
 
     [Fact]
@@ -99,10 +99,7 @@ public class UsersControllerTests
         {
             Email = "newuser@example.com",
             FirstName = "New",
-            LastName = "User",
-            IsAdmin = false,
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            LastName = "User"
         };
 
         // Act
@@ -121,10 +118,7 @@ public class UsersControllerTests
         {
             Email = "test1@example.com",
             FirstName = "Duplicate",
-            LastName = "User",
-            IsAdmin = false,
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            LastName = "User"
         };
 
         // Act
@@ -139,14 +133,14 @@ public class UsersControllerTests
     {
         // Arrange
         var existingUser = _context.Users.First();
-        var updateUserDto = new UserCreateDto
+        var updateUserDto = new UserUpdateDto
         {
             Email = existingUser.Email,
             FirstName = "UpdatedFirstName",
             LastName = "UpdatedLastName",
-            IsAdmin = existingUser.IsAdmin,
-            Password = "NewPassword123",
-            ConfirmPassword = "NewPassword123"
+            Password = "test123!!!",
+            NewPassword = "NewPassword123",
+            ConfirmNewPassword = "NewPassword123"
         };
 
         // Act
@@ -164,14 +158,14 @@ public class UsersControllerTests
     public void Put_WithInvalidId_ShouldReturnNotFound()
     {
         // Arrange
-        var updateUserDto = new UserCreateDto
+        var updateUserDto = new UserUpdateDto
         {
             Email = "nonexistent@example.com",
             FirstName = "Nonexistent",
             LastName = "User",
-            IsAdmin = false,
-            Password = "Password123",
-            ConfirmPassword = "Password123"
+            Password = "NewPassword123",
+            NewPassword = "Password123",
+            ConfirmNewPassword = "Password123"
         };
 
         // Act

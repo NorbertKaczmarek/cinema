@@ -58,6 +58,10 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("BackgroundUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Cast")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -86,6 +90,10 @@ namespace cinema.context.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<string>("TrailerUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

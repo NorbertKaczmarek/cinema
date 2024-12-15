@@ -23,13 +23,14 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         _context = _scopedServices.GetRequiredService<CinemaDbContext>();
     }
 
-    private async Task<Guid> seedUser(UserCreateDto dto)
+    private async Task<(Guid, string)> seedUser(UserCreateDto dto)
     {
-        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.Password);
+        string password = "test1";
+        (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
 
         User newUser = new User
         {
-            IsAdmin = dto.IsAdmin,
+            IsAdmin = false,
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -40,7 +41,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
 
-        return newUser.Id;
+        return (newUser.Id, password);
     }
 
     private async Task<string> getValidToken(bool isAdmin = false)
@@ -77,25 +78,22 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData(false, "validuser@example.com", "ValidPassword123!", "Test", "User")]
-    public async Task Login_WithValidCredentials_ReturnsToken(bool isAdmin, string email, string firstName, string LastName, string password)
+    [InlineData("validuser@example.com", "ValidPassword123!", "Test", "User")]
+    public async Task Login_WithValidCredentials_ReturnsToken(string email, string firstName, string LastName, string password)
     {
         // Arrange
         var userCreateDto = new UserCreateDto
         {
-            IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
-            LastName = LastName,
-            Password = password,
-            ConfirmPassword = password,
+            LastName = LastName
         };
-        var userId = await seedUser(userCreateDto);
+        var (userId, password2) = await seedUser(userCreateDto);
 
         var loginDto = new UserLoginDto
         {
             Email = email,
-            Password = password
+            Password = password2
         };
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
@@ -109,20 +107,17 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData(false, "test4@example.com", "Password123!", "Bob", "Brown")]
-    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(bool isAdmin, string email, string firstName, string LastName, string password)
+    [InlineData("test4@example.com", "Password123!", "Bob", "Brown")]
+    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(string email, string firstName, string LastName, string password)
     {
         // Arrange
         var userCreateDto = new UserCreateDto
         {
-            IsAdmin = isAdmin,
             Email = email,
             FirstName = firstName,
-            LastName = LastName,
-            Password = password,
-            ConfirmPassword = password,
+            LastName = LastName
         };
-        var userId = await seedUser(userCreateDto);
+        var (userId, password2) = await seedUser(userCreateDto);
         var content = HttpContentHelper.ToJsonHttpContent(userCreateDto);
 
         var loginDto = new UserLoginDto

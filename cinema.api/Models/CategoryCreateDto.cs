@@ -2,5 +2,5 @@
 
 public class CategoryCreateDto
 {
-    public required string CategoryName { get; set; }
+    public required string Name { get; set; }
 }
