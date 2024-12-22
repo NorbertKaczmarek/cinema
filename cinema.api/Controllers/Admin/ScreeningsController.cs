@@ -1,4 +1,5 @@
-﻿using cinema.api.Models;
+﻿using AutoMapper;
+using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,16 @@ namespace cinema.api.Controllers.Admin;
 public class ScreeningsController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public ScreeningsController(CinemaDbContext context)
+    public ScreeningsController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public PageResult<Screening> Get([FromQuery] PageQuery query)
+    public PageResult<ScreeningDto> Get([FromQuery] PageQuery query)
     {
         DateTime.TryParse(query.Phrase, out var parsedDate);
 
@@ -51,13 +54,18 @@ public class ScreeningsController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<Screening>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<ScreeningDto>>(result);
+        return new PageResult<ScreeningDto>(resultDto, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
-    public Screening Get(Guid id)
+    public ScreeningDto Get(Guid id)
     {
-        return getById(id);
+        var screening = getById(id);
+        if (screening is null) return null!;
+
+        var screeningDto = _mapper.Map<ScreeningDto>(screening);
+        return screeningDto;
     }
 
     private Screening getById(Guid id)
@@ -142,7 +150,9 @@ public class ScreeningsController : ControllerBase
 
         _context.Screenings.Add(screening);
         _context.SaveChanges();
-        return Created($"/api/admin/screenings/{screening.Id}", null);
+
+        var screeningDto = _mapper.Map<ScreeningDto>(screening);
+        return Created($"/api/admin/screenings/{screeningDto.Id}", null);
     }
 
     [HttpPut("{id}")]
@@ -172,7 +182,9 @@ public class ScreeningsController : ControllerBase
         existingScreening.MovieId = dto.MovieId;
 
         _context.SaveChanges();
-        return Ok(existingScreening);
+
+        var screeningDto = _mapper.Map<ScreeningDto>(existingScreening);
+        return Ok(screeningDto);
     }
 
     [HttpDelete("{id}")]

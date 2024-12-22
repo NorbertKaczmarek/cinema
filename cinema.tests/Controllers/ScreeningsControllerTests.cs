@@ -5,6 +5,8 @@ using cinema.api.Controllers.Admin;
 using cinema.api.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Moq;
 
 namespace cinema.tests.Controllers;
 
@@ -73,12 +75,54 @@ public class ScreeningsControllerTests
         return context;
     }
 
+    private ScreeningsController CreateController(CinemaDbContext context)
+    {
+        var mapperMock = new Mock<IMapper>();
+
+        mapperMock
+            .Setup(m => m.Map<Screening>(It.IsAny<ScreeningDto>()))
+            .Returns((ScreeningDto dto) => new Screening
+            {
+                Id = dto.Id,
+                StartDateTime = dto.StartDateTime,
+                EndDateTime = dto.EndDateTime,
+                MovieId = dto.MovieId,
+                Movie = dto.Movie
+            });
+
+        mapperMock
+            .Setup(m => m.Map<ScreeningDto>(It.IsAny<Screening>()))
+            .Returns((Screening screening) => new ScreeningDto
+            {
+                Id = screening.Id,
+                StartDateTime = screening.StartDateTime,
+                EndDateTime = screening.EndDateTime,
+                MovieId = screening.MovieId,
+                Movie = screening.Movie
+            });
+
+        mapperMock
+            .Setup(m => m.Map<List<ScreeningDto>>(It.IsAny<List<Screening>>()))
+            .Returns((List<Screening> screenings) =>
+                screenings.Select(screening => new ScreeningDto
+                {
+                    Id = screening.Id,
+                    StartDateTime = screening.StartDateTime,
+                    EndDateTime = screening.EndDateTime,
+                    MovieId = screening.MovieId,
+                    Movie = screening.Movie
+                }).ToList());
+
+
+        return new ScreeningsController(context, mapperMock.Object);
+    }
+
     [Fact]
     public void Get_ReturnsAllScreenings()
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var initialCount = context.Screenings.Count();
 
         // Act
@@ -95,7 +139,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var screeningId = context.Screenings.First().Id;
 
         // Act
@@ -111,7 +155,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get(Guid.NewGuid());
@@ -127,7 +171,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var initialCount = context.Screenings.Count();
         var startDateTime = DateTime.Parse(startDateTimeStr);
         var movieId = context.Movies.First().Id;
@@ -151,7 +195,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var screeningId = context.Screenings.First().Id;
         var movie = context.Movies.First();
         var updatedDto = new ScreeningCreateDto
@@ -175,7 +219,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var screeningId = context.Screenings.First().Id;
 
         // Act
@@ -190,7 +234,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var screeningId = context.Screenings.First().Id;
 
         // Act
@@ -213,7 +257,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var invalidScreeningId = Guid.NewGuid();
 
         // Act
@@ -233,7 +277,7 @@ public class ScreeningsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new ScreeningsController(context);
+        var controller = CreateController(context);
         var initialCount = context.Screenings.Count();
         var movie = context.Movies.First();
 

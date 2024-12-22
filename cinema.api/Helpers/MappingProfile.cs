@@ -17,5 +17,7 @@ public class MappingProfile : Profile
         CreateMap<Category, CategoryDto>();
 
         CreateMap<Movie, MovieDto>();
+
+        CreateMap<Screening, ScreeningDto>();
     }
 }
