@@ -7,7 +7,7 @@ public enum OrderStatus
     Cancelled
 }
 
-public class Order
+public class Order : IAuditableEntity
 {
     public Guid Id { get; set; }
     public required string Email { get; set; }
@@ -16,4 +16,6 @@ public class Order
     public Guid? ScreeningId { get; set; }
     public virtual Screening? Screening { get; set; }
     public virtual List<Seat>? Seats { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; set; }
 }

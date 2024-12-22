@@ -1,6 +1,6 @@
-﻿namespace cinema.context.Entities;
+﻿namespace cinema.api.Models;
 
-public class User : IAuditableEntity
+public class UserDto
 {
     public Guid Id { get; set; }
     public bool IsAdmin { get; set; }
@@ -9,6 +9,4 @@ public class User : IAuditableEntity
     public required string LastName { get; set; }
     public required string Salt { get; set; }
     public required string SaltedHashedPassword { get; set; }
-    public DateTimeOffset CreatedOnUtc { get; set; }
-    public DateTimeOffset? ModifiedOnUtc { get; set; }
 }

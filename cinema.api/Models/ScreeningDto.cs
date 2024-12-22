@@ -1,12 +1,12 @@
-﻿namespace cinema.context.Entities;
+﻿using cinema.context.Entities;
 
-public class Screening : IAuditableEntity
+namespace cinema.api.Models;
+
+public class ScreeningDto
 {
     public Guid Id { get; set; }
     public DateTimeOffset StartDateTime { get; set; }
     public DateTimeOffset EndDateTime { get; set; }
     public Guid? MovieId { get; set; }
     public virtual Movie? Movie { get; set; }
-    public DateTimeOffset CreatedOnUtc { get; set; }
-    public DateTimeOffset? ModifiedOnUtc { get; set; }
 }

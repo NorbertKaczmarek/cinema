@@ -51,6 +51,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Interceptors
+builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
+
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
@@ -77,8 +80,14 @@ builder.Services.AddScoped<Seeder>();
 
 // Database
 var connectionString = configuration.GetConnectionString("MySql")!;
-builder.Services.AddDbContext<CinemaDbContext>
-    (options => options.UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql")));
+builder.Services.AddDbContext<CinemaDbContext>(
+    (sp, options) =>
+    {
+        var auditableInterceptor = sp.GetService<UpdateAuditableEntitiesInterceptor>();
+        options
+            .UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql"))
+            .AddInterceptors(auditableInterceptor!);
+    });
 
 // Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
