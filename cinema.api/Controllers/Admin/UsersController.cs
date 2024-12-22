@@ -1,4 +1,5 @@
-﻿using cinema.api.Helpers;
+﻿using AutoMapper;
+using cinema.api.Helpers;
 using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
@@ -12,14 +13,16 @@ namespace cinema.api.Controllers.Admin;
 public class UsersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public UsersController(CinemaDbContext context)
+    public UsersController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public PageResult<User> Get([FromQuery] PageQuery query)
+    public PageResult<UserDto> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context
             .Users
@@ -48,13 +51,18 @@ public class UsersController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<User>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<UserDto>>(result);
+        return new PageResult<UserDto>(resultDto, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
-    public User Get(Guid id)
+    public UserDto Get(Guid id)
     {
-        return getById(id);
+        var user = getById(id);
+        if (user == null) return null!;
+
+        var userDto = _mapper.Map<UserDto>(user);
+        return userDto;
     }
 
     private User getById(Guid id)
@@ -132,7 +140,9 @@ public class UsersController : ControllerBase
         }
 
         _context.SaveChanges();
-        return Ok(existingUser);
+
+        var userDto = _mapper.Map<UserDto>(existingUser);
+        return Ok(userDto);
     }
 
     [HttpDelete("{id}")]
