@@ -13,5 +13,7 @@ public class MappingProfile : Profile
 
         CreateMap<OrderDto, Order>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)));
+
+        CreateMap<Category, CategoryDto>();
     }
 }

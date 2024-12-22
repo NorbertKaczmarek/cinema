@@ -1,4 +1,5 @@
-﻿using cinema.api.Models;
+﻿using AutoMapper;
+using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace cinema.api.Controllers.Admin;
 public class CategoriesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CategoriesController(CinemaDbContext context)
+    public CategoriesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -21,7 +24,7 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <returns>A paginated list of categories or a full list if Size is set to 0.</returns>
     [HttpGet]
-    public ActionResult<PageResult<Category>> Get([FromQuery] PageQuery query)
+    public ActionResult<PageResult<CategoryDto>> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context.Categories.AsQueryable();
 
@@ -40,7 +43,9 @@ public class CategoriesController : ControllerBase
             ? baseQuery.ToList()
             : baseQuery.Skip(query.Size * query.Page).Take(query.Size).ToList();
 
-        return Ok(new PageResult<Category>(result, totalCount, query.Size));
+        var resultDto = _mapper.Map<List<CategoryDto>>(result);
+
+        return Ok(new PageResult<CategoryDto>(resultDto, totalCount, query.Size));
     }
 
     /// <summary>
@@ -53,11 +58,13 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Category), 200)]
     [ProducesResponseType(typeof(string), 404)]
-    public ActionResult<Category> Get(Guid id)
+    public ActionResult<CategoryDto> Get(Guid id)
     {
         var category = getById(id);
         if (category is null) return NotFound("Category with that id was not found.");
-        return Ok(category);
+
+        var categoryDto = _mapper.Map<CategoryDto>(category);
+        return Ok(categoryDto);
     }
 
     private Category? getById(Guid id)
@@ -80,7 +87,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult<Category> Post([FromBody] CategoryCreateDto dto)
+    public ActionResult<CategoryDto> Post([FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.Name == null || dto.Name.Trim() == "")
             return BadRequest("Invalid category data.");
@@ -92,7 +99,8 @@ public class CategoriesController : ControllerBase
         _context.Categories.Add(newCategory);
         _context.SaveChanges();
 
-        return Created($"/api/admin/categories/{newCategory.Id}", newCategory);
+        var categoryDto = _mapper.Map<CategoryDto>(newCategory);
+        return Created($"/api/admin/categories/{categoryDto.Id}", categoryDto);
     }
 
     /// <summary>
@@ -111,7 +119,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(Category), 201)]
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 409)]
-    public ActionResult<Category> Put(Guid id, [FromBody] CategoryCreateDto dto)
+    public ActionResult<CategoryDto> Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.Name == null || dto.Name.Trim() == "")
             return BadRequest("Invalid category data.");
@@ -126,7 +134,8 @@ public class CategoriesController : ControllerBase
         existingCategory.Name = dto.Name;
         _context.SaveChanges();
 
-        return Created($"/api/admin/categories/{existingCategory.Id}", existingCategory);
+        var categoryDto = _mapper.Map<CategoryDto>(existingCategory);
+        return Created($"/api/admin/categories/{categoryDto.Id}", categoryDto);
     }
 
     /// <summary>

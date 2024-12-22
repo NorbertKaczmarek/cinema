@@ -1,10 +1,14 @@
-﻿using cinema.api.Controllers.Admin;
+﻿using AutoMapper;
+using cinema.api;
+using cinema.api.Controllers.Admin;
 using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace cinema.tests.Controllers;
 
@@ -29,12 +33,41 @@ public class CategoriesControllerTests
         return context;
     }
 
+    private CategoriesController CreateController(CinemaDbContext context)
+    {
+        var mapperMock = new Mock<IMapper>();
+        mapperMock
+            .Setup(m => m.Map<Category>(It.IsAny<CategoryDto>()))
+            .Returns((CategoryDto dto) => new Category
+            {
+                Id = dto.Id,
+                Name = dto.Name
+            });
+        mapperMock
+            .Setup(m => m.Map<CategoryDto>(It.IsAny<Category>()))
+            .Returns((Category category) => new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name
+            });
+        mapperMock
+            .Setup(m => m.Map<List<CategoryDto>>(It.IsAny<List<Category>>()))
+            .Returns((List<Category> categories) =>
+                categories.Select(c => new CategoryDto 
+                { 
+                    Id = c.Id, 
+                    Name = c.Name 
+                }).ToList());
+
+        return new CategoriesController(context, mapperMock.Object);
+    }
+
     [Fact]
     public void Get_ReturnsAllCategories()
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var query = new PageQuery { };
 
         // Act
@@ -42,7 +75,7 @@ public class CategoriesControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        var categories = result!.Value as PageResult<Category>;
+        var categories = result!.Value as PageResult<CategoryDto>;
         categories!.Content.Should().HaveCount(3);
     }
 
@@ -51,7 +84,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var categoryId = context.Categories.First().Id;
 
         // Act
@@ -59,7 +92,7 @@ public class CategoriesControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        var category = result!.Value as Category;
+        var category = result!.Value as CategoryDto;
         category.Should().NotBeNull();
         category!.Name.Should().Be("Action");
     }
@@ -69,7 +102,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get(Guid.NewGuid()).Result;
@@ -88,14 +121,14 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var newCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
         var result = controller.Post(newCategoryDto).Result as CreatedResult;
 
         // Assert
-        var category = result!.Value as Category;
+        var category = result!.Value as CategoryDto;
         category.Should().NotBeNull();
         category!.Name.Should().Be(categoryName);
         var createdCategoryId = result.Location!;
@@ -110,7 +143,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var existingCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
@@ -130,7 +163,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var invalidCategoryDto = new CategoryCreateDto { Name = categoryName };
 
         // Act
@@ -148,7 +181,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var existingCategory = context.Categories.First();
         var updatedCategoryDto = new CategoryCreateDto { Name = categoryName };
 
@@ -170,7 +203,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var nonExistentCategoryId = Guid.NewGuid();
         var updatedCategoryDto = new CategoryCreateDto { Name = categoryName };
 
@@ -186,7 +219,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var existingcategoryName = (new Guid()).ToString();
         var editedcategoryOldName = (new Guid()).ToString();
         var editedcategoryNewName = (new Guid()).ToString();
@@ -212,7 +245,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var categoryToDelete = context.Categories.First();
         var initialCount = context.Categories.Count();
 
@@ -230,7 +263,7 @@ public class CategoriesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new CategoriesController(context);
+        var controller = CreateController(context);
         var invalidCategoryId = Guid.NewGuid();
         var initialCount = context.Categories.Count();
 
