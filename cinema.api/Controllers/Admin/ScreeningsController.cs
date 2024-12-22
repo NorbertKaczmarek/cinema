@@ -36,7 +36,7 @@ public class ScreeningsController : ControllerBase
                     s.StartDateTime.Date == parsedDate.Date
                 )
             )
-            .OrderBy(s => s.StartDateTime);
+            .OrderByDescending(s => s.StartDateTime);
 
         var totalCount = baseQuery.Count();
 

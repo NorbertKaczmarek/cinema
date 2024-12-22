@@ -35,7 +35,8 @@ public class MoviesController : ControllerBase
                 (
                     m.Title.ToLower().Contains(query.Phrase.ToLower())
                 )
-            );
+            )
+            .OrderByDescending(m => m.CreatedOnUtc);
 
         var totalCount = baseQuery.Count();
 
