@@ -1,4 +1,5 @@
-﻿using cinema.api.Models;
+﻿using AutoMapper;
+using cinema.api.Models;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace cinema.api.Controllers.Admin;
 public class MoviesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public MoviesController(CinemaDbContext context)
+    public MoviesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -22,7 +25,7 @@ public class MoviesController : ControllerBase
     /// </summary>
     /// <returns>A paginated list of movies or a full list if Size is set to 0.</returns>
     [HttpGet]
-    public PageResult<Movie> Get([FromQuery] PageQuery query)
+    public PageResult<MovieDto> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context
             .Movies
@@ -50,7 +53,8 @@ public class MoviesController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<Movie>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<MovieDto>>(result);
+        return new PageResult<MovieDto>(resultDto, totalCount, query.Size);
     }
 
     /// <summary>
@@ -64,7 +68,9 @@ public class MoviesController : ControllerBase
     {
         var movie = getById(id);
         if (movie is null) return NotFound("Movie with that id was not found.");
-        return Ok(movie);
+
+        var movieDto = _mapper.Map<MovieDto>(movie);
+        return Ok(movieDto);
     }
 
     private Movie? getById(Guid id)
@@ -100,7 +106,8 @@ public class MoviesController : ControllerBase
         _context.Movies.Add(newMovie);
         _context.SaveChanges();
 
-        return Created($"/api/admin/movies/{newMovie.Id}", newMovie);
+        var movieDto = _mapper.Map<MovieDto>(newMovie);
+        return Created($"/api/admin/movies/{movieDto.Id}", movieDto);
     }
 
     /// <summary>
@@ -133,7 +140,8 @@ public class MoviesController : ControllerBase
 
         _context.SaveChanges();
 
-        return Created($"/api/admin/movies/{existingMovie.Id}", existingMovie);
+        var movieDto = _mapper.Map<MovieDto>(existingMovie);
+        return Created($"/api/admin/movies/{movieDto.Id}", movieDto);
     }
 
     /// <summary>

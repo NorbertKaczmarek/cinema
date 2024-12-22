@@ -5,6 +5,8 @@ using cinema.api.Controllers.Admin;
 using cinema.api.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Moq;
 
 namespace cinema.tests.Controllers;
 
@@ -76,12 +78,75 @@ public class MoviesControllerTests
         return context;
     }
 
+    private MoviesController CreateController(CinemaDbContext context)
+    {
+        var mapperMock = new Mock<IMapper>();
+
+        mapperMock
+            .Setup(m => m.Map<Movie>(It.IsAny<MovieDto>()))
+            .Returns((MovieDto dto) => new Movie
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                DurationMinutes = dto.DurationMinutes,
+                PosterUrl = dto.PosterUrl,
+                TrailerUrl = dto.TrailerUrl,
+                BackgroundUrl = dto.BackgroundUrl,
+                Director = dto.Director,
+                Cast = dto.Cast,
+                Description = dto.Description,
+                Rating = dto.Rating,
+                CategoryId = dto.CategoryId,
+                Category = dto.Category
+            });
+
+        mapperMock
+            .Setup(m => m.Map<MovieDto>(It.IsAny<Movie>()))
+            .Returns((Movie movie) => new MovieDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                DurationMinutes = movie.DurationMinutes,
+                PosterUrl = movie.PosterUrl,
+                TrailerUrl = movie.TrailerUrl,
+                BackgroundUrl = movie.BackgroundUrl,
+                Director = movie.Director,
+                Cast = movie.Cast,
+                Description = movie.Description,
+                Rating = movie.Rating,
+                CategoryId = movie.CategoryId,
+                Category = movie.Category
+            });
+
+        mapperMock
+            .Setup(m => m.Map<List<MovieDto>>(It.IsAny<List<Movie>>()))
+            .Returns((List<Movie> movies) =>
+                movies.Select(movie => new MovieDto
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    DurationMinutes = movie.DurationMinutes,
+                    PosterUrl = movie.PosterUrl,
+                    TrailerUrl = movie.TrailerUrl,
+                    BackgroundUrl = movie.BackgroundUrl,
+                    Director = movie.Director,
+                    Cast = movie.Cast,
+                    Description = movie.Description,
+                    Rating = movie.Rating,
+                    CategoryId = movie.CategoryId,
+                    Category = movie.Category
+                }).ToList());
+
+
+        return new MoviesController(context, mapperMock.Object);
+    }
+
     [Fact]
     public void Get_ReturnsAllSeats()
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get(new PageQuery());
@@ -97,7 +162,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var movieId = context.Movies.First(m => m.Title == "Movie 1").Id;
 
         // Act
@@ -107,8 +172,8 @@ public class MoviesControllerTests
         result.Should().NotBeNull();
         result.Should().BeOfType<OkObjectResult>();
         var okResult = result as OkObjectResult;
-        okResult!.Value.Should().BeOfType<Movie>();
-        var movie = okResult.Value as Movie;
+        okResult!.Value.Should().BeOfType<MovieDto>();
+        var movie = okResult.Value as MovieDto;
         movie!.Title.Should().Be("Movie 1");
         movie!.Rating.Should().Be(1.1);
     }
@@ -118,7 +183,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get(Guid.NewGuid());
@@ -146,7 +211,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var newMovieDto = new MovieCreateDto
         {
             Title = title,
@@ -174,7 +239,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var existingMovie = context.Movies.First();
         var updatedMovieDto = new MovieCreateDto
         {
@@ -205,7 +270,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var updatedMovieDto = new MovieCreateDto
         {
             Title = "Nonexistent Movie",
@@ -232,7 +297,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var movieToDelete = context.Movies.First();
         var initialCount = context.Movies.Count();
 
@@ -249,7 +314,7 @@ public class MoviesControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new MoviesController(context);
+        var controller = CreateController(context);
         var initialCount = context.Movies.Count();
 
         // Act
