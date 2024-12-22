@@ -1,6 +1,6 @@
 ﻿namespace cinema.context.Entities;
 
-public class Movie
+public class Movie : IAuditableEntity
 {
     public Guid Id { get; set; }
     public required string Title { get; set; }
@@ -14,4 +14,6 @@ public class Movie
     public double Rating { get; set; }
     public Guid? CategoryId {  get; set; }
     public virtual Category? Category { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; set; }
 }
