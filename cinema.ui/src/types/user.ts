@@ -4,7 +4,7 @@ export type User = {
   lastName: string;
   email: string;
   isAdmin: boolean;
-  oldPassword?: string;
   password?: string;
-  confirmPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
 };

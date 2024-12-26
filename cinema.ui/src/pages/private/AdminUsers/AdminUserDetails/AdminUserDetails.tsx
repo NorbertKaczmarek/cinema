@@ -3,12 +3,12 @@ import { Header } from 'Components/Header';
 import { Spinner } from 'Components/Spinner';
 import { useDictionaryState } from 'Hooks/useDictionaryState';
 import { UserForm } from 'Pages/private/AdminUsers/components';
-import { USER_DICT_STATE } from 'Pages/private/AdminUsers/constants';
+import { USER_DETAILS_DICT_STATE } from 'Pages/private/AdminUsers/constants';
 import { User } from 'Types/user';
 
 export const AdminUserDetails = () => {
   const { form, isEdit, isSpinning, handleEdit, handleCancel, handleUpdateElem, handleRedirect } =
-    useDictionaryState<User>(USER_DICT_STATE);
+    useDictionaryState<User>(USER_DETAILS_DICT_STATE);
 
   // if my id !== id from params then redirect home. taken from auth
 

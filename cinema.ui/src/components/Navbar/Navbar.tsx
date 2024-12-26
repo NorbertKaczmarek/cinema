@@ -1,5 +1,7 @@
 import { ReactElement, ReactNode } from 'react';
 
+import { NavigateFunction } from 'react-router-dom';
+
 import { Button, ButtonVariant } from 'Components/Button';
 import { MobileMenu } from 'Components/MobileMenu';
 import { ProfileMenu } from 'Components/ProfileMenu';
@@ -7,9 +9,9 @@ import { MenuGroup } from 'Types/menu';
 
 export interface NavItem {
   label: string;
-  href?: string;
+  href: string;
   icon?: ReactElement;
-  onClick?: (href?: string) => void;
+  onClick?: (href: string) => void | NavigateFunction;
 }
 
 export interface NavbarProps {
@@ -26,6 +28,7 @@ export const Navbar = ({ mobileMenu, navItems, profileMenus, actions }: NavbarPr
         <MobileMenu menus={mobileMenu} />
         {navItems?.map(({ label, href, icon, onClick }) => (
           <Button
+            className="text-2xl"
             variant={ButtonVariant.Ghost}
             key={href}
             onClick={() => onClick?.(href)}
@@ -37,7 +40,7 @@ export const Navbar = ({ mobileMenu, navItems, profileMenus, actions }: NavbarPr
       </div>
       <div className="flex items-center justify-end gap-4">
         {actions}
-        <ProfileMenu profileMenus={profileMenus} />
+        {!!profileMenus?.length && <ProfileMenu profileMenus={profileMenus} />}
       </div>
     </div>
   </header>

@@ -34,13 +34,13 @@ export const UserForm: FC<Props> = ({ form, isDisabled = false, isWithPassword =
           </FormField>
           {isWithPassword && (
             <>
-              <FormField name="oldPassword" label="Hasło" control={form.control}>
+              <FormField name="password" label="Hasło" control={form.control}>
                 <Input type="password" isDisabled={isDisabled} />
               </FormField>
-              <FormField name="password" label="Nowe hasło" control={form.control}>
+              <FormField name="newPassword" label="Nowe hasło" control={form.control}>
                 <Input type="password" isDisabled={isDisabled} />
               </FormField>
-              <FormField name="confirmPassword" label="Potwierdź hasło" control={form.control}>
+              <FormField name="confirmNewPassword" label="Potwierdź hasło" control={form.control}>
                 <Input type="password" isDisabled={isDisabled} />
               </FormField>
             </>
