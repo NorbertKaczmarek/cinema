@@ -30,7 +30,7 @@ export const columns = [
   {
     id: 'rating',
     accessorKey: 'rating',
-    header: 'oceny',
+    header: 'Ocena',
     size: 100,
     enableSorting: true,
   },

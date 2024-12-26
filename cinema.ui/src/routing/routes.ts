@@ -27,5 +27,12 @@ export const ROUTES = {
   },
   public: {
     HOME: '/',
+    MOVIE: {
+      PREVIEW: '/movie/:id',
+    },
+    ORDER: {
+      SUMMARY: '/order/summary',
+      CREATE: '/order/:id',
+    },
   },
 };

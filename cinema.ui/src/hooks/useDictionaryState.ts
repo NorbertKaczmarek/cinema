@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ZodTypeAny } from 'zod';
 
 import queryClient from 'Configs/queryClient';
 import { queryHelpers } from 'Hooks/queryHelpers';
@@ -21,6 +23,7 @@ interface UseDictionaryStateProps<T> {
   listUrl: string;
   staleTime?: number;
   listQueryKey: string[];
+  schema: ZodTypeAny;
 }
 
 export const useDictionaryState = <T extends FieldValues>({
@@ -30,10 +33,13 @@ export const useDictionaryState = <T extends FieldValues>({
   listUrl,
   staleTime = 0,
   listQueryKey,
+  schema,
 }: UseDictionaryStateProps<T>): UseDictionaryState<T> => {
   const [dictData, setDictData] = useState<T>(initialData);
   const isMounted = useIsMounted();
-  const form = useForm<T>();
+  const form = useForm<T>({
+    resolver: zodResolver(schema),
+  });
   const { isEdit, openEdit, closeEdit } = useEdit(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();

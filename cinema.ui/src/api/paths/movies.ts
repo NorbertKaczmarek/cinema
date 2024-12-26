@@ -6,7 +6,10 @@ const PRIVATE = {
   DELETE_MOVIE: (id: string) => `/admin/movies/${id}`,
 };
 
-const PUBLIC = {};
+const PUBLIC = {
+  MOVIES: '/user/movies',
+  GET_MOVIE: (id: string) => `/user/movies/${id}`,
+};
 
 export const MOVIES = {
   PRIVATE,

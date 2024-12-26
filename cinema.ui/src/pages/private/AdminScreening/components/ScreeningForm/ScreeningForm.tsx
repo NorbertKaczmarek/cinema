@@ -24,11 +24,12 @@ export const ScreeningForm: FC<Props> = ({ form, isDisabled = false }) => {
     <Card>
       <FormProvider {...form}>
         <form className="grid grid-cols-1 gap-6">
-          <FormField name="movieId" label="Film" control={form.control}>
-            <Select options={movieOptions} disabled={isDisabled} />
-          </FormField>
+          {/* @TODO - new datepicker */}
           <FormField name="startDateTime" label="Data rozpoczęcia seansu" control={form.control}>
             <DateTimePicker placeholder="Wybierz datę" locale={pl} disabled={isDisabled} />
+          </FormField>
+          <FormField name="movieId" label="Film" control={form.control}>
+            <Select options={movieOptions} disabled={isDisabled} />
           </FormField>
         </form>
       </FormProvider>

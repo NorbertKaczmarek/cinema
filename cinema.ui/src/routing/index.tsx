@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 
 import { AdminLayout } from 'Components/AdminLayout';
+import { UserLayout } from 'Components/UserLayout';
 import {
   AdminCategoryAdd,
   AdminCategoryDetails,
@@ -14,7 +15,10 @@ import {
   AdminScreeningTable,
 } from 'Pages/private/AdminScreening';
 import { AdminUserAdd, AdminUserDetails, AdminUserTable } from 'Pages/private/AdminUsers';
-import { MockHome } from 'Routing/MockHome';
+import { UserHomePage } from 'Pages/public/UserHomePage';
+import { UserMoviePreview } from 'Pages/public/UserMoviePreview';
+import { UserOrderCreate } from 'Pages/public/UserOrderCreate';
+import { UserOrderSummary } from 'Pages/public/UserOrderSummary';
 import { ROUTES } from 'Routing/routes';
 
 import { PrivateRoute } from './PrivateRoute';
@@ -88,13 +92,31 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: '',
-        element: <MockHome />,
+        element: <UserLayout />,
+        children: [
+          {
+            path: ROUTES.public.HOME,
+            element: <UserHomePage />,
+          },
+          {
+            path: ROUTES.public.MOVIE.PREVIEW,
+            element: <UserMoviePreview />,
+          },
+          {
+            path: ROUTES.public.ORDER.CREATE,
+            element: <UserOrderCreate />,
+          },
+          {
+            path: ROUTES.public.ORDER.SUMMARY,
+            element: <UserOrderSummary />,
+          },
+        ],
       },
-      {
-        path: '*',
-        element: <UnknownRoute />,
-      },
+      //@ TODO - UNCOMMNET
+      // {
+      //   path: '*',
+      //   element: <UnknownRoute />,
+      // },
     ],
   },
 ]);

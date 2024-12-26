@@ -29,7 +29,7 @@ const Base = forwardRef<HTMLButtonElement, BaseProps>(
 );
 Base.displayName = 'BaseButton';
 
-interface Props extends BaseProps {
+export interface ButtonProps extends BaseProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   icon?: ReactElement;
@@ -38,7 +38,7 @@ interface Props extends BaseProps {
   isLoading?: boolean;
 }
 
-export const Button = forwardRef<HTMLButtonElement, Props>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       variant = ButtonVariant.Primary,
@@ -52,7 +52,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       onClick,
       children,
       ...rest
-    }: Props,
+    }: ButtonProps,
     ref
   ) => (
     <Base

@@ -60,6 +60,7 @@ interface Props {
   headerContent?: ReactNode;
   footer?: ReactNode;
   footerContent?: ReactNode;
+  onWrapperClick?: () => void;
   children?: ReactNode;
 }
 
@@ -71,9 +72,10 @@ export const Card = ({
   headerContent,
   footer,
   footerContent,
+  onWrapperClick,
   children,
 }: Props) => (
-  <Wrapper className={classNames?.wrapper}>
+  <Wrapper onClick={onWrapperClick} className={classNames?.wrapper}>
     {header}
     {(!!title || !!description || !!headerContent) && (
       <Header className={classNames?.headerContent}>
