@@ -77,11 +77,11 @@ public class ScreeningsControllerTests
         return context;
     }
 
-    private ScreeningsAdminController CreateController(CinemaDbContext context)
+    private ScreeningsController CreateController(CinemaDbContext context)
     {
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new ScreeningsAdminController(context, mapper);
+        return new ScreeningsController(context, mapper);
     }
 
     [Fact]

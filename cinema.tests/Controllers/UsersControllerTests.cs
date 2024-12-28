@@ -15,7 +15,7 @@ namespace cinema.tests.Controllers;
 public class UsersControllerTests
 {
     private readonly CinemaDbContext _context;
-    private readonly UsersAdminController _controller;
+    private readonly UsersController _controller;
 
     public UsersControllerTests()
     {
@@ -30,11 +30,11 @@ public class UsersControllerTests
         _controller = CreateController(_context);
     }
 
-    private UsersAdminController CreateController(CinemaDbContext context)
+    private UsersController CreateController(CinemaDbContext context)
     {
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new UsersAdminController(context, mapper);
+        return new UsersController(context, mapper);
     }
 
     private void SeedDatabase()

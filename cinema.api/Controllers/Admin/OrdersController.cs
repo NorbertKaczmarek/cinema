@@ -12,14 +12,14 @@ namespace cinema.api.Controllers.Admin;
 [ApiController]
 [Route("api/admin/orders")]
 [ApiExplorerSettings(GroupName = "Admin")]
-public class OrdersAdminController : ControllerBase
+public class OrdersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly EmailOptions _emailOptions;
     private readonly IEmailSender _emailSender;
     private readonly IMapper _mapper;
 
-    public OrdersAdminController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
+    public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
     {
         _context = context;
         _emailOptions = emailOptions;
