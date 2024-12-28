@@ -21,41 +21,24 @@ public class ScreeningsUserController : ControllerBase
     }
 
     [HttpGet]
-    public PageResult<ScreeningDto> Get([FromQuery] PageQuery query)
+    public ActionResult<IEnumerable<ScreeningDto>> Get(DateTimeOffset startDate, DateTimeOffset endDate)
     {
-        DateTime.TryParse(query.Phrase, out var parsedDate);
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date must be earlier than end date.");
+        }
 
-        var baseQuery = _context
+        var result = _context
             .Screenings
             .Include(s => s.Movie)
             .ThenInclude(m => m!.Category)
-            .Where(
-                s => query.Phrase == null ||
-                (
-                    s.Movie!.Title.ToLower().Contains(query.Phrase.ToLower()) ||
-                    s.StartDateTime.Date == parsedDate.Date
-                )
-            )
-            .OrderByDescending(s => s.StartDateTime);
-
-        var totalCount = baseQuery.Count();
-
-        List<Screening> result;
-
-        if (query.Size == 0)
-        {
-            result = baseQuery.ToList();
-        }
-        else
-        {
-            result = baseQuery
-                .Skip(query.Size * query.Page)
-                .Take(query.Size)
-                .ToList();
-        }
+            .Where(s => s.StartDateTime >= startDate && s.EndDateTime <= endDate)
+            .OrderBy(s => s.StartDateTime)
+            .ToList();
 
         var resultDto = _mapper.Map<List<ScreeningDto>>(result);
-        return new PageResult<ScreeningDto>(resultDto, totalCount, query.Size);
+
+        return Ok(resultDto);
     }
 
     [HttpGet("{id}")]
