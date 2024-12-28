@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/categories")]
 [ApiController]
+[Route("api/admin/categories")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class CategoriesAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
