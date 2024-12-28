@@ -8,14 +8,14 @@ using System.Text;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/users")]
 [ApiController]
-public class UsersController : ControllerBase
+public class UsersAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public UsersController(CinemaDbContext context, IMapper mapper)
+    public UsersAdminController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

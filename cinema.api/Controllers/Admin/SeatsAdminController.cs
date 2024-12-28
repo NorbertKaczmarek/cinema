@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/seats")]
 [ApiController]
-public class SeatsController : ControllerBase
+public class SeatsAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
 
-    public SeatsController(CinemaDbContext context)
+    public SeatsAdminController(CinemaDbContext context)
     {
         _context = context;
     }

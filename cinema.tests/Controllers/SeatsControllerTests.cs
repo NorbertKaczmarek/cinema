@@ -36,7 +36,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsController(context);
+        var controller = new SeatsAdminController(context);
 
         // Act
         var result = controller.Get();
@@ -52,7 +52,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsController(context);
+        var controller = new SeatsAdminController(context);
         var seatId = context.Seats.First().Id;
 
         // Act
@@ -71,7 +71,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsController(context);
+        var controller = new SeatsAdminController(context);
         var invalidId = Guid.NewGuid();
 
         // Act
@@ -88,7 +88,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsController(context);
+        var controller = new SeatsAdminController(context);
 
         // Act
         var result = controller.GetByRowAndNumber('B', 2);
@@ -106,7 +106,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsController(context);
+        var controller = new SeatsAdminController(context);
 
         // Act
         var result = controller.GetByRowAndNumber('D', 4);

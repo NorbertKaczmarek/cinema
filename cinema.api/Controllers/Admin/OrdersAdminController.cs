@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/orders")]
 [ApiController]
-public class OrdersController : ControllerBase
+public class OrdersAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly EmailOptions _emailOptions;
     private readonly IEmailSender _emailSender;
     private readonly IMapper _mapper;
 
-    public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
+    public OrdersAdminController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
     {
         _context = context;
         _emailOptions = emailOptions;

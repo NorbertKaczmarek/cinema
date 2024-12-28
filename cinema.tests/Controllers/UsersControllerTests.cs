@@ -13,7 +13,7 @@ namespace cinema.tests.Controllers;
 public class UsersControllerTests
 {
     private readonly CinemaDbContext _context;
-    private readonly UsersController _controller;
+    private readonly UsersAdminController _controller;
 
     public UsersControllerTests()
     {
@@ -28,7 +28,7 @@ public class UsersControllerTests
         _controller = CreateController(_context);
     }
 
-    private UsersController CreateController(CinemaDbContext context)
+    private UsersAdminController CreateController(CinemaDbContext context)
     {
         var mapperMock = new Mock<IMapper>();
 
@@ -72,7 +72,7 @@ public class UsersControllerTests
                     SaltedHashedPassword = user.SaltedHashedPassword
                 }).ToList());
 
-        return new UsersController(context, mapperMock.Object);
+        return new UsersAdminController(context, mapperMock.Object);
     }
 
     private void SeedDatabase()

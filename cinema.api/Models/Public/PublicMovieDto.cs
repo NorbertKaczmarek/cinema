@@ -1,6 +1,8 @@
-﻿namespace cinema.context.Entities;
+﻿using cinema.context.Entities;
 
-public class Movie : IAuditableEntity
+namespace cinema.api.Public;
+
+public class PublicMovieDto
 {
     public Guid Id { get; set; }
     public required string Title { get; set; }
@@ -12,9 +14,7 @@ public class Movie : IAuditableEntity
     public required string Cast { get; set; }
     public required string Description { get; set; }
     public double Rating { get; set; }
-    public Guid? CategoryId {  get; set; }
+    public Guid? CategoryId { get; set; }
     public virtual Category? Category { get; set; }
-    public DateTimeOffset CreatedOnUtc { get; set; }
-    public DateTimeOffset? ModifiedOnUtc { get; set; }
-    public virtual ICollection<Screening> Screenings { get; set; } = new List<Screening>();
+    public List<Screening>? UpcomingScreenings { get; set; }
 }

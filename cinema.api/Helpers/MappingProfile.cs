@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using cinema.api.Models;
+using cinema.api.Models.Public;
+using cinema.api.Public;
 using cinema.context.Entities;
 
 namespace cinema.api.Helpers;
@@ -21,5 +23,14 @@ public class MappingProfile : Profile
         CreateMap<Screening, ScreeningDto>();
 
         CreateMap<User, UserDto>();
+
+        CreateMap<Screening, UpcomingScreeningDto>();
+
+        CreateMap<Movie, PublicMovieDto>()
+            .ForMember(dest => dest.UpcomingScreenings, opt => opt.MapFrom(src => src.Screenings
+                .Where(s => s.StartDateTime > DateTimeOffset.UtcNow)
+                .OrderBy(s => s.StartDateTime)
+                .Take(5)
+                .ToList()));
     }
 }
