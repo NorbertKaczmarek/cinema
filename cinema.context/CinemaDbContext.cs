@@ -40,6 +40,11 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
                 .WithMany()
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            eb.HasMany(m => m.Screenings)
+                .WithOne(s => s.Movie)
+                .HasForeignKey(s => s.MovieId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Screening>(eb =>
@@ -51,7 +56,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.MovieId).HasColumnType("char(36)");
 
             eb.HasOne(m => m.Movie)
-                .WithMany()
+                .WithMany(m => m.Screenings)
                 .HasForeignKey(c => c.MovieId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
