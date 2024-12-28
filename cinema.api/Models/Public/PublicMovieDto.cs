@@ -1,5 +1,4 @@
 ﻿using cinema.api.Models;
-using cinema.context.Entities;
 
 namespace cinema.api.Public;
 
@@ -16,6 +15,6 @@ public class PublicMovieDto
     public required string Description { get; set; }
     public double Rating { get; set; }
     public Guid? CategoryId { get; set; }
-    public virtual Category? Category { get; set; }
+    public virtual CategoryDto? Category { get; set; }
     public List<ScreeningDto>? UpcomingScreenings { get; set; }
 }
