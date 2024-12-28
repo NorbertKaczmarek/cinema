@@ -70,6 +70,9 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Cinema API",
         Description = "An ASP.NET Core Web API for managing a small cienema.",
     });
+
+    options.SwaggerDoc("Admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
+    options.SwaggerDoc("User", new OpenApiInfo { Title = "User API", Version = "v1" });
 });
 
 // EmailSender
@@ -102,7 +105,12 @@ scope.ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
 scope.ServiceProvider.GetRequiredService<Seeder>().SeedDatabase();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+//app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/Admin/swagger.json", "Admin API");
+    c.SwaggerEndpoint("/swagger/User/swagger.json", "User API");
+});
 
 app.UseHttpsRedirection();
 
