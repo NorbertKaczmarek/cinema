@@ -11,12 +11,12 @@ namespace cinema.api.Controllers.Public;
 [ApiController]
 [Route("api/user/movies")]
 [ApiExplorerSettings(GroupName = "User")]
-public class MoviesUserController : ControllerBase
+public class MoviesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public MoviesUserController(CinemaDbContext context, IMapper mapper)
+    public MoviesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

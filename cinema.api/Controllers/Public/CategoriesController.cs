@@ -8,12 +8,12 @@ namespace cinema.api.Controllers.Public;
 [ApiController]
 [Route("api/user/categories")]
 [ApiExplorerSettings(GroupName = "User")]
-public class CategoriesUserController : ControllerBase
+public class CategoriesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public CategoriesUserController(CinemaDbContext context, IMapper mapper)
+    public CategoriesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

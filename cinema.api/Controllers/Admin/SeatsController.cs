@@ -10,12 +10,12 @@ namespace cinema.api.Controllers.Admin;
 [ApiController]
 [Route("api/admin/seats")]
 [ApiExplorerSettings(GroupName = "Admin")]
-public class SeatsAdminController : ControllerBase
+public class SeatsController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public SeatsAdminController(CinemaDbContext context, IMapper mapper)
+    public SeatsController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

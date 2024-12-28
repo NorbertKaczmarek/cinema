@@ -35,11 +35,11 @@ public class CategoriesControllerTests
         return context;
     }
 
-    private CategoriesAdminController CreateController(CinemaDbContext context)
+    private CategoriesController CreateController(CinemaDbContext context)
     {
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new CategoriesAdminController(context, mapper);
+        return new CategoriesController(context, mapper);
     }
 
     [Fact]

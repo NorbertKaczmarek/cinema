@@ -73,13 +73,13 @@ public class OrdersControllerTests
         return context;
     }
 
-    private OrdersAdminController CreateController(CinemaDbContext context)
+    private OrdersController CreateController(CinemaDbContext context)
     {
         var emailOptionsMock = new Mock<EmailOptions>();
         var emailSenderMock = new Mock<IEmailSender>();
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new OrdersAdminController(context, emailOptionsMock.Object, emailSenderMock.Object, mapper);
+        return new OrdersController(context, emailOptionsMock.Object, emailSenderMock.Object, mapper);
     }
 
 

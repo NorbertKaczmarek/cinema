@@ -10,12 +10,12 @@ namespace cinema.api.Controllers.Admin;
 [ApiController]
 [Route("api/admin/categories")]
 [ApiExplorerSettings(GroupName = "Admin")]
-public class CategoriesAdminController : ControllerBase
+public class CategoriesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public CategoriesAdminController(CinemaDbContext context, IMapper mapper)
+    public CategoriesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

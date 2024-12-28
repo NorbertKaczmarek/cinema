@@ -105,7 +105,6 @@ scope.ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
 scope.ServiceProvider.GetRequiredService<Seeder>().SeedDatabase();
 
 app.UseSwagger();
-//app.UseSwaggerUI();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/Admin/swagger.json", "Admin API");

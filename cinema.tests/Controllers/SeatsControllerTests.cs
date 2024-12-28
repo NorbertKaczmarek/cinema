@@ -35,11 +35,11 @@ public class SeatsControllerTests
         return context;
     }
 
-    private SeatsAdminController CreateController(CinemaDbContext context)
+    private SeatsController CreateController(CinemaDbContext context)
     {
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new SeatsAdminController(context, mapper);
+        return new SeatsController(context, mapper);
     }
 
 

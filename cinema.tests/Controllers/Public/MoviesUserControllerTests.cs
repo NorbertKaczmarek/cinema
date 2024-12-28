@@ -82,11 +82,11 @@ public class MoviesUserControllerTests
         return context;
     }
 
-    private MoviesUserController CreateController(CinemaDbContext context)
+    private api.Controllers.Public.MoviesController CreateController(CinemaDbContext context)
     {
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new MoviesUserController(context, mapper);
+        return new api.Controllers.Public.MoviesController(context, mapper);
     }
 
     [Fact]
