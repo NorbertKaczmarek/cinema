@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using FluentAssertions;
 using AutoMapper;
 using Moq;
+using cinema.api.Models.Admin;
+using cinema.api.Helpers;
 
 namespace cinema.tests.Controllers;
 
@@ -30,49 +32,9 @@ public class UsersControllerTests
 
     private UsersAdminController CreateController(CinemaDbContext context)
     {
-        var mapperMock = new Mock<IMapper>();
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        mapperMock
-            .Setup(m => m.Map<User>(It.IsAny<UserDto>()))
-            .Returns((UserDto dto) => new User
-            {
-                Id = dto.Id,
-                IsAdmin = dto.IsAdmin,
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Salt = dto.Salt,
-                SaltedHashedPassword = dto.SaltedHashedPassword
-            });
-
-        mapperMock
-            .Setup(m => m.Map<UserDto>(It.IsAny<User>()))
-            .Returns((User user) => new UserDto
-            {
-                Id = user.Id,
-                IsAdmin = user.IsAdmin,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Salt = user.Salt,
-                SaltedHashedPassword = user.SaltedHashedPassword
-            });
-
-        mapperMock
-            .Setup(m => m.Map<List<UserDto>>(It.IsAny<List<User>>()))
-            .Returns((List<User> users) =>
-                users.Select(user => new UserDto
-                {
-                    Id = user.Id,
-                    IsAdmin = user.IsAdmin,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Salt = user.Salt,
-                    SaltedHashedPassword = user.SaltedHashedPassword
-                }).ToList());
-
-        return new UsersAdminController(context, mapperMock.Object);
+        return new UsersAdminController(context, mapper);
     }
 
     private void SeedDatabase()

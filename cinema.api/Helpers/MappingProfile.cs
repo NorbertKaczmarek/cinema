@@ -32,5 +32,7 @@ public class MappingProfile : Profile
                 .OrderBy(s => s.StartDateTime)
                 .Take(5)
                 .ToList()));
+
+        CreateMap<Seat, SeatDto>();
     }
 }

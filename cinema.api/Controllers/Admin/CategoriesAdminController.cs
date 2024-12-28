@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using cinema.api.Models;
+using cinema.api.Models.Admin;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;

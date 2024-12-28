@@ -7,6 +7,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Moq;
+using cinema.api.Models.Admin;
+using cinema.api.Helpers;
 
 namespace cinema.tests.Controllers;
 
@@ -80,65 +82,9 @@ public class MoviesControllerTests
 
     private MoviesAdminController CreateController(CinemaDbContext context)
     {
-        var mapperMock = new Mock<IMapper>();
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        mapperMock
-            .Setup(m => m.Map<Movie>(It.IsAny<MovieDto>()))
-            .Returns((MovieDto dto) => new Movie
-            {
-                Id = dto.Id,
-                Title = dto.Title,
-                DurationMinutes = dto.DurationMinutes,
-                PosterUrl = dto.PosterUrl,
-                TrailerUrl = dto.TrailerUrl,
-                BackgroundUrl = dto.BackgroundUrl,
-                Director = dto.Director,
-                Cast = dto.Cast,
-                Description = dto.Description,
-                Rating = dto.Rating,
-                CategoryId = dto.CategoryId,
-                Category = dto.Category
-            });
-
-        mapperMock
-            .Setup(m => m.Map<MovieDto>(It.IsAny<Movie>()))
-            .Returns((Movie movie) => new MovieDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                DurationMinutes = movie.DurationMinutes,
-                PosterUrl = movie.PosterUrl,
-                TrailerUrl = movie.TrailerUrl,
-                BackgroundUrl = movie.BackgroundUrl,
-                Director = movie.Director,
-                Cast = movie.Cast,
-                Description = movie.Description,
-                Rating = movie.Rating,
-                CategoryId = movie.CategoryId,
-                Category = movie.Category
-            });
-
-        mapperMock
-            .Setup(m => m.Map<List<MovieDto>>(It.IsAny<List<Movie>>()))
-            .Returns((List<Movie> movies) =>
-                movies.Select(movie => new MovieDto
-                {
-                    Id = movie.Id,
-                    Title = movie.Title,
-                    DurationMinutes = movie.DurationMinutes,
-                    PosterUrl = movie.PosterUrl,
-                    TrailerUrl = movie.TrailerUrl,
-                    BackgroundUrl = movie.BackgroundUrl,
-                    Director = movie.Director,
-                    Cast = movie.Cast,
-                    Description = movie.Description,
-                    Rating = movie.Rating,
-                    CategoryId = movie.CategoryId,
-                    Category = movie.Category
-                }).ToList());
-
-
-        return new MoviesAdminController(context, mapperMock.Object);
+        return new MoviesAdminController(context, mapper);
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-﻿namespace cinema.api.Models;
+﻿namespace cinema.api.Models.Admin;
 
 public class ScreeningCreateDto
 {

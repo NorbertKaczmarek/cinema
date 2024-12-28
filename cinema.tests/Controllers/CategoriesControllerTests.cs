@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using cinema.api;
 using cinema.api.Controllers.Admin;
+using cinema.api.Helpers;
 using cinema.api.Models;
+using cinema.api.Models.Admin;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
@@ -35,31 +37,9 @@ public class CategoriesControllerTests
 
     private CategoriesAdminController CreateController(CinemaDbContext context)
     {
-        var mapperMock = new Mock<IMapper>();
-        mapperMock
-            .Setup(m => m.Map<Category>(It.IsAny<CategoryDto>()))
-            .Returns((CategoryDto dto) => new Category
-            {
-                Id = dto.Id,
-                Name = dto.Name
-            });
-        mapperMock
-            .Setup(m => m.Map<CategoryDto>(It.IsAny<Category>()))
-            .Returns((Category category) => new CategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name
-            });
-        mapperMock
-            .Setup(m => m.Map<List<CategoryDto>>(It.IsAny<List<Category>>()))
-            .Returns((List<Category> categories) =>
-                categories.Select(c => new CategoryDto 
-                { 
-                    Id = c.Id, 
-                    Name = c.Name 
-                }).ToList());
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new CategoriesAdminController(context, mapperMock.Object);
+        return new CategoriesAdminController(context, mapper);
     }
 
     [Fact]
