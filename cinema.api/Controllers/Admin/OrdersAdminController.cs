@@ -67,7 +67,7 @@ public class OrdersAdminController : ControllerBase
     public OrderDto Get(Guid id)
     {
         var order = getById(id);
-        if (order is null) return null; //NotFound("Order with that id was not found.");
+        if (order is null) return null!; //NotFound("Order with that id was not found.");
         var orderDto = _mapper.Map<OrderDto>(order);
         return orderDto;
     }
