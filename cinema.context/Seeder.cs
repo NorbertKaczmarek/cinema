@@ -240,8 +240,8 @@ public class Seeder
     private List<Screening> GetScreenings(List<Movie> movies)
     {
         var _random = new Random();
-        long startTicks = new DateTimeOffset(2024, 6, 10, 8, 30, 0, TimeSpan.Zero).UtcTicks;
-        long endTicks = new DateTimeOffset(2024, 12, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
+        long startTicks = new DateTimeOffset(2024, 12, 10, 8, 30, 0, TimeSpan.Zero).UtcTicks;
+        long endTicks = new DateTimeOffset(2025, 6, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
         var screenings = new List<Screening>();
         foreach (var movie in movies)
         {

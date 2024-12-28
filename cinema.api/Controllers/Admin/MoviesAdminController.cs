@@ -8,8 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/movies")]
 [ApiController]
+[Route("api/admin/movies")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class MoviesAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;

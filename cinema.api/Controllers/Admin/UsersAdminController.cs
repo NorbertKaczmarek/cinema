@@ -9,8 +9,9 @@ using System.Text;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/users")]
 [ApiController]
+[Route("api/admin/users")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class UsersAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;

@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Public;
 
-[Route("api/user/screenings")]
 [ApiController]
+[Route("api/user/screenings")]
+[ApiExplorerSettings(GroupName = "User")]
 public class ScreeningsUserController : ControllerBase
 {
     private readonly CinemaDbContext _context;

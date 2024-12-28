@@ -9,8 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/orders")]
 [ApiController]
+[Route("api/admin/orders")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class OrdersAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
@@ -67,7 +68,7 @@ public class OrdersAdminController : ControllerBase
     public OrderDto Get(Guid id)
     {
         var order = getById(id);
-        if (order is null) return null; //NotFound("Order with that id was not found.");
+        if (order is null) return null!; //NotFound("Order with that id was not found.");
         var orderDto = _mapper.Map<OrderDto>(order);
         return orderDto;
     }

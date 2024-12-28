@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Public;
 
-[Route("api/user/categories")]
 [ApiController]
+[Route("api/user/categories")]
+[ApiExplorerSettings(GroupName = "User")]
 public class CategoriesUserController : ControllerBase
 {
     private readonly CinemaDbContext _context;

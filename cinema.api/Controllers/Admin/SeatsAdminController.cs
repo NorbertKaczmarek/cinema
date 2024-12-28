@@ -7,8 +7,9 @@ using Mono.TextTemplating;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/seats")]
 [ApiController]
+[Route("api/admin/seats")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class SeatsAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
