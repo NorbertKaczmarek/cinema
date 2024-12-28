@@ -10,5 +10,5 @@ public class OrderDto
     public required string Status { get; set; }
     public Guid? ScreeningId { get; set; }
     public virtual Screening? Screening { get; set; }
-    public virtual List<Seat>? Seats { get; set; }
+    public virtual List<SeatDto>? Seats { get; set; }
 }

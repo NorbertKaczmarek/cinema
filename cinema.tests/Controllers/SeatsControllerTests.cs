@@ -4,6 +4,10 @@ using cinema.context;
 using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using cinema.api.Models;
+using Moq;
+using cinema.api.Helpers;
 
 namespace cinema.tests.Controllers;
 
@@ -31,19 +35,27 @@ public class SeatsControllerTests
         return context;
     }
 
+    private SeatsAdminController CreateController(CinemaDbContext context)
+    {
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
+
+        return new SeatsAdminController(context, mapper);
+    }
+
+
     [Fact]
     public void Get_ReturnsAllSeats()
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsAdminController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.Get();
 
         // Assert
         result.Should().NotBeNull();
-        var seats = (result.Result as OkObjectResult)!.Value as IEnumerable<Seat>;
+        var seats = (result.Result as OkObjectResult)!.Value as IEnumerable<SeatDto>;
         seats!.Count().Should().Be(6);
     }
 
@@ -52,7 +64,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsAdminController(context);
+        var controller = CreateController(context);
         var seatId = context.Seats.First().Id;
 
         // Act
@@ -60,7 +72,7 @@ public class SeatsControllerTests
 
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>();
-        var seat = (result.Result as OkObjectResult)?.Value as Seat;
+        var seat = (result.Result as OkObjectResult)?.Value as SeatDto;
         seat.Should().NotBeNull();
         seat!.Row.Should().Be('A');
         seat.Number.Should().Be(1);
@@ -71,7 +83,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsAdminController(context);
+        var controller = CreateController(context);
         var invalidId = Guid.NewGuid();
 
         // Act
@@ -88,14 +100,14 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsAdminController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.GetByRowAndNumber('B', 2);
 
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>();
-        var seat = (result.Result as OkObjectResult)?.Value as Seat;
+        var seat = (result.Result as OkObjectResult)?.Value as SeatDto;
         seat.Should().NotBeNull();
         seat!.Row.Should().Be('B');
         seat.Number.Should().Be(2);
@@ -106,7 +118,7 @@ public class SeatsControllerTests
     {
         // Arrange
         var context = GetInMemoryDbContext();
-        var controller = new SeatsAdminController(context);
+        var controller = CreateController(context);
 
         // Act
         var result = controller.GetByRowAndNumber('D', 4);

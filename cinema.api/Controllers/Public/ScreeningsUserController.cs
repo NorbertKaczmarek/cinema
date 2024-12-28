@@ -76,7 +76,7 @@ public class ScreeningsUserController : ControllerBase
             .ToHashSet();
 
         var seatDtos = allSeats
-            .Select(s => new SeatDto
+            .Select(s => new SeatResultDto
             {
                 Id = s.Id,
                 Row = s.Row,

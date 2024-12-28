@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using cinema.api;
 using cinema.api.Controllers.Admin;
+using cinema.api.Helpers;
 using cinema.api.Helpers.EmailSender;
 using cinema.api.Models;
+using cinema.api.Models.Admin;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
@@ -75,45 +77,9 @@ public class OrdersControllerTests
     {
         var emailOptionsMock = new Mock<EmailOptions>();
         var emailSenderMock = new Mock<IEmailSender>();
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        var mapperMock = new Mock<IMapper>();
-        mapperMock.Setup(m => m.Map<Order>(It.IsAny<OrderDto>())).Returns((OrderDto dto) =>
-        {
-            var order = new Order
-            {
-                Id = dto.Id,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                ScreeningId = dto.ScreeningId,
-                Screening = dto.Screening,
-                Seats = dto.Seats
-            };
-
-            if (Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus))
-            {
-                order.Status = parsedStatus;
-            }
-            else
-            {
-                throw new ArgumentException($"Invalid order status: {dto.Status}");
-            }
-
-            return order;
-        });
-        mapperMock.Setup(m => m.Map<OrderDto>(It.IsAny<Order>()))
-        .Returns((Order order) => new OrderDto
-        {
-            Id = order.Id,
-            Email = order.Email,
-            PhoneNumber = order.PhoneNumber,
-            Status = order.Status.ToString(),
-            ScreeningId = order.ScreeningId,
-            Screening = order.Screening,
-            Seats = order.Seats
-        });
-
-
-        return new OrdersAdminController(context, emailOptionsMock.Object, emailSenderMock.Object, mapperMock.Object);
+        return new OrdersAdminController(context, emailOptionsMock.Object, emailSenderMock.Object, mapper);
     }
 
 

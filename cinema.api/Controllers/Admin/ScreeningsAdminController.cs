@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using cinema.api.Models;
+using cinema.api.Models.Admin;
 using cinema.context;
 using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +94,7 @@ public class ScreeningsAdminController : ControllerBase
             .ToHashSet();
 
         var seatDtos = allSeats
-            .Select(s => new SeatDto
+            .Select(s => new SeatResultDto
             {
                 Id = s.Id,
                 Row = s.Row,

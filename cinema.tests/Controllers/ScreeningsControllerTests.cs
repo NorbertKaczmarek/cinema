@@ -7,6 +7,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Moq;
+using cinema.api.Models.Admin;
+using cinema.api.Helpers;
 
 namespace cinema.tests.Controllers;
 
@@ -77,44 +79,9 @@ public class ScreeningsControllerTests
 
     private ScreeningsAdminController CreateController(CinemaDbContext context)
     {
-        var mapperMock = new Mock<IMapper>();
+        var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        mapperMock
-            .Setup(m => m.Map<Screening>(It.IsAny<ScreeningDto>()))
-            .Returns((ScreeningDto dto) => new Screening
-            {
-                Id = dto.Id,
-                StartDateTime = dto.StartDateTime,
-                EndDateTime = dto.EndDateTime,
-                MovieId = dto.MovieId,
-                Movie = dto.Movie
-            });
-
-        mapperMock
-            .Setup(m => m.Map<ScreeningDto>(It.IsAny<Screening>()))
-            .Returns((Screening screening) => new ScreeningDto
-            {
-                Id = screening.Id,
-                StartDateTime = screening.StartDateTime,
-                EndDateTime = screening.EndDateTime,
-                MovieId = screening.MovieId,
-                Movie = screening.Movie
-            });
-
-        mapperMock
-            .Setup(m => m.Map<List<ScreeningDto>>(It.IsAny<List<Screening>>()))
-            .Returns((List<Screening> screenings) =>
-                screenings.Select(screening => new ScreeningDto
-                {
-                    Id = screening.Id,
-                    StartDateTime = screening.StartDateTime,
-                    EndDateTime = screening.EndDateTime,
-                    MovieId = screening.MovieId,
-                    Movie = screening.Movie
-                }).ToList());
-
-
-        return new ScreeningsAdminController(context, mapperMock.Object);
+        return new ScreeningsAdminController(context, mapper);
     }
 
     [Fact]
