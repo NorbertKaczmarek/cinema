@@ -33,7 +33,7 @@ public class CategoriesControllerTests
         return context;
     }
 
-    private CategoriesController CreateController(CinemaDbContext context)
+    private CategoriesAdminController CreateController(CinemaDbContext context)
     {
         var mapperMock = new Mock<IMapper>();
         mapperMock
@@ -59,7 +59,7 @@ public class CategoriesControllerTests
                     Name = c.Name 
                 }).ToList());
 
-        return new CategoriesController(context, mapperMock.Object);
+        return new CategoriesAdminController(context, mapperMock.Object);
     }
 
     [Fact]

@@ -75,7 +75,7 @@ public class ScreeningsControllerTests
         return context;
     }
 
-    private ScreeningsController CreateController(CinemaDbContext context)
+    private ScreeningsAdminController CreateController(CinemaDbContext context)
     {
         var mapperMock = new Mock<IMapper>();
 
@@ -114,7 +114,7 @@ public class ScreeningsControllerTests
                 }).ToList());
 
 
-        return new ScreeningsController(context, mapperMock.Object);
+        return new ScreeningsAdminController(context, mapperMock.Object);
     }
 
     [Fact]

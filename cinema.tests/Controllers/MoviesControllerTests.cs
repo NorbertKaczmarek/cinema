@@ -78,7 +78,7 @@ public class MoviesControllerTests
         return context;
     }
 
-    private MoviesController CreateController(CinemaDbContext context)
+    private MoviesAdminController CreateController(CinemaDbContext context)
     {
         var mapperMock = new Mock<IMapper>();
 
@@ -138,7 +138,7 @@ public class MoviesControllerTests
                 }).ToList());
 
 
-        return new MoviesController(context, mapperMock.Object);
+        return new MoviesAdminController(context, mapperMock.Object);
     }
 
     [Fact]

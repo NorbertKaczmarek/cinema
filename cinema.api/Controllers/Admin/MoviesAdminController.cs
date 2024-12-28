@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/movies")]
 [ApiController]
-public class MoviesController : ControllerBase
+public class MoviesAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public MoviesController(CinemaDbContext context, IMapper mapper)
+    public MoviesAdminController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

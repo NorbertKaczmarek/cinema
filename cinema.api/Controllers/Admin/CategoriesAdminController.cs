@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/categories")]
 [ApiController]
-public class CategoriesController : ControllerBase
+public class CategoriesAdminController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly IMapper _mapper;
 
-    public CategoriesController(CinemaDbContext context, IMapper mapper)
+    public CategoriesAdminController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
