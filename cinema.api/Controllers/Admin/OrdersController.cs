@@ -73,35 +73,6 @@ public class OrdersController : ControllerBase
         return orderDto;
     }
 
-    [HttpGet("{id}/email")]
-    public OrderDto SentTestEmail(Guid id)
-    {
-        var order = getById(id);
-
-        var senderInfo = new SenderInfo
-        {
-            Email = _emailOptions.Email,
-            DisplayName = _emailOptions.DisplayName,
-            AppPassword = _emailOptions.AppPassword,
-            SmtpClientHost = _emailOptions.SmtpClientHost,
-            SmtpClientPort = _emailOptions.SmtpClientPort,
-        };
-
-        var ticketInfo = new TicketInfo
-        {
-            MovieName = order.Screening!.Movie!.Title,
-            Date = order.Screening!.StartDateTime.ToString("yyyy-MM-dd"),
-            Time = order.Screening!.StartDateTime.ToString("HH:mm"),
-            SeatNumbers = string.Join(", ", order.Seats!.Select(s => $"{s.Row}{s.Number}")),
-            WebsiteUrl = _emailOptions.WebsiteUrl,
-            Code = "0000"  // TODO unique code
-        };
-
-        _emailSender.sendEmailAsync(senderInfo, senderInfo.Email, ticketInfo);  // TODO order.Email
-
-        return _mapper.Map<OrderDto>(order);
-    }
-
     private Order getById(Guid id)
     {
         return _context
