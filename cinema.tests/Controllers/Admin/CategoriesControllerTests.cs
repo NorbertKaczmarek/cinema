@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace cinema.tests.Controllers;
+namespace cinema.tests.Controllers.Admin;
 
 public class CategoriesControllerTests
 {
@@ -200,9 +200,9 @@ public class CategoriesControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var controller = CreateController(context);
-        var existingcategoryName = (new Guid()).ToString();
-        var editedcategoryOldName = (new Guid()).ToString();
-        var editedcategoryNewName = (new Guid()).ToString();
+        var existingcategoryName = new Guid().ToString();
+        var editedcategoryOldName = new Guid().ToString();
+        var editedcategoryNewName = new Guid().ToString();
 
         var existingCategory = new Category { Name = existingcategoryName };
         var editedCategory = new Category { Name = editedcategoryOldName };

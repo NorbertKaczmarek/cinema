@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace cinema.tests.Controllers;
+namespace cinema.tests.Controllers.Admin;
 
 public class OrdersControllerTests
 {

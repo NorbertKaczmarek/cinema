@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cinema.tests.Controllers.Public;
 
-public class CategoriesPublicControllerTests
+public class CategoriesControllerTests
 {
     private CinemaDbContext GetInMemoryDbContext()
     {

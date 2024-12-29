@@ -43,13 +43,13 @@ public class ScreeningsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ScreeningDto Get(Guid id)
+    public ActionResult<ScreeningDto> Get(Guid id)
     {
         var screening = getById(id);
-        if (screening is null) return null!;
+        if (screening is null) return BadRequest("Screening not found.");
 
         var screeningDto = _mapper.Map<ScreeningDto>(screening);
-        return screeningDto;
+        return Ok(screeningDto);
     }
 
     private Screening getById(Guid id)
@@ -62,7 +62,7 @@ public class ScreeningsController : ControllerBase
     }
 
     [HttpGet("{id}/seats")]
-    public SeatResult GetSeats(Guid id)
+    public ActionResult<SeatResult> GetSeats(Guid id)
     {
         var allSeats = _context
             .Seats
@@ -100,6 +100,6 @@ public class ScreeningsController : ControllerBase
             Seats = seatDtos
         };
 
-        return seatResult;
+        return Ok(seatResult);
     }
 }
