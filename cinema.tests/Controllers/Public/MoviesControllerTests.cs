@@ -14,7 +14,7 @@ using cinema.api.Public;
 
 namespace cinema.tests.Controllers.Public;
 
-public class MoviesUserControllerTests
+public class MoviesControllerTests
 {
     private CinemaDbContext GetInMemoryDbContext()
     {

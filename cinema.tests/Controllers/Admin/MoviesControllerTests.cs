@@ -10,7 +10,7 @@ using Moq;
 using cinema.api.Models.Admin;
 using cinema.api.Helpers;
 
-namespace cinema.tests.Controllers;
+namespace cinema.tests.Controllers.Admin;
 
 public class MoviesControllerTests
 {
