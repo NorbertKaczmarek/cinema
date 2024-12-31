@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from 'react-router-dom';
 
 import { AdminLayout } from 'Components/AdminLayout';
 import { UserLayout } from 'Components/UserLayout';
+import { AdminAuth } from 'Pages/private/AdminAuth';
 import {
   AdminCategoryAdd,
   AdminCategoryDetails,
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Outlet />,
     children: [
+      {
+        element: <PrivateRoute />,
+        children: [{ path: ROUTES.private.AUTH, element: <AdminAuth /> }],
+      },
       {
         path: '/admin',
         element: <AdminLayout />,

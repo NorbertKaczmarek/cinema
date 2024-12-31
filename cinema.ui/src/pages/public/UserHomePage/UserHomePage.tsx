@@ -5,13 +5,14 @@ import { pl } from 'date-fns/locale';
 import { Clock, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAdminCategories } from 'Api/queries/useAdminCategories';
-import { useAdminMovies } from 'Api/queries/useAdminMovies';
-import { useAdminScreenings } from 'Api/queries/useAdminScreenings';
+import { useUserCategories } from 'Api/queries/useUserCategories';
+import { useUserMovies } from 'Api/queries/useUserMovies';
+import { useUserScreenings } from 'Api/queries/useUserScreenings';
 import { Badge } from 'Components/Badge';
-import { Button, ButtonSize, ButtonVariant } from 'Components/Button';
+import { Button, ButtonVariant } from 'Components/Button';
 import { Card } from 'Components/Card';
 import { MovieCarousel } from 'Components/MovieCarousel';
+import { Skeleton } from 'Components/Skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'Components/Tabs';
 import { Category } from 'Types/category';
 import { Movie } from 'Types/movie';
@@ -30,29 +31,24 @@ export const UserHomePage = () => {
 
   const navigate = useNavigate();
 
-  // @TODO - user
-  // const { data: screenings, isFetching: isFetchingScreenings } = useUserScreenings();
-  // const { data: movies, isFetching: isFetchingMovies } = useUserMovies({ page: 0, size: 0 });
-  // const {data: categories, isFetching: isFetchingCategories } = useUserCategories({page: 0, size: 0})
-  const { data: screenings, isFetching: isFetchingScreenings } = useAdminScreenings({
+  const { data: screenings, isFetching: isFetchingScreenings } = useUserScreenings({
+    startDate: format(new Date(), 'yyyy-MM-dd'),
+    endDate: format(addDays(new Date(), 7), 'yyyy-MM-dd'),
+  });
+  const { data: movies, isFetching: isFetchingMovies } = useUserMovies();
+  const { data: categories, isFetching: isFetchingCategories } = useUserCategories({
     page: 0,
     size: 0,
   });
-  const { data: movies, isFetching: isFetchingMovies } = useAdminMovies({ page: 0, size: 0 });
-  const { data: categories, isFetching: isFetchingCategories } = useAdminCategories({
-    page: 0,
-    size: 0,
-  });
-  // const screening = (screenings?.content || []).find(({ id }) => id === screeningId);
-  // const movie = (movies?.content || []).find(({ id: movieId }) => movieId === screening?.movieId);
-  // const categoryName =
-  //   (categories?.content || []).find(({ id }) => id === movie?.categoryId)?.name || '';
 
   const dates = Array.from({ length: 7 }, (_, i) => format(addDays(new Date(), i), 'yyyy-MM-dd'));
 
+  const handleNavigate = (screeningId: string) => navigate(`/order/${screeningId}`);
+
   const groupedScreenings = useMemo(() => {
-    if (!screenings?.content) return {};
-    return screenings?.content.reduce((acc, screening) => {
+    if (!screenings) return {};
+
+    return screenings.reduce((acc, screening) => {
       const date = screening.startDateTime.split('T')[0];
       if (!acc[date]) acc[date] = {};
       if (!acc[date][screening.movieId]) acc[date][screening.movieId] = [];
@@ -61,12 +57,13 @@ export const UserHomePage = () => {
     }, {} as GroupedScreenings);
   }, [screenings]);
 
-  const moviesMap = (movies?.content || []).reduce(
+  const moviesMap = (movies || []).reduce(
     (acc, movie) => ({ ...acc, [movie.id]: movie }),
     {} as {
       [id: string]: Movie;
     }
   );
+
   const categoriesMap = (categories?.content || []).reduce(
     (acc, category) => ({
       ...acc,
@@ -75,7 +72,12 @@ export const UserHomePage = () => {
     {} as { [id: string]: Category }
   );
 
-  const handleNavigate = (screeningId: string) => navigate(`/order/${screeningId}`);
+  if (isFetchingScreenings || isFetchingMovies || isFetchingCategories)
+    return (
+      <div className="h-[35rem] py-8">
+        <Skeleton rows={6} />
+      </div>
+    );
 
   return (
     <div>
@@ -119,7 +121,7 @@ export const UserHomePage = () => {
                               {movie.title}
                             </h2>
                             <div className="mb-6 flex items-center gap-2">
-                              <Badge>{category.name}</Badge>
+                              {category && <Badge>{category.name}</Badge>}
                               <div className="flex items-center">
                                 <Star className="mr-1 h-4 w-4 text-yellow-400" />
                                 <span>{movie.rating.toFixed(1)}</span>

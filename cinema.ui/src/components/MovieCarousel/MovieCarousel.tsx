@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useNavigate } from 'react-router-dom';
 
-import { useAdminMovies } from 'Api/queries/useAdminMovies';
+import { useUserMovies } from 'Api/queries/useUserMovies';
 import { Button, ButtonVariant } from 'Components/Button';
 import { Carousel, CarouselContent, CarouselItem } from 'Components/Carousel';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from 'Components/Dialog';
@@ -14,9 +14,7 @@ import { getYouTubeId } from 'Utils/getYoutubeId';
 export const MovieCarousel = () => {
   const [selectedMovie, setSelectedMovie] = useState<Nullable<Movie>>(null);
 
-  // @TODOD - user
-  // const { data: movies, isFetching } = useUserMovies({ page: 0, size: 5 });
-  const { data: movies, isFetching } = useAdminMovies({ page: 0, size: 5 });
+  const { data: movies, isFetching } = useUserMovies();
 
   const navigate = useNavigate();
 
@@ -50,7 +48,7 @@ export const MovieCarousel = () => {
         className="mx-auto max-w-[1100px]"
       >
         <CarouselContent>
-          {(movies?.content || []).map(movie => (
+          {(movies || []).slice(0, 5).map(movie => (
             <CarouselItem key={movie.id} className="min-h-[500px] w-full basis-full">
               <div
                 className="relative h-full w-full cursor-pointer"

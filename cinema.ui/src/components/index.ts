@@ -8,7 +8,6 @@ export * from './Carousel';
 export * from './Cells';
 export * from './Checkbox';
 export * from './DataTable';
-export * from './DatetimePicker';
 export * from './Dialog';
 export * from './Drawer';
 export * from './FormField';

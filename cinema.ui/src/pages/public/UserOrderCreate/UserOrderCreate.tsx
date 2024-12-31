@@ -4,10 +4,10 @@ import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAdminCategories } from 'Api/queries/useAdminCategories';
-import { useAdminMovies } from 'Api/queries/useAdminMovies';
-import { useAdminScreenings } from 'Api/queries/useAdminScreenings';
-import { useAdminScreeningSeats } from 'Api/queries/useAdminScreeningSeats';
+import { useUserCategoryById } from 'Api/queries/useUserCategoryById';
+import { useUserMovieById } from 'Api/queries/useUserMovieById';
+import { useUserScreeningById } from 'Api/queries/useUserScreeningById';
+import { useUserScreeningSeats } from 'Api/queries/useUserScreeningSeats';
 import { Badge } from 'Components/Badge';
 import { Button } from 'Components/Button';
 import { Card } from 'Components/Card';
@@ -25,27 +25,11 @@ export const UserOrderCreate = () => {
 
   const navigate = useNavigate();
 
-  //@TODO - USER, proper get by id calls
-  // const {data: screening, isFetching: isFetchingScreening} = useUserScreeningById(screeningId);
-  // const { data: movie, isFetching: isFetchingMovie } = useUserMovieById(screening?.movieId);
-  // const {data: category, isFetching: isFetchingCategory} = useUserCategoryById(movie?.categoryId);
+  const { data: screening, isFetching: isFetchingScreening } = useUserScreeningById(screeningId);
+  const { data: movie, isFetching: isFetchingMovie } = useUserMovieById(screening?.movieId);
+  const { data: category, isFetching: isFetchingCategory } = useUserCategoryById(movie?.categoryId);
   const { data: seatAvailability, isFetching: isFetchingSeats } =
-    useAdminScreeningSeats(screeningId);
-  // useUserScreeningSeats(screeningId)
-
-  const { data: screenings, isFetching: isFetchingScreenings } = useAdminScreenings({
-    page: 0,
-    size: 0,
-  });
-  const { data: movies, isFetching: isFetchingMovies } = useAdminMovies({ page: 0, size: 0 });
-  const { data: categories, isFetching: isFetchingCategories } = useAdminCategories({
-    page: 0,
-    size: 0,
-  });
-  const screening = (screenings?.content || []).find(({ id }) => id === screeningId);
-  const movie = (movies?.content || []).find(({ id: movieId }) => movieId === screening?.movieId);
-  const categoryName =
-    (categories?.content || []).find(({ id }) => id === movie?.categoryId)?.name || '';
+    useUserScreeningSeats(screeningId);
 
   const toggleSeatSelection = (seatId: string) => {
     setSelectedSeats(prev =>
@@ -67,15 +51,15 @@ export const UserOrderCreate = () => {
 
   const totalPrice = selectedSeats.length * 20;
 
-  // if (!screening || !movie || !category || !seatAvailability || isFetchingScreening || isFetchingMovie || isFetchingCategory || isFetchingSeats)
   if (
-    !movie ||
     !screening ||
+    !movie ||
+    !category ||
     !seatAvailability ||
-    isFetchingMovies ||
-    isFetchingCategories ||
-    isFetchingSeats ||
-    isFetchingScreenings
+    isFetchingScreening ||
+    isFetchingMovie ||
+    isFetchingCategory ||
+    isFetchingSeats
   )
     return (
       <div className="h-[35rem] py-8">
@@ -103,7 +87,7 @@ export const UserOrderCreate = () => {
                 <h1 className="text-center text-2xl font-bold sm:text-left sm:text-3xl">
                   {movie.title}
                 </h1>
-                {categoryName && <Badge>{categoryName}</Badge>}
+                {category && <Badge>{category.name}</Badge>}
               </div>
               <p className="mb-2 text-center text-lg sm:text-left sm:text-xl">
                 {capitalizeFirstLetter(

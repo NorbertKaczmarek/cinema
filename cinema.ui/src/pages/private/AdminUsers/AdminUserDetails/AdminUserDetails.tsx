@@ -10,7 +10,7 @@ export const AdminUserDetails = () => {
   const { form, isEdit, isSpinning, handleEdit, handleCancel, handleUpdateElem, handleRedirect } =
     useDictionaryState<User>(USER_DETAILS_DICT_STATE);
 
-  // if my id !== id from params then redirect home. taken from auth
+  // @TODO if my id !== id from params then redirect home. taken from auth
 
   return (
     <Spinner isSpinning={isSpinning}>

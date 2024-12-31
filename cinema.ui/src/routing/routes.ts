@@ -1,6 +1,7 @@
 export const ROUTES = {
   private: {
     HOME: '/admin',
+    AUTH: '/admin/login',
     MOVIE: {
       TABLE: '/admin/movies',
       ADD: '/admin/movies/add',

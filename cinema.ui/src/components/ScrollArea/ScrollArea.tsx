@@ -10,7 +10,7 @@ import {
 
 import { cn } from 'Utils/cn';
 
-const BaseScrollBar = forwardRef<
+export const BaseScrollBar = forwardRef<
   ElementRef<typeof ScrollAreaScrollbar>,
   ComponentPropsWithoutRef<typeof ScrollAreaScrollbar>
 >(({ className, orientation = 'vertical', ...props }, ref) => (

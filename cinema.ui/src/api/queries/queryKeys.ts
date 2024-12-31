@@ -5,7 +5,7 @@ export const QUERY_KEYS = {
   ADMIN_USERS: (params: Record<string, unknown>) => ['admin', 'users', params],
   ADMIN_ORDERS: (params: Record<string, unknown>) => ['admin', 'orders', params],
   ADMIN_SCREENING_SEATS: (screeningId = '') => ['admin', 'screenings', 'seats', screeningId],
-  USER_MOVIES: (params: Record<string, unknown>) => ['user', 'movies', params],
+  USER_MOVIES: ['user', 'movies'],
   USER_MOVIE: (movieId = '') => ['user', 'movies', movieId],
   USER_SCREENINGS: ['user', 'screenings'],
   USER_SCREENING: (screeningId = '') => ['user', 'screenings', screeningId],

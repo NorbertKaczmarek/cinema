@@ -3,20 +3,15 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { PATHS } from 'Api/paths';
 import { httpClient } from 'Configs/axios';
 import { Movie } from 'Types/movie';
-import { BackendTable, QueryParamsTable } from 'Types/table';
 
 import { QUERY_KEYS } from './queryKeys';
 
-export const useUserMovies = (
-  queryParams: QueryParamsTable
-): UseQueryResult<BackendTable<Movie>, Error> =>
+export const useUserMovies = (): UseQueryResult<Movie[], Error> =>
   useQuery({
-    queryKey: QUERY_KEYS.USER_MOVIES(queryParams),
+    queryKey: QUERY_KEYS.USER_MOVIES,
     queryFn: async () => {
       const axios = httpClient();
-      const { data } = await axios.get(PATHS.MOVIES.PUBLIC.MOVIES, {
-        params: queryParams,
-      });
+      const { data } = await axios.get(PATHS.MOVIES.PUBLIC.MOVIES);
 
       return data;
     },
