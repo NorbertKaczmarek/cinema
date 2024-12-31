@@ -6,7 +6,9 @@ const PRIVATE = {
   DELETE_ORDER: (id: string) => `/admin/orders/${id}`,
 };
 
-const PUBLIC = {};
+const PUBLIC = {
+  CREATE_ORDER: '/user/orders',
+};
 
 export const ORDERS = {
   PRIVATE,

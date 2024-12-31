@@ -5,6 +5,7 @@ import { Toaster as Sonner } from 'sonner';
 export const Toaster = ({ ...props }: ComponentProps<typeof Sonner>) => (
   <Sonner
     richColors
+    position="top-center"
     className="toaster group"
     toastOptions={{
       classNames: {
