@@ -240,12 +240,12 @@ public class Seeder
     private List<Screening> GetScreenings(List<Movie> movies)
     {
         var _random = new Random();
-        long startTicks = new DateTimeOffset(2024, 12, 10, 8, 30, 0, TimeSpan.Zero).UtcTicks;
+        long startTicks = new DateTimeOffset(2025, 1, 1, 8, 30, 0, TimeSpan.Zero).UtcTicks;
         long endTicks = new DateTimeOffset(2025, 6, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
         var screenings = new List<Screening>();
         foreach (var movie in movies)
         {
-            var screeningsAmount = _random.Next(4, 15);
+            var screeningsAmount = _random.Next(10, 30);
             for (var i = 0; i < screeningsAmount; i++)
             {
                 long randomTicks = (long)(_random.NextDouble() * (endTicks - startTicks)) + startTicks;
