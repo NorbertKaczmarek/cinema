@@ -31,7 +31,6 @@ builder.Services.AddCors(options =>
 });
 
 // Authorization, Authentication (JWT)
-builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,6 +49,13 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = authenticationOptions.ValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationOptions.IssuerSigningKey))
     };
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("Admin"));
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireRole("User"));
 });
 
 // Interceptors

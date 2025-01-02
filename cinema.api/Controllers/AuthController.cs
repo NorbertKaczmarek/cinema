@@ -59,11 +59,12 @@ public class AuthController : ControllerBase
             {
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FullName", string.Concat(user.FirstName, " ", user.LastName)),
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             },
             notBefore: null,
             expires: DateTime.UtcNow.AddHours(6),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
+    } 
 }
