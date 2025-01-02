@@ -1,24 +1,29 @@
-﻿using cinema.api.Models;
-using cinema.context;
+﻿using AutoMapper;
+using cinema.api.Models.Admin;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
 [ApiController]
+[Route("api/admin/screenings")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class ScreeningsController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public ScreeningsController(CinemaDbContext context)
+    public ScreeningsController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public PageResult<Screening> Get([FromQuery] PageQuery query)
+    public PageResult<ScreeningDto> Get([FromQuery] PageQuery query)
     {
         DateTime.TryParse(query.Phrase, out var parsedDate);
 
@@ -33,7 +38,7 @@ public class ScreeningsController : ControllerBase
                     s.StartDateTime.Date == parsedDate.Date
                 )
             )
-            .OrderBy(s => s.StartDateTime);
+            .OrderByDescending(s => s.StartDateTime);
 
         var totalCount = baseQuery.Count();
 
@@ -51,13 +56,18 @@ public class ScreeningsController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<Screening>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<ScreeningDto>>(result);
+        return new PageResult<ScreeningDto>(resultDto, totalCount, query.Size);
     }
 
     [HttpGet("{id}")]
-    public Screening Get(Guid id)
+    public ScreeningDto Get(Guid id)
     {
-        return getById(id);
+        var screening = getById(id);
+        if (screening is null) return null!;
+
+        var screeningDto = _mapper.Map<ScreeningDto>(screening);
+        return screeningDto;
     }
 
     private Screening getById(Guid id)
@@ -85,7 +95,7 @@ public class ScreeningsController : ControllerBase
             .ToHashSet();
 
         var seatDtos = allSeats
-            .Select(s => new SeatDto
+            .Select(s => new SeatResultDto
             {
                 Id = s.Id,
                 Row = s.Row,
@@ -114,10 +124,10 @@ public class ScreeningsController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
-        if (dto == null) return BadRequest();
+        if (dto == null) return BadRequest("Nieprawidłowe dane seansu.");
 
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
-        if (movie == null) return BadRequest("Movie not found.");
+        if (movie == null) return BadRequest("Film nie został znaleziony.");
 
         var newStartDateTime = dto.StartDateTime;
         var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
@@ -131,7 +141,7 @@ public class ScreeningsController : ControllerBase
                 (bufferedNewStart < s.EndDateTime && bufferedNewEnd > s.StartDateTime)
             );
 
-        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+        if (overlappingScreening) return BadRequest("Czas seansu pokrywa się z innym seansem.");
 
         var screening = new Screening()
         {
@@ -142,17 +152,19 @@ public class ScreeningsController : ControllerBase
 
         _context.Screenings.Add(screening);
         _context.SaveChanges();
-        return Created($"/api/admin/screenings/{screening.Id}", null);
+
+        var screeningDto = _mapper.Map<ScreeningDto>(screening);
+        return Created($"/api/admin/screenings/{screeningDto.Id}", null);
     }
 
     [HttpPut("{id}")]
     public ActionResult Put(Guid id, [FromBody] ScreeningCreateDto dto)
     {
         var existingScreening = getById(id);
-        if (existingScreening == null) return NotFound("Screening not found.");
+        if (existingScreening == null) return NotFound("Seans nie został znaleziony.");
 
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
-        if (movie == null) return BadRequest("Movie not found.");
+        if (movie == null) return BadRequest("Film nie został znaleziony.");
 
         var newStartDateTime = dto.StartDateTime;
         var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
@@ -165,14 +177,16 @@ public class ScreeningsController : ControllerBase
                 s.EndDateTime > newStartDateTime
             );
 
-        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+        if (overlappingScreening) return BadRequest("Czas seansu pokrywa się z innym seansem.");
 
         existingScreening.StartDateTime = newStartDateTime;
         existingScreening.EndDateTime = newEndDateTime;
         existingScreening.MovieId = dto.MovieId;
 
         _context.SaveChanges();
-        return Ok(existingScreening);
+
+        var screeningDto = _mapper.Map<ScreeningDto>(existingScreening);
+        return Ok(screeningDto);
     }
 
     [HttpDelete("{id}")]

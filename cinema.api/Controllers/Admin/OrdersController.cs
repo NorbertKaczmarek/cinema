@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
-using cinema.api.Helpers.EmailSender;
+using cinema.api.Models.Admin;
 using cinema.api.Models;
-using cinema.context;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
+using cinema.api.Helpers.EmailSender;
 using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
 [ApiController]
+[Route("api/admin/orders")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class OrdersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
@@ -66,38 +68,9 @@ public class OrdersController : ControllerBase
     public OrderDto Get(Guid id)
     {
         var order = getById(id);
-        if (order is null) return null; //NotFound("Order with that id was not found.");
+        if (order is null) return null!; //NotFound("Order with that id was not found.");
         var orderDto = _mapper.Map<OrderDto>(order);
         return orderDto;
-    }
-
-    [HttpGet("{id}/email")]
-    public OrderDto SentTestEmail(Guid id)
-    {
-        var order = getById(id);
-
-        var senderInfo = new SenderInfo
-        {
-            Email = _emailOptions.Email,
-            DisplayName = _emailOptions.DisplayName,
-            AppPassword = _emailOptions.AppPassword,
-            SmtpClientHost = _emailOptions.SmtpClientHost,
-            SmtpClientPort = _emailOptions.SmtpClientPort,
-        };
-
-        var ticketInfo = new TicketInfo
-        {
-            MovieName = order.Screening!.Movie!.Title,
-            Date = order.Screening!.StartDateTime.ToString("yyyy-MM-dd"),
-            Time = order.Screening!.StartDateTime.ToString("HH:mm"),
-            SeatNumbers = string.Join(", ", order.Seats!.Select(s => $"{s.Row}{s.Number}")),
-            WebsiteUrl = _emailOptions.WebsiteUrl,
-            Code = "0000"  // TODO unique code
-        };
-
-        _emailSender.sendEmailAsync(senderInfo, senderInfo.Email, ticketInfo);  // TODO order.Email
-
-        return _mapper.Map<OrderDto>(order);
     }
 
     private Order getById(Guid id)
@@ -114,13 +87,13 @@ public class OrdersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] OrderCreateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid order data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane zamówienia.");
 
         var screening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
-        if (screening == null) return BadRequest("Invalid screening ID.");
+        if (screening == null) return BadRequest("Nieprawidłowy identyfikator seansu.");
 
         var requestedSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
-        if (requestedSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+        if (requestedSeats.Count != dto.SeatIds.Count) return BadRequest("Jeden lub więcej identyfikatorów miejsc jest nieprawidłowy.");
 
         var takenSeatIds = _context.Orders
             .Where(o => o.ScreeningId == dto.ScreeningId)
@@ -132,7 +105,7 @@ public class OrdersController : ControllerBase
         if (takenSeats.Any())
         {
             var takenSeatNumbers = string.Join(", ", takenSeats.Select(s => $"{s.Row}{s.Number}"));
-            return BadRequest($"The following seats are already taken: {takenSeatNumbers}");
+            return BadRequest($"Następujące miejsca są już zajęte: {takenSeatNumbers}");
         }
 
         var newOrder = new Order
@@ -141,7 +114,7 @@ public class OrdersController : ControllerBase
             PhoneNumber = dto.PhoneNumber ?? "",
             Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
                 ? parsedStatus
-                : throw new ArgumentException($"Invalid order status: {dto.Status}"),
+                : throw new ArgumentException($"Nieprawidłowy status zamówienia: {dto.Status}"),
             Screening = screening,
             Seats = requestedSeats,
         };
@@ -157,22 +130,22 @@ public class OrdersController : ControllerBase
     [HttpPut("{id}")]
     public ActionResult Put(Guid id, [FromBody] OrderUpdateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid order data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane zamówienia.");
 
         var existingOrder = getById(id);
-        if (existingOrder == null) return NotFound($"Order with id {id} not found.");
+        if (existingOrder == null) return NotFound($"Zamówienie o identyfikatorze {id} nie zostało znalezione.");
 
         if (dto.ScreeningId != null)
         {
             var newScreening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
-            if (newScreening == null) return BadRequest("Invalid screening ID.");
+            if (newScreening == null) return BadRequest("Nieprawidłowy identyfikator seansu.");
             existingOrder.Screening = newScreening;
         }
 
         if (dto.SeatIds != null)
         {
             var newSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
-            if (newSeats.Count != dto.SeatIds.Count) return BadRequest("One or more seat IDs are invalid.");
+            if (newSeats.Count != dto.SeatIds.Count) return BadRequest("Jeden lub więcej identyfikatorów miejsc jest nieprawidłowy.");
             existingOrder.Seats = newSeats;
         }
 
@@ -180,7 +153,7 @@ public class OrdersController : ControllerBase
         existingOrder.PhoneNumber = dto.PhoneNumber ?? existingOrder.PhoneNumber;
         existingOrder.Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
                 ? parsedStatus
-                : throw new ArgumentException($"Invalid order status: {dto.Status}");
+                : throw new ArgumentException($"Nieprawidłowy status zamówienia: {dto.Status}");
 
         _context.SaveChanges();
 

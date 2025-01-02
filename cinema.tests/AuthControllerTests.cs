@@ -1,5 +1,6 @@
 ﻿using cinema.api.Helpers;
 using cinema.api.Models;
+using cinema.api.Models.Admin;
 using cinema.context;
 using cinema.context.Entities;
 using FluentAssertions;
@@ -78,8 +79,8 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData("validuser@example.com", "ValidPassword123!", "Test", "User")]
-    public async Task Login_WithValidCredentials_ReturnsToken(string email, string firstName, string LastName, string password)
+    [InlineData("validuser@example.com", "ValidPassword123!", "Test")]
+    public async Task Login_WithValidCredentials_ReturnsToken(string email, string firstName, string LastName)
     {
         // Arrange
         var userCreateDto = new UserCreateDto
@@ -88,12 +89,12 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
             FirstName = firstName,
             LastName = LastName
         };
-        var (userId, password2) = await seedUser(userCreateDto);
+        var (userId, password) = await seedUser(userCreateDto);
 
         var loginDto = new UserLoginDto
         {
             Email = email,
-            Password = password2
+            Password = password
         };
         var loginContent = HttpContentHelper.ToJsonHttpContent(loginDto);
 
@@ -107,8 +108,8 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData("test4@example.com", "Password123!", "Bob", "Brown")]
-    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(string email, string firstName, string LastName, string password)
+    [InlineData("test4@example.com", "Password123!", "Bob")]
+    public async Task Login_WithInvalidCredentials_ReturnsBadRequest(string email, string firstName, string LastName)
     {
         // Arrange
         var userCreateDto = new UserCreateDto

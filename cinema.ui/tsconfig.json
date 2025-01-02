@@ -48,6 +48,9 @@
       "Routing/*": [
         "./src/routing/*"
       ],
+      "Store/*": [
+        "./src/store/*"
+      ],
       "Types/*": [
         "./src/types/*"
       ],

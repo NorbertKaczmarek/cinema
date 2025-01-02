@@ -1,6 +1,7 @@
 export const ROUTES = {
   private: {
     HOME: '/admin',
+    AUTH: '/admin/login',
     MOVIE: {
       TABLE: '/admin/movies',
       ADD: '/admin/movies/add',
@@ -27,5 +28,12 @@ export const ROUTES = {
   },
   public: {
     HOME: '/',
+    MOVIE: {
+      PREVIEW: '/movie/:id',
+    },
+    ORDER: {
+      SUMMARY: '/order/summary',
+      CREATE: '/order/:id',
+    },
   },
 };

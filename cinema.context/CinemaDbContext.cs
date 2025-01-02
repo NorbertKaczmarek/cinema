@@ -14,11 +14,26 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var polandTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+
         modelBuilder.Entity<Category>(eb =>
         {
             eb.HasKey(eb => eb.Id);
             eb.Property(eb => eb.Id).HasColumnType("char(36)");
             eb.Property(eb => eb.Name).HasColumnType("varchar(100)");
+
+            eb.Property(eb => eb.CreatedOnUtc)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.ModifiedOnUtc)
+                .HasConversion(
+                    v => v.HasValue ? v.Value.UtcDateTime : (DateTime?)null,
+                    v => v.HasValue ? TimeZoneInfo.ConvertTimeFromUtc(v.Value, polandTimeZone) : (DateTimeOffset?)null
+                )
+                .HasColumnType("datetime(6)");
         });
 
         modelBuilder.Entity<Movie>(eb =>
@@ -36,9 +51,27 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Rating).HasColumnType("double");
             eb.Property(eb => eb.CategoryId).HasColumnType("char(36)");
 
+            eb.Property(eb => eb.CreatedOnUtc)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.ModifiedOnUtc)
+                .HasConversion(
+                    v => v.HasValue ? v.Value.UtcDateTime : (DateTime?)null,
+                    v => v.HasValue ? TimeZoneInfo.ConvertTimeFromUtc(v.Value, polandTimeZone) : (DateTimeOffset?)null
+                )
+                .HasColumnType("datetime(6)");
+
             eb.HasOne(m => m.Category)
                 .WithMany()
                 .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            eb.HasMany(m => m.Screenings)
+                .WithOne(s => s.Movie)
+                .HasForeignKey(s => s.MovieId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -46,12 +79,35 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
         {
             eb.HasKey(eb => eb.Id);
             eb.Property(eb => eb.Id).HasColumnType("char(36)");
-            eb.Property(eb => eb.StartDateTime).HasColumnType("datetime(6)");
-            eb.Property(eb => eb.EndDateTime).HasColumnType("datetime(6)");
+            eb.Property(eb => eb.StartDateTime)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.EndDateTime)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
             eb.Property(eb => eb.MovieId).HasColumnType("char(36)");
 
+            eb.Property(eb => eb.CreatedOnUtc)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.ModifiedOnUtc)
+                .HasConversion(
+                    v => v.HasValue ? v.Value.UtcDateTime : (DateTime?)null,
+                    v => v.HasValue ? TimeZoneInfo.ConvertTimeFromUtc(v.Value, polandTimeZone) : (DateTimeOffset?)null
+                )
+                .HasColumnType("datetime(6)");
+
             eb.HasOne(m => m.Movie)
-                .WithMany()
+                .WithMany(m => m.Screenings)
                 .HasForeignKey(c => c.MovieId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
@@ -73,6 +129,19 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Status).HasColumnType("varchar(100)");
             eb.Property(eb => eb.ScreeningId).HasColumnType("char(36)");
 
+            eb.Property(eb => eb.CreatedOnUtc)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.ModifiedOnUtc)
+                .HasConversion(
+                    v => v.HasValue ? v.Value.UtcDateTime : (DateTime?)null,
+                    v => v.HasValue ? TimeZoneInfo.ConvertTimeFromUtc(v.Value, polandTimeZone) : (DateTimeOffset?)null
+                )
+                .HasColumnType("datetime(6)");
+
             eb.HasMany(o => o.Seats)
                 .WithMany();
 
@@ -92,6 +161,19 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.LastName).HasColumnType("varchar(100)");
             eb.Property(eb => eb.Salt).HasColumnType("varchar(100)");
             eb.Property(eb => eb.SaltedHashedPassword).HasColumnType("varchar(100)");
+
+            eb.Property(eb => eb.CreatedOnUtc)
+                .HasConversion(
+                    v => v.UtcDateTime,
+                    v => TimeZoneInfo.ConvertTimeFromUtc(v, polandTimeZone)
+                )
+                .HasColumnType("datetime(6)");
+            eb.Property(eb => eb.ModifiedOnUtc)
+                .HasConversion(
+                    v => v.HasValue ? v.Value.UtcDateTime : (DateTime?)null,
+                    v => v.HasValue ? TimeZoneInfo.ConvertTimeFromUtc(v.Value, polandTimeZone) : (DateTimeOffset?)null
+                )
+                .HasColumnType("datetime(6)");
         });
     }
 

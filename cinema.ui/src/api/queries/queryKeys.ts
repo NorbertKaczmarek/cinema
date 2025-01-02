@@ -4,4 +4,12 @@ export const QUERY_KEYS = {
   ADMIN_SCREENINGS: (params: Record<string, unknown>) => ['admin', 'screenings', params],
   ADMIN_USERS: (params: Record<string, unknown>) => ['admin', 'users', params],
   ADMIN_ORDERS: (params: Record<string, unknown>) => ['admin', 'orders', params],
+  ADMIN_SCREENING_SEATS: (screeningId = '') => ['admin', 'screenings', 'seats', screeningId],
+  USER_MOVIES: ['user', 'movies'],
+  USER_MOVIE: (movieId = '') => ['user', 'movies', movieId],
+  USER_SCREENINGS: ['user', 'screenings'],
+  USER_SCREENING: (screeningId = '') => ['user', 'screenings', screeningId],
+  USER_CATEGORIES: (params: Record<string, unknown>) => ['user', 'categories', params],
+  USER_CATEGORY: (categoryId = '') => ['user', 'categories', categoryId],
+  USER_SCREENING_SEATS: (screeningId = '') => ['user', 'screenings', 'seats', screeningId],
 };

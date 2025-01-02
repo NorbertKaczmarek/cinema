@@ -10,4 +10,5 @@ export type Order = {
   phoneNumber: string;
   status: OrderStatus;
   screeningId: string;
+  seatIds: string[];
 };

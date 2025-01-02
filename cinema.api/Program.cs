@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -30,7 +31,6 @@ builder.Services.AddCors(options =>
 });
 
 // Authorization, Authentication (JWT)
-builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,10 +50,24 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationOptions.IssuerSigningKey))
     };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("Admin"));
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireRole("User"));
+});
+
+// Interceptors
+builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
 
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -67,6 +81,9 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Cinema API",
         Description = "An ASP.NET Core Web API for managing a small cienema.",
     });
+
+    options.SwaggerDoc("Admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
+    options.SwaggerDoc("User", new OpenApiInfo { Title = "User API", Version = "v1" });
 });
 
 // EmailSender
@@ -77,8 +94,14 @@ builder.Services.AddScoped<Seeder>();
 
 // Database
 var connectionString = configuration.GetConnectionString("MySql")!;
-builder.Services.AddDbContext<CinemaDbContext>
-    (options => options.UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql")));
+builder.Services.AddDbContext<CinemaDbContext>(
+    (sp, options) =>
+    {
+        var auditableInterceptor = sp.GetService<UpdateAuditableEntitiesInterceptor>();
+        options
+            .UseMySql(connectionString, ServerVersion.Parse("8.0.40-mysql"))
+            .AddInterceptors(auditableInterceptor!);
+    });
 
 // Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -93,7 +116,11 @@ scope.ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
 scope.ServiceProvider.GetRequiredService<Seeder>().SeedDatabase();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/Admin/swagger.json", "Admin API");
+    c.SwaggerEndpoint("/swagger/User/swagger.json", "User API");
+});
 
 app.UseHttpsRedirection();
 

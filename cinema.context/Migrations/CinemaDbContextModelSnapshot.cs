@@ -43,6 +43,12 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -60,7 +66,7 @@ namespace cinema.context.Migrations
 
                     b.Property<string>("BackgroundUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -68,6 +74,9 @@ namespace cinema.context.Migrations
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -79,6 +88,9 @@ namespace cinema.context.Migrations
 
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("PosterUrl")
                         .IsRequired()
@@ -93,7 +105,7 @@ namespace cinema.context.Migrations
 
                     b.Property<string>("TrailerUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -108,9 +120,15 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -136,13 +154,19 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTimeOffset>("EndDateTime")
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("EndDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid?>("MovieId")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTimeOffset>("StartDateTime")
+                    b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
@@ -176,6 +200,9 @@ namespace cinema.context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -190,6 +217,9 @@ namespace cinema.context.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Salt")
                         .IsRequired()
@@ -242,11 +272,16 @@ namespace cinema.context.Migrations
             modelBuilder.Entity("cinema.context.Entities.Screening", b =>
                 {
                     b.HasOne("cinema.context.Entities.Movie", "Movie")
-                        .WithMany()
+                        .WithMany("Screenings")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("cinema.context.Entities.Movie", b =>
+                {
+                    b.Navigation("Screenings");
                 });
 #pragma warning restore 612, 618
         }

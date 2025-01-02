@@ -1,18 +1,23 @@
-﻿using cinema.context;
+﻿using AutoMapper;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
 [ApiController]
+[Route("api/admin/seats")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class SeatsController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public SeatsController(CinemaDbContext context)
+    public SeatsController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -20,10 +25,13 @@ public class SeatsController : ControllerBase
     /// </summary>
     /// <returns>A list of all seats in the database.</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Seat>> Get()
+    public ActionResult<IEnumerable<SeatDto>> Get()
     {
         var seats = _context.Seats.ToList();
-        return Ok(seats);
+
+        var resultDto = _mapper.Map<List<SeatDto>>(seats);
+
+        return Ok(resultDto);
     }
 
     /// <summary>
@@ -32,15 +40,17 @@ public class SeatsController : ControllerBase
     /// <param name="id">The unique identifier of the seat to retrieve.</param>
     /// <returns>The seat if found, or a 404 status if not found.</returns>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Seat), 200)]
+    [ProducesResponseType(typeof(SeatDto), 200)]
     [ProducesResponseType(typeof(string), 404)]
-    public ActionResult<Seat> Get(Guid id)
+    public ActionResult<SeatDto> Get(Guid id)
     {
         var seat = _context.Seats.FirstOrDefault(s => s.Id == id);
 
-        if (seat == null) return NotFound($"Seat with ID {id} not found.");
+        if (seat == null) return NotFound($"Siedzenie o ID {id} nie zostało znalezione.");
 
-        return Ok(seat);
+        var resultDto = _mapper.Map<SeatDto>(seat);
+
+        return Ok(resultDto);
     }
 
     /// <summary>
@@ -52,12 +62,14 @@ public class SeatsController : ControllerBase
     [HttpGet("{row}/{number}")]
     [ProducesResponseType(typeof(Seat), 200)]
     [ProducesResponseType(typeof(string), 404)]
-    public ActionResult<Seat> GetByRowAndNumber(char row, int number)
+    public ActionResult<SeatDto> GetByRowAndNumber(char row, int number)
     {
         var seat = _context.Seats.FirstOrDefault(s => s.Number == number && s.Row == row);
 
-        if (seat == null) return NotFound($"Seat in row '{row}' with number '{number}' not found.");
+        if (seat == null) return NotFound($"Siedzenie w rzędzie '{row}' o numerze '{number}' nie zostało znalezione.");
 
-        return Ok(seat);
+        var resultDto = _mapper.Map<SeatDto>(seat);
+
+        return Ok(resultDto);
     }
 }

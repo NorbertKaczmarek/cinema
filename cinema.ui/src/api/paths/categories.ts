@@ -6,7 +6,10 @@ const PRIVATE = {
   DELETE_CATEGORY: (id: string) => `/admin/categories/${id}`,
 };
 
-const PUBLIC = {};
+const PUBLIC = {
+  CATEGORIES: '/user/categories',
+  GET_CATEGORY: (id: string) => `/user/categories/${id}`,
+};
 
 export const CATEGORIES = {
   PRIVATE,

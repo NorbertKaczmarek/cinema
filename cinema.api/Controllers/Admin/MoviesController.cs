@@ -1,20 +1,25 @@
-﻿using cinema.api.Models;
-using cinema.context;
+﻿using AutoMapper;
+using cinema.api.Models.Admin;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace cinema.api.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
 [ApiController]
+[Route("api/admin/movies")]
+[ApiExplorerSettings(GroupName = "Admin")]
 public class MoviesController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly IMapper _mapper;
 
-    public MoviesController(CinemaDbContext context)
+    public MoviesController(CinemaDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -22,7 +27,7 @@ public class MoviesController : ControllerBase
     /// </summary>
     /// <returns>A paginated list of movies or a full list if Size is set to 0.</returns>
     [HttpGet]
-    public PageResult<Movie> Get([FromQuery] PageQuery query)
+    public PageResult<MovieDto> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context
             .Movies
@@ -32,7 +37,8 @@ public class MoviesController : ControllerBase
                 (
                     m.Title.ToLower().Contains(query.Phrase.ToLower())
                 )
-            );
+            )
+            .OrderByDescending(m => m.CreatedOnUtc);
 
         var totalCount = baseQuery.Count();
 
@@ -50,7 +56,8 @@ public class MoviesController : ControllerBase
                 .ToList();
         }
 
-        return new PageResult<Movie>(result, totalCount, query.Size);
+        var resultDto = _mapper.Map<List<MovieDto>>(result);
+        return new PageResult<MovieDto>(resultDto, totalCount, query.Size);
     }
 
     /// <summary>
@@ -63,8 +70,10 @@ public class MoviesController : ControllerBase
     public ActionResult Get(Guid id)
     {
         var movie = getById(id);
-        if (movie is null) return NotFound("Movie with that id was not found.");
-        return Ok(movie);
+        if (movie is null) return NotFound("Film o podanym identyfikatorze nie został znaleziony.");
+
+        var movieDto = _mapper.Map<MovieDto>(movie);
+        return Ok(movieDto);
     }
 
     private Movie? getById(Guid id)
@@ -81,7 +90,7 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(typeof(string), 400)]
     public ActionResult Post([FromBody] MovieCreateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid movie data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane filmu.");
 
         var newMovie = new Movie()
         {
@@ -100,7 +109,8 @@ public class MoviesController : ControllerBase
         _context.Movies.Add(newMovie);
         _context.SaveChanges();
 
-        return Created($"/api/admin/movies/{newMovie.Id}", newMovie);
+        var movieDto = _mapper.Map<MovieDto>(newMovie);
+        return Created($"/api/admin/movies/{movieDto.Id}", movieDto);
     }
 
     /// <summary>
@@ -114,11 +124,11 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(typeof(string), 404)]
     public ActionResult Put(Guid id, [FromBody] MovieCreateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid movie data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane filmu.");
 
         var existingMovie = getById(id);
 
-        if (existingMovie == null) return NotFound($"Movie with id {id} not found.");
+        if (existingMovie == null) return NotFound($"Film o identyfikatorze {id} nie został znaleziony.");
 
         existingMovie.Title = dto.Title;
         existingMovie.DurationMinutes = dto.DurationMinutes;
@@ -133,7 +143,8 @@ public class MoviesController : ControllerBase
 
         _context.SaveChanges();
 
-        return Created($"/api/admin/movies/{existingMovie.Id}", existingMovie);
+        var movieDto = _mapper.Map<MovieDto>(existingMovie);
+        return Created($"/api/admin/movies/{movieDto.Id}", movieDto);
     }
 
     /// <summary>
@@ -146,7 +157,7 @@ public class MoviesController : ControllerBase
     public ActionResult Delete(Guid id)
     {
         var movie = getById(id);
-        if (movie == null) return NotFound($"Movie with id {id} not found.");
+        if (movie == null) return NotFound($"Film o identyfikatorze {id} nie został znaleziony.");
 
         _context.Movies.Remove(movie);
         _context.SaveChanges();

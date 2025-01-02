@@ -36,6 +36,12 @@ export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
           <FormField name="posterUrl" label="Link do plakatu" control={form.control}>
             <Input isDisabled={isDisabled} />
           </FormField>
+          <FormField name="trailerUrl" label="Link do traileru" control={form.control}>
+            <Input isDisabled={isDisabled} />
+          </FormField>
+          <FormField name="backgroundUrl" label="Link do tła" control={form.control}>
+            <Input isDisabled={isDisabled} />
+          </FormField>
           <FormField name="cast" label="Obsada" control={form.control}>
             <Input isDisabled={isDisabled} />
           </FormField>
@@ -43,7 +49,7 @@ export const MovieForm: FC<Props> = ({ form, isDisabled = false }) => {
             <Input isDisabled={isDisabled} />
           </FormField>
           <FormField name="rating" label="Oceny" control={form.control}>
-            <Input type="number" min="0" step="0.01" isDisabled={isDisabled} />
+            <Input type="number" min="0" step="0.1" isDisabled={isDisabled} />
           </FormField>
           <FormField name="durationMinutes" label="Długość (minuty)" control={form.control}>
             <Input type="number" min="0" step="1" isDisabled={isDisabled} />
