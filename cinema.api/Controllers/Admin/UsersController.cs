@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using cinema.api.Helpers;
+using cinema.api.Helpers.EmailSender;
 using cinema.api.Models;
 using cinema.api.Models.Admin;
 using cinema.context;
@@ -15,11 +16,15 @@ namespace cinema.api.Controllers.Admin;
 public class UsersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
+    private readonly EmailOptions _emailOptions;
+    private readonly IEmailSender _emailSender;
     private readonly IMapper _mapper;
 
-    public UsersController(CinemaDbContext context, IMapper mapper)
+    public UsersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
     {
         _context = context;
+        _emailOptions = emailOptions;
+        _emailSender = emailSender;
         _mapper = mapper;
     }
 
@@ -166,7 +171,16 @@ public class UsersController : ControllerBase
 
     private void sendEmailWithPassword(string email, string password)
     {
-        // TODO
+        var senderInfo = new SenderInfo
+        {
+            Email = _emailOptions.Email,
+            DisplayName = _emailOptions.DisplayName,
+            AppPassword = _emailOptions.AppPassword,
+            SmtpClientHost = _emailOptions.SmtpClientHost,
+            SmtpClientPort = _emailOptions.SmtpClientPort,
+        };
+
+        _emailSender.SendPasswordAsync(senderInfo, email, password);
     }
 
     private static string generateRandomPassword(

@@ -108,7 +108,7 @@ public class OrdersController : ControllerBase
             Code = code
         };
 
-        _emailSender.sendEmailAsync(senderInfo, order.Email, ticketInfo);
+        _emailSender.SendTicketAsync(senderInfo, order.Email, ticketInfo);
 
         return code;
     }

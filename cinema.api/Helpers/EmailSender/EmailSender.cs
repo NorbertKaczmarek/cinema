@@ -5,12 +5,37 @@ namespace cinema.api.Helpers.EmailSender;
 
 public interface IEmailSender
 {
-    Task sendEmailAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo);
+    Task SendPasswordAsync(SenderInfo senderInfo, string recipientEmail, string newPassword);
+    Task SendTicketAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo);
 }
 
 public class EmailSender : IEmailSender
 {
-    public Task sendEmailAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo)
+    public Task SendTicketAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo)
+    {
+        var mailMessage = new MailMessage
+        {
+            From = new MailAddress(senderInfo.Email, senderInfo.DisplayName),
+            Subject = $"Your Movie Ticket: {ticketInfo.MovieName}",
+            Body = generateTicketBody(ticketInfo),
+            IsBodyHtml = true
+        };
+        return sendEmailAsync(senderInfo, recipientEmail, mailMessage);
+    }
+
+    public Task SendPasswordAsync(SenderInfo senderInfo, string recipientEmail, string newPassword)
+    {
+        var mailMessage = new MailMessage
+        {
+            From = new MailAddress(senderInfo.Email, senderInfo.DisplayName),
+            Subject = "Your New Password",
+            Body = generatePasswordBody(newPassword),
+            IsBodyHtml = true
+        };
+        return sendEmailAsync(senderInfo, recipientEmail, mailMessage);
+    }
+
+    private Task sendEmailAsync(SenderInfo senderInfo, string recipientEmail, MailMessage mailMessage)
     {
         var smtpClient = new SmtpClient(senderInfo.SmtpClientHost, (int)senderInfo.SmtpClientPort)
         {
@@ -18,19 +43,96 @@ public class EmailSender : IEmailSender
             EnableSsl = true
         };
 
-        var mailMessage = new MailMessage
-        {
-            From = new MailAddress(senderInfo.Email, senderInfo.DisplayName),
-            Subject = $"Your Movie Ticket: {ticketInfo.MovieName}",
-            Body = generateEmailBody(ticketInfo),
-            IsBodyHtml = true
-        };
         mailMessage.To.Add(recipientEmail);
 
         return smtpClient.SendMailAsync(mailMessage);
     }
 
-    private string generateEmailBody(TicketInfo ticketInfo)
+    private string generatePasswordBody(string newPassword)
+    {
+        return $@"
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                    color: #333333;
+                }}
+                .email-container {{
+                    max-width: 600px;
+                    margin: 20px auto;
+                    background: #ffffff;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }}
+                .header {{
+                    background-color: #2c3e50;
+                    color: #ffffff;
+                    text-align: center;
+                    padding: 20px;
+                }}
+                .header h1 {{
+                    margin: 0;
+                }}
+                .content {{
+                    padding: 20px;
+                }}
+                .content h2 {{
+                    color: #2c3e50;
+                }}
+                .password-container {{
+                    background-color: #2c3e50;
+                    color: white;
+                    padding: 10px;
+                    text-align: center;
+                    border-radius: 8px;
+                    margin: 20px 0;
+                    width: fit-content;
+                    margin-left: auto;
+                    margin-right: auto;
+                }}
+                .password-container p {{
+                    font-size: 28px;
+                    font-weight: bold;
+                    letter-spacing: 2px;
+                    margin: 0;
+                }}
+                .footer {{
+                    text-align: center;
+                    background-color: #2c3e50;
+                    color: #ffffff;
+                    padding: 10px;
+                    font-size: 12px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class='email-container'>
+                <div class='header'>
+                    <h1>Password Reset</h1>
+                </div>
+                <div class='content'>
+                    <h2>Hello!</h2>
+                    <p>Your password has been reset. Here is your new password:</p>
+                    <div class='password-container'>
+                        <p>{newPassword}</p>
+                    </div>
+                    <p>Please use this password to log in to your account. For your security, it is recommended to change your password after logging in.</p>
+                </div>
+                <div class='footer'>
+                    <p>&copy; 2024 Cinema App. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    private string generateTicketBody(TicketInfo ticketInfo)
     {
         return $@"
         <!DOCTYPE html>

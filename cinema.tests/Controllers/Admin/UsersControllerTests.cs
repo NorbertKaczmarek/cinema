@@ -9,6 +9,8 @@ using AutoMapper;
 using Moq;
 using cinema.api.Models.Admin;
 using cinema.api.Helpers;
+using cinema.api;
+using cinema.api.Helpers.EmailSender;
 
 namespace cinema.tests.Controllers.Admin;
 
@@ -32,9 +34,11 @@ public class UsersControllerTests
 
     private UsersController CreateController(CinemaDbContext context)
     {
+        var emailOptionsMock = new Mock<EmailOptions>();
+        var emailSenderMock = new Mock<IEmailSender>();
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new UsersController(context, mapper);
+        return new UsersController(context, emailOptionsMock.Object, emailSenderMock.Object, mapper);
     }
 
     private void SeedDatabase()
