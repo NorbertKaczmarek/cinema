@@ -163,13 +163,8 @@ public class UsersController : ControllerBase
     private string generateAndSendNewPassword(string email)
     {
         string password = generateRandomPassword(8, includeSpecialChars: false);
-        sendEmailWithPassword(email, password);
-        return password;
-    }
-
-    private void sendEmailWithPassword(string email, string password)
-    {
         _emailSender.SendPasswordAsync(email, password);
+        return password;
     }
 
     private static string generateRandomPassword(

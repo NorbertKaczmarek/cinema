@@ -34,11 +34,10 @@ public class UsersControllerTests
 
     private UsersController CreateController(CinemaDbContext context)
     {
-        var emailOptionsMock = new Mock<EmailOptions>();
         var emailSenderMock = new Mock<IEmailSender>();
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
 
-        return new UsersController(context, emailOptionsMock.Object, emailSenderMock.Object, mapper);
+        return new UsersController(context, emailSenderMock.Object, mapper);
     }
 
     private void SeedDatabase()

@@ -12,9 +12,20 @@ public interface IEmailSender
 public class EmailSender : IEmailSender
 {
     private readonly SenderInfo _senderInfo;
-    public EmailSender(SenderInfo senderInfo)
+    private readonly EmailOptions _emailOptions;
+
+    public EmailSender(EmailOptions emailOptions)
     {
-        _senderInfo = senderInfo;
+        _emailOptions = emailOptions;
+
+        _senderInfo = new SenderInfo
+        {
+            Email = _emailOptions.Email,
+            DisplayName = _emailOptions.DisplayName,
+            AppPassword = _emailOptions.AppPassword,
+            SmtpClientHost = _emailOptions.SmtpClientHost,
+            SmtpClientPort = _emailOptions.SmtpClientPort,
+        };
     }
 
     public Task SendTicketAsync(string recipientEmail, TicketInfo ticketInfo)
@@ -35,7 +46,7 @@ public class EmailSender : IEmailSender
         {
             From = new MailAddress(_senderInfo.Email, _senderInfo.DisplayName),
             Subject = "Your New Password",
-            Body = generatePasswordBody(newPassword),
+            Body = generatePasswordBody(newPassword, $"{_emailOptions.WebsiteUrl}/admin"),
             IsBodyHtml = true
         };
         return sendEmailAsync(recipientEmail, mailMessage);
@@ -54,7 +65,7 @@ public class EmailSender : IEmailSender
         return smtpClient.SendMailAsync(mailMessage);
     }
 
-    private string generatePasswordBody(string newPassword)
+    private string generatePasswordBody(string newPassword, string loginUrl)
     {
         return $@"
         <!DOCTYPE html>
@@ -108,6 +119,22 @@ public class EmailSender : IEmailSender
                     letter-spacing: 2px;
                     margin: 0;
                 }}
+                .login-link {{
+                    text-align: center;
+                    margin: 20px 0;
+                }}
+                .login-link a {{
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #2c3e50;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-size: 16px;
+                }}
+                .login-link a:hover {{
+                    background-color: #1a252f;
+                }}
                 .footer {{
                     text-align: center;
                     background-color: #2c3e50;
@@ -128,7 +155,10 @@ public class EmailSender : IEmailSender
                     <div class='password-container'>
                         <p>{newPassword}</p>
                     </div>
-                    <p>Please use this password to log in to your account. For your security, it is recommended to change your password after logging in.</p>
+                    <p>Please use the button below to log in to your account. For your security, it is recommended to change your password after logging in.</p>
+                    <div class='login-link'>
+                        <a href='{loginUrl}'>Go to Login</a>
+                    </div>
                 </div>
                 <div class='footer'>
                     <p>&copy; 2024 Cinema App. All rights reserved.</p>
