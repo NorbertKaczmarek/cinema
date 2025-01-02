@@ -87,15 +87,6 @@ public class OrdersController : ControllerBase
             .ThenInclude(m => m!.Category)
             .FirstOrDefault(o => o.Id == id)!;
 
-        var senderInfo = new SenderInfo
-        {
-            Email = _emailOptions.Email,
-            DisplayName = _emailOptions.DisplayName,
-            AppPassword = _emailOptions.AppPassword,
-            SmtpClientHost = _emailOptions.SmtpClientHost,
-            SmtpClientPort = _emailOptions.SmtpClientPort,
-        };
-
         string code = _random.Next(1000, 10000).ToString();
 
         var ticketInfo = new TicketInfo
@@ -108,7 +99,7 @@ public class OrdersController : ControllerBase
             Code = code
         };
 
-        _emailSender.SendTicketAsync(senderInfo, order.Email, ticketInfo);
+        _emailSender.SendTicketAsync(order.Email, ticketInfo);
 
         return code;
     }

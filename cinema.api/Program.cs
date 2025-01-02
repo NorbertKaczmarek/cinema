@@ -18,6 +18,16 @@ builder.Services.AddSingleton(authenticationOptions);
 var emailOptions = configuration.GetSection(nameof(cinema.api.EmailOptions)).Get<cinema.api.EmailOptions>()!;
 builder.Services.AddSingleton(emailOptions);
 
+var senderInfo = new SenderInfo
+{
+    Email = emailOptions.Email,
+    DisplayName = emailOptions.DisplayName,
+    AppPassword = emailOptions.AppPassword,
+    SmtpClientHost = emailOptions.SmtpClientHost,
+    SmtpClientPort = emailOptions.SmtpClientPort,
+};
+builder.Services.AddSingleton(senderInfo);
+
 // CORS
 builder.Services.AddCors(options =>
 {

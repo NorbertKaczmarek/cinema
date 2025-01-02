@@ -5,41 +5,47 @@ namespace cinema.api.Helpers.EmailSender;
 
 public interface IEmailSender
 {
-    Task SendPasswordAsync(SenderInfo senderInfo, string recipientEmail, string newPassword);
-    Task SendTicketAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo);
+    Task SendPasswordAsync(string recipientEmail, string newPassword);
+    Task SendTicketAsync(string recipientEmail, TicketInfo ticketInfo);
 }
 
 public class EmailSender : IEmailSender
 {
-    public Task SendTicketAsync(SenderInfo senderInfo, string recipientEmail, TicketInfo ticketInfo)
+    private readonly SenderInfo _senderInfo;
+    public EmailSender(SenderInfo senderInfo)
+    {
+        _senderInfo = senderInfo;
+    }
+
+    public Task SendTicketAsync(string recipientEmail, TicketInfo ticketInfo)
     {
         var mailMessage = new MailMessage
         {
-            From = new MailAddress(senderInfo.Email, senderInfo.DisplayName),
+            From = new MailAddress(_senderInfo.Email, _senderInfo.DisplayName),
             Subject = $"Your Movie Ticket: {ticketInfo.MovieName}",
             Body = generateTicketBody(ticketInfo),
             IsBodyHtml = true
         };
-        return sendEmailAsync(senderInfo, recipientEmail, mailMessage);
+        return sendEmailAsync(recipientEmail, mailMessage);
     }
 
-    public Task SendPasswordAsync(SenderInfo senderInfo, string recipientEmail, string newPassword)
+    public Task SendPasswordAsync(string recipientEmail, string newPassword)
     {
         var mailMessage = new MailMessage
         {
-            From = new MailAddress(senderInfo.Email, senderInfo.DisplayName),
+            From = new MailAddress(_senderInfo.Email, _senderInfo.DisplayName),
             Subject = "Your New Password",
             Body = generatePasswordBody(newPassword),
             IsBodyHtml = true
         };
-        return sendEmailAsync(senderInfo, recipientEmail, mailMessage);
+        return sendEmailAsync(recipientEmail, mailMessage);
     }
 
-    private Task sendEmailAsync(SenderInfo senderInfo, string recipientEmail, MailMessage mailMessage)
+    private Task sendEmailAsync(string recipientEmail, MailMessage mailMessage)
     {
-        var smtpClient = new SmtpClient(senderInfo.SmtpClientHost, (int)senderInfo.SmtpClientPort)
+        var smtpClient = new SmtpClient(_senderInfo.SmtpClientHost, (int)_senderInfo.SmtpClientPort)
         {
-            Credentials = new NetworkCredential(senderInfo.Email, senderInfo.AppPassword),
+            Credentials = new NetworkCredential(_senderInfo.Email, _senderInfo.AppPassword),
             EnableSsl = true
         };
 
