@@ -18,6 +18,7 @@ import { Category } from 'Types/category';
 import { Movie } from 'Types/movie';
 import { Screening } from 'Types/screening';
 import { capitalizeFirstLetter } from 'Utils/capitalize';
+import { formatDateTime } from 'Utils/formatDateTime';
 import { formatDuration } from 'Utils/formatDuration';
 
 type GroupedScreenings = {
@@ -111,7 +112,7 @@ export const UserHomePage = () => {
                           <img
                             src={movie.posterUrl}
                             alt={movie.title}
-                            className="h-96 w-1/3 rounded-lg bg-bottom object-cover shadow-lg"
+                            className="h-96 w-1/4 rounded-lg bg-bottom object-cover shadow-lg"
                           />
                           <div className="flex-1">
                             <h2
@@ -145,7 +146,7 @@ export const UserHomePage = () => {
                                     key={screening.id}
                                     variant={ButtonVariant.Primary}
                                   >
-                                    {format(parseISO(screening.startDateTime), 'HH:mm')}
+                                    {formatDateTime(screening.startDateTime)['time']}
                                   </Button>
                                 ))}
                             </div>
