@@ -90,7 +90,7 @@ public class CategoriesControllerTests
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
         var badRequestResult = result as NotFoundObjectResult;
-        badRequestResult!.Value.Should().Be("Category with that id was not found.");
+        badRequestResult!.Value.Should().Be("Kategoria o podanym identyfikatorze nie została znaleziona.");
     }
 
     [Theory]
@@ -132,7 +132,7 @@ public class CategoriesControllerTests
         // Assert
         result.Should().BeOfType<ConflictObjectResult>();
         var conflictResult = result as ConflictObjectResult;
-        conflictResult!.Value.Should().Be("Category with that name already exists.");
+        conflictResult!.Value.Should().Be("Kategoria o tej nazwie już istnieje.");
     }
 
     [Theory]
@@ -217,7 +217,7 @@ public class CategoriesControllerTests
         // Assert
         result.Should().BeOfType<ConflictObjectResult>();
         var conflictObjectResultResult = result as ConflictObjectResult;
-        conflictObjectResultResult!.Value.Should().Be("Category with that name already exists.");
+        conflictObjectResultResult!.Value.Should().Be("Kategoria o tej nazwie już istnieje.");
     }
 
     [Fact]

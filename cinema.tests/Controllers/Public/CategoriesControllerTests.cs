@@ -85,6 +85,6 @@ public class CategoriesControllerTests
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
         var badRequestResult = result as NotFoundObjectResult;
-        badRequestResult!.Value.Should().Be("Category with that id was not found.");
+        badRequestResult!.Value.Should().Be("Kategoria o podanym ID nie została znaleziona.");
     }
 }

@@ -92,7 +92,7 @@ public class SeatsControllerTests
         // Assert
         result.Result.Should().BeOfType<NotFoundObjectResult>();
         var message = (result.Result as NotFoundObjectResult)?.Value as string;
-        message.Should().Be($"Seat with ID {invalidId} not found.");
+        message.Should().Be($"Siedzenie o ID {invalidId} nie zostało znalezione.");
     }
 
     [Fact]
@@ -126,6 +126,6 @@ public class SeatsControllerTests
         // Assert
         result.Result.Should().BeOfType<NotFoundObjectResult>();
         var message = (result.Result as NotFoundObjectResult)?.Value as string;
-        message.Should().Be("Seat in row 'D' with number '4' not found.");
+        message.Should().Be("Siedzenie w rzędzie 'D' o numerze '4' nie zostało znalezione.");
     }
 }

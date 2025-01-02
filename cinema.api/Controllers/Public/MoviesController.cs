@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using cinema.api.Models;
 using cinema.api.Public;
 using cinema.context;
-using cinema.context.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +43,7 @@ public class MoviesController : ControllerBase
             .Include(m => m.Category)
             .Include(m => m.Screenings)
             .FirstOrDefault(m => m.Id == id)!;
-        if (movie is null) return NotFound("Movie with that id was not found.");
+        if (movie is null) return NotFound("Film o podanym ID nie został znaleziony.");
 
         var movieDto = _mapper.Map<PublicMovieDto>(movie);
         return Ok(movieDto);

@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using cinema.api.Models;
-using cinema.context;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
-using Mono.TextTemplating;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -47,7 +46,7 @@ public class SeatsController : ControllerBase
     {
         var seat = _context.Seats.FirstOrDefault(s => s.Id == id);
 
-        if (seat == null) return NotFound($"Seat with ID {id} not found.");
+        if (seat == null) return NotFound($"Siedzenie o ID {id} nie zostało znalezione.");
 
         var resultDto = _mapper.Map<SeatDto>(seat);
 
@@ -67,7 +66,7 @@ public class SeatsController : ControllerBase
     {
         var seat = _context.Seats.FirstOrDefault(s => s.Number == number && s.Row == row);
 
-        if (seat == null) return NotFound($"Seat in row '{row}' with number '{number}' not found.");
+        if (seat == null) return NotFound($"Siedzenie w rzędzie '{row}' o numerze '{number}' nie zostało znalezione.");
 
         var resultDto = _mapper.Map<SeatDto>(seat);
 

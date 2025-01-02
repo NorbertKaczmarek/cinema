@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using cinema.api.Models;
 using cinema.api.Models.Admin;
-using cinema.context;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cinema.api.Controllers.Admin;
@@ -63,7 +63,7 @@ public class CategoriesController : ControllerBase
     public ActionResult<CategoryDto> Get(Guid id)
     {
         var category = getById(id);
-        if (category is null) return NotFound("Category with that id was not found.");
+        if (category is null) return NotFound("Kategoria o podanym identyfikatorze nie została znaleziona.");
 
         var categoryDto = _mapper.Map<CategoryDto>(category);
         return Ok(categoryDto);
@@ -92,10 +92,10 @@ public class CategoriesController : ControllerBase
     public ActionResult<CategoryDto> Post([FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.Name == null || dto.Name.Trim() == "")
-            return BadRequest("Invalid category data.");
+            return BadRequest("Nieprawidłowe dane kategorii.");
 
         var category = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
-        if (category != null) return Conflict("Category with that name already exists.");
+        if (category != null) return Conflict("Kategoria o tej nazwie już istnieje.");
 
         var newCategory = new Category { Name = dto.Name };
         _context.Categories.Add(newCategory);
@@ -124,14 +124,14 @@ public class CategoriesController : ControllerBase
     public ActionResult<CategoryDto> Put(Guid id, [FromBody] CategoryCreateDto dto)
     {
         if (dto == null || dto.Name == null || dto.Name.Trim() == "")
-            return BadRequest("Invalid category data.");
+            return BadRequest("Nieprawidłowe dane kategorii.");
 
         var existingCategory = getById(id);
-        if (existingCategory == null) return NotFound($"Category with id {id} not found.");
+        if (existingCategory == null) return NotFound($"Kategoria o identyfikatorze {id} nie została znaleziona.");
 
         var categoryWithThatName = _context.Categories.FirstOrDefault(x => x.Name == dto.Name);
         if (categoryWithThatName != null && categoryWithThatName.Id != id)
-            return Conflict("Category with that name already exists.");
+            return Conflict("Kategoria o tej nazwie już istnieje.");
 
         existingCategory.Name = dto.Name;
         _context.SaveChanges();
@@ -153,7 +153,7 @@ public class CategoriesController : ControllerBase
     public ActionResult Delete(Guid id)
     {
         var category = getById(id);
-        if (category == null) return NotFound("Category not found.");
+        if (category == null) return NotFound("Kategoria nie została znaleziona.");
 
         _context.Categories.Remove(category);
         _context.SaveChanges();

@@ -189,7 +189,7 @@ public class OrdersControllerTests
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
         var badRequestResult = result as BadRequestObjectResult;
-        badRequestResult!.Value.Should().Be("The following seats are already taken: A1, A2, B1, B2");
+        badRequestResult!.Value.Should().Be("Następujące miejsca są już zajęte: A1, A2, B1, B2");
     }
 
     [Fact]
@@ -218,7 +218,7 @@ public class OrdersControllerTests
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
         var badRequestResult = result as BadRequestObjectResult;
-        badRequestResult!.Value.Should().Be("One or more seat IDs are invalid.");
+        badRequestResult!.Value.Should().Be("Jeden lub więcej identyfikatorów miejsc jest nieprawidłowy.");
     }
 
     [Fact]

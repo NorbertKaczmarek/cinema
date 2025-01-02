@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using cinema.api.Helpers;
-using cinema.api.Helpers.EmailSender;
-using cinema.api.Models;
 using cinema.api.Models.Admin;
-using cinema.context;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using cinema.api.Helpers.EmailSender;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -87,7 +87,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
-        if (getUserByEmail(dto.Email) != null) return BadRequest("User already exists.");
+        if (getUserByEmail(dto.Email) != null) return BadRequest("Użytkownik już istnieje.");
 
         string password = generateAndSendNewPassword(dto.Email);
         (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(password);
@@ -125,19 +125,19 @@ public class UsersController : ControllerBase
     public ActionResult Put(Guid id, [FromBody] UserUpdateDto dto)
     {
         var existingUser = getById(id);
-        if (existingUser == null) return NotFound("User not found.");
+        if (existingUser == null) return NotFound("Użytkownik nie został znaleziony.");
 
         var result = SalterAndHasher.CheckPassword(dto.Password, existingUser.Salt, existingUser.SaltedHashedPassword);
-        if (result == false) return BadRequest("Incorrect password.");
+        if (result == false) return BadRequest("Niepoprawne hasło.");
 
         existingUser.FirstName = dto.FirstName ?? existingUser.FirstName;
         existingUser.LastName = dto.LastName ?? existingUser.LastName;
 
         if (!string.IsNullOrWhiteSpace(dto.NewPassword))
         {
-            if (string.IsNullOrWhiteSpace(dto.ConfirmNewPassword)) return BadRequest("Confirm new password is empty.");
+            if (string.IsNullOrWhiteSpace(dto.ConfirmNewPassword)) return BadRequest("Potwierdzenie nowego hasła jest puste.");
 
-            if (dto.NewPassword != dto.ConfirmNewPassword) return BadRequest("Passwords do not match.");
+            if (dto.NewPassword != dto.ConfirmNewPassword) return BadRequest("Hasła nie pasują.");
 
             (var saltText, var saltedHashedPassword) = SalterAndHasher.getSaltAndSaltedHashedPassword(dto.NewPassword);
             existingUser.Salt = saltText;
@@ -175,7 +175,7 @@ public class UsersController : ControllerBase
         bool includeSpecialChars = true)
     {
         if (length <= 0)
-            throw new ArgumentException("Password length must be greater than 0.");
+            throw new ArgumentException("Długość hasła musi być większa niż 0.");
 
         const string upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
@@ -190,7 +190,7 @@ public class UsersController : ControllerBase
         if (includeSpecialChars) characterPool.Append(specialChars);
 
         if (characterPool.Length == 0)
-            throw new ArgumentException("At least one character set must be selected.");
+            throw new ArgumentException("Musisz wybrać przynajmniej jeden zestaw znaków.");
 
         Random random = new Random();
         StringBuilder password = new StringBuilder();

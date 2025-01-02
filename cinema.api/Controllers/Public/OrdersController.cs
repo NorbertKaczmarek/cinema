@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using cinema.api.Helpers.EmailSender;
-using cinema.api.Models;
 using cinema.api.Models.Admin;
-using cinema.context;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace cinema.api.Controllers.Public;
 
@@ -34,16 +33,16 @@ public class OrdersController : ControllerBase
     public ActionResult Post([FromBody] OrderCreateDto dto)
     {
         if (dto == null || dto.Email is null || dto.Email.Trim() == "")
-            return BadRequest("Invalid order data.");
-        
-        if (dto.SeatIds.Count() == 0) return BadRequest("No seats selected");
+            return BadRequest("Niepoprawne dane zamówienia.");
+
+        if (dto.SeatIds.Count() == 0) return BadRequest("Nie wybrano miejsc.");
 
         var screening = _context.Screenings.FirstOrDefault(s => s.Id == dto.ScreeningId);
-        if (screening == null) return BadRequest("Invalid screening ID.");
+        if (screening == null) return BadRequest("Niepoprawne ID projekcji.");
 
         var requestedSeats = _context.Seats.Where(s => dto.SeatIds.Contains(s.Id)).ToList();
         if (requestedSeats.Count != dto.SeatIds.Count)
-            return BadRequest("One or more seat IDs are invalid.");
+            return BadRequest("Jedno lub więcej ID miejsc jest niepoprawne.");
 
         var takenSeatIds = _context.Orders
             .Where(o => o.ScreeningId == dto.ScreeningId)
@@ -55,7 +54,7 @@ public class OrdersController : ControllerBase
         if (takenSeats.Any())
         {
             var takenSeatNumbers = string.Join(", ", takenSeats.Select(s => $"{s.Row}{s.Number}"));
-            return BadRequest($"The following seats are already taken: {takenSeatNumbers}");
+            return BadRequest($"Następujące miejsca są już zajęte: {takenSeatNumbers}");
         }
 
         var newOrder = new Order

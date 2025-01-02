@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using cinema.api.Models;
 using cinema.api.Models.Admin;
-using cinema.context;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -70,7 +70,7 @@ public class MoviesController : ControllerBase
     public ActionResult Get(Guid id)
     {
         var movie = getById(id);
-        if (movie is null) return NotFound("Movie with that id was not found.");
+        if (movie is null) return NotFound("Film o podanym identyfikatorze nie został znaleziony.");
 
         var movieDto = _mapper.Map<MovieDto>(movie);
         return Ok(movieDto);
@@ -90,7 +90,7 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(typeof(string), 400)]
     public ActionResult Post([FromBody] MovieCreateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid movie data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane filmu.");
 
         var newMovie = new Movie()
         {
@@ -124,11 +124,11 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(typeof(string), 404)]
     public ActionResult Put(Guid id, [FromBody] MovieCreateDto dto)
     {
-        if (dto == null) return BadRequest("Invalid movie data.");
+        if (dto == null) return BadRequest("Nieprawidłowe dane filmu.");
 
         var existingMovie = getById(id);
 
-        if (existingMovie == null) return NotFound($"Movie with id {id} not found.");
+        if (existingMovie == null) return NotFound($"Film o identyfikatorze {id} nie został znaleziony.");
 
         existingMovie.Title = dto.Title;
         existingMovie.DurationMinutes = dto.DurationMinutes;
@@ -157,7 +157,7 @@ public class MoviesController : ControllerBase
     public ActionResult Delete(Guid id)
     {
         var movie = getById(id);
-        if (movie == null) return NotFound($"Movie with id {id} not found.");
+        if (movie == null) return NotFound($"Film o identyfikatorze {id} nie został znaleziony.");
 
         _context.Movies.Remove(movie);
         _context.SaveChanges();

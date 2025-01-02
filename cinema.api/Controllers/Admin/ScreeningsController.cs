@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using cinema.api.Models;
 using cinema.api.Models.Admin;
-using cinema.context;
+using cinema.api.Models;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -124,10 +124,10 @@ public class ScreeningsController : ControllerBase
     [HttpPost]
     public ActionResult Post([FromBody] ScreeningCreateDto dto)
     {
-        if (dto == null) return BadRequest();
+        if (dto == null) return BadRequest("Nieprawidłowe dane seansu.");
 
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
-        if (movie == null) return BadRequest("Movie not found.");
+        if (movie == null) return BadRequest("Film nie został znaleziony.");
 
         var newStartDateTime = dto.StartDateTime;
         var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
@@ -141,7 +141,7 @@ public class ScreeningsController : ControllerBase
                 (bufferedNewStart < s.EndDateTime && bufferedNewEnd > s.StartDateTime)
             );
 
-        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+        if (overlappingScreening) return BadRequest("Czas seansu pokrywa się z innym seansem.");
 
         var screening = new Screening()
         {
@@ -161,10 +161,10 @@ public class ScreeningsController : ControllerBase
     public ActionResult Put(Guid id, [FromBody] ScreeningCreateDto dto)
     {
         var existingScreening = getById(id);
-        if (existingScreening == null) return NotFound("Screening not found.");
+        if (existingScreening == null) return NotFound("Seans nie został znaleziony.");
 
         var movie = _context.Movies.FirstOrDefault(x => x.Id == dto.MovieId);
-        if (movie == null) return BadRequest("Movie not found.");
+        if (movie == null) return BadRequest("Film nie został znaleziony.");
 
         var newStartDateTime = dto.StartDateTime;
         var newEndDateTime = newStartDateTime + TimeSpan.FromMinutes(movie.DurationMinutes + 30);
@@ -177,7 +177,7 @@ public class ScreeningsController : ControllerBase
                 s.EndDateTime > newStartDateTime
             );
 
-        if (overlappingScreening) return BadRequest("The screening time overlaps with another screening.");
+        if (overlappingScreening) return BadRequest("Czas seansu pokrywa się z innym seansem.");
 
         existingScreening.StartDateTime = newStartDateTime;
         existingScreening.EndDateTime = newEndDateTime;

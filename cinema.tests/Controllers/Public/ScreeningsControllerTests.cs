@@ -110,7 +110,7 @@ public class ScreeningsControllerTests
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
         var badRequestResult = result as BadRequestObjectResult;
-        badRequestResult!.Value.Should().Be("Start date must be earlier than end date.");
+        badRequestResult!.Value.Should().Be("Data początkowa musi być wcześniejsza niż data końcowa.");
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class ScreeningsControllerTests
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
         var badRequestResult = result as BadRequestObjectResult;
-        badRequestResult!.Value.Should().Be("Screening not found.");
+        badRequestResult!.Value.Should().Be("Seans nie został znaleziony.");
     }
 
     [Fact]

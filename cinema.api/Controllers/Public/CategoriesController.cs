@@ -33,7 +33,7 @@ public class CategoriesController : ControllerBase
     public ActionResult<CategoryDto> Get(Guid id)
     {
         var category = _context.Categories.FirstOrDefault(m => m.Id == id);
-        if (category is null) return NotFound("Category with that id was not found.");
+        if (category is null) return NotFound("Kategoria o podanym ID nie została znaleziona.");
 
         var categoryDto = _mapper.Map<CategoryDto>(category);
         return Ok(categoryDto);

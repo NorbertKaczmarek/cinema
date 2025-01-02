@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using FluentAssertions;
+using cinema.api.Helpers.EmailSender;
 using cinema.api.Models.Admin;
 using cinema.api;
 using Microsoft.EntityFrameworkCore;
-using cinema.api.Helpers.EmailSender;
 
 namespace cinema.tests.Controllers.Public;
 
@@ -113,7 +113,7 @@ public class OrdersControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Value.Should().Be("Invalid order data.");
+        result!.Value.Should().Be("Niepoprawne dane zamówienia.");
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class OrdersControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Value.Should().Be("Invalid screening ID.");
+        result!.Value.Should().Be("Niepoprawne ID projekcji.");
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class OrdersControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Value.Should().Be("The following seats are already taken: A1");
+        result!.Value.Should().Be("Następujące miejsca są już zajęte: A1");
     }
 
     [Fact]
@@ -190,6 +190,6 @@ public class OrdersControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Value.Should().Be("One or more seat IDs are invalid.");
+        result!.Value.Should().Be("Jedno lub więcej ID miejsc jest niepoprawne.");
     }
 }

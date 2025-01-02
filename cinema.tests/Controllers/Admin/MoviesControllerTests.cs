@@ -137,7 +137,7 @@ public class MoviesControllerTests
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
         var badRequestResult = result as NotFoundObjectResult;
-        badRequestResult!.Value.Should().Be("Movie with that id was not found.");
+        badRequestResult!.Value.Should().Be("Film o podanym identyfikatorze nie został znaleziony.");
     }
 
     [Theory]

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using cinema.api.Models;
-using cinema.context;
 using cinema.context.Entities;
+using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +26,7 @@ public class ScreeningsController : ControllerBase
     {
         if (startDate > endDate)
         {
-            return BadRequest("Start date must be earlier than end date.");
+            return BadRequest("Data początkowa musi być wcześniejsza niż data końcowa.");
         }
 
         var result = _context
@@ -46,7 +46,7 @@ public class ScreeningsController : ControllerBase
     public ActionResult<ScreeningDto> Get(Guid id)
     {
         var screening = getById(id);
-        if (screening is null) return BadRequest("Screening not found.");
+        if (screening is null) return BadRequest("Seans nie został znaleziony.");
 
         var screeningDto = _mapper.Map<ScreeningDto>(screening);
         return Ok(screeningDto);
