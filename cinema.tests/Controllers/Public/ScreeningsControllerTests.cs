@@ -148,7 +148,7 @@ public class ScreeningsControllerTests
         result.Should().NotBeNull();
         var screening = result!.Value as ScreeningDto;
         screening.Should().NotBeNull();
-        screening!.Movie!.Title.Should().Be("Action Movie");
+        screening!.MovieId.Should().Be(context.Movies.First(x => x.Title == "Action Movie").Id);
     }
 
     [Fact]

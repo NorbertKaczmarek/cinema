@@ -114,7 +114,7 @@ public class ScreeningsControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Movie!.Title.Should().Be("Test Movie");
+        result.MovieId.Should().Be(context.Movies.First(x => x.Title == "Test Movie").Id);
     }
 
     [Fact]
