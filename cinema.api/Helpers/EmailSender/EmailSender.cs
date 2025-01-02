@@ -46,7 +46,7 @@ public class EmailSender : IEmailSender
         {
             From = new MailAddress(_senderInfo.Email, _senderInfo.DisplayName),
             Subject = "Twoje nowe hasło",
-            Body = generatePasswordBody(newPassword, $"{_emailOptions.WebsiteUrl}/admin"),
+            Body = generatePasswordBody(newPassword, $"{_emailOptions.WebsiteUrl}admin"),
             IsBodyHtml = true
         };
         return sendEmailAsync(recipientEmail, mailMessage);
