@@ -58,7 +58,6 @@ export const useDictionaryState = <T extends FieldValues>({
     },
   });
 
-  //@todo - error handling
   const { mutate: createDictElem, isLoading: isLoadingCreate } = queryHelpers.POST(
     paths.createData,
     {
@@ -81,6 +80,13 @@ export const useDictionaryState = <T extends FieldValues>({
       onSuccess: async data => {
         toast.success('Pomyślnie zaaktualizowano element');
         closeEdit();
+        if (typeof data === 'object' && data !== null) {
+          ['password', 'newPassword', 'confirmNewPassword'].forEach(key => {
+            if (key in data) {
+              delete (data as Record<string, unknown>)[key];
+            }
+          });
+        }
         setDictData(prevState => ({ ...prevState, ...(data as T) }));
         await handleInvalidate();
       },
