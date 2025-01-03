@@ -2,6 +2,8 @@ import qs from 'qs';
 
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
+import { useAuthStore } from 'Store/authStore';
+
 export const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 export const httpClient = (): AxiosInstance => {
@@ -16,7 +18,9 @@ export const httpClient = (): AxiosInstance => {
     qs.stringify(params, { arrayFormat: 'repeat', encode: false });
 
   httpClient.interceptors.request.use(config => {
-    const authHeader = sessionStorage.getItem('token') || '';
+    const { token } = useAuthStore.getState();
+
+    const authHeader = token ? `Bearer ${token}` : '';
 
     return {
       ...config,

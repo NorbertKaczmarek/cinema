@@ -105,8 +105,18 @@ export const ProfileMenu = ({ placeholder = 'Moje konto', profileMenus }: Props)
 
       {profileMenus?.map(({ items }, index) => (
         <Fragment key={index}>
-          {items.map(({ label, href, icon, onClick }, index) => (
-            <BaseItem key={`${label}-${index}`} asChild onClick={() => onClick?.(href)}>
+          {items.map(({ label, href, icon, onClick, onLogout }, index) => (
+            <BaseItem
+              key={`${label}-${index}`}
+              asChild
+              onClick={() => {
+                if (onLogout) {
+                  onLogout();
+                  return;
+                }
+                onClick?.(href);
+              }}
+            >
               <p className="max-w-[180px] cursor-pointer truncate">
                 {!!icon &&
                   cloneElement(icon, {
