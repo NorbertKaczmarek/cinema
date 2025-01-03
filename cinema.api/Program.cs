@@ -47,7 +47,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = authenticationOptions.ValidIssuer,
         ValidAudience = authenticationOptions.ValidAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationOptions.IssuerSigningKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationOptions.IssuerSigningKey)),
+        RoleClaimType = "Role"
     };
 });
 builder.Services.AddAuthorization(options =>
