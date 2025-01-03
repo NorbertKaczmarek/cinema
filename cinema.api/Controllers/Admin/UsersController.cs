@@ -7,12 +7,14 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using cinema.api.Helpers.EmailSender;
+using Microsoft.AspNetCore.Authorization;
 
 namespace cinema.api.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/users")]
 [ApiExplorerSettings(GroupName = "Admin")]
+[Authorize(Roles = "Admin")]
 public class UsersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
