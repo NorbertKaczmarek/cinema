@@ -149,6 +149,7 @@ public class OrdersControllerTests
         {
             Email = "existing@example.com",
             PhoneNumber = "",
+            FourDigitCode = "1111",
             ScreeningId = context.Screenings.First().Id,
             Seats = new List<Seat> { context.Seats.First() },
             Status = OrderStatus.Pending

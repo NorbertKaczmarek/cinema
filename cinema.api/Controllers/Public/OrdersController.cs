@@ -57,6 +57,8 @@ public class OrdersController : ControllerBase
             return BadRequest($"Następujące miejsca są już zajęte: {takenSeatNumbers}");
         }
 
+        string code = _random.Next(1000, 10000).ToString();
+
         var newOrder = new Order
         {
             Email = dto.Email,
@@ -64,6 +66,7 @@ public class OrdersController : ControllerBase
             Status = OrderStatus.Pending,
             Screening = screening,
             Seats = requestedSeats,
+            FourDigitCode = code,
         };
 
         _context.Orders.Add(newOrder);
@@ -76,7 +79,7 @@ public class OrdersController : ControllerBase
         return Created($"/api/admin/orders/{newOrder.Id}", newOrderDto);
     }
 
-    private string sendTicketViaEmail(Guid id)
+    private async void sendTicketViaEmail(Guid id)
     {
         var order = _context
             .Orders
@@ -86,8 +89,6 @@ public class OrdersController : ControllerBase
             .ThenInclude(m => m!.Category)
             .FirstOrDefault(o => o.Id == id)!;
 
-        string code = _random.Next(1000, 10000).ToString();
-
         var ticketInfo = new TicketInfo
         {
             MovieName = order.Screening!.Movie!.Title,
@@ -95,11 +96,10 @@ public class OrdersController : ControllerBase
             Time = order.Screening!.StartDateTime.ToString("HH:mm"),
             SeatNumbers = string.Join(", ", order.Seats!.Select(s => $"{s.Row}{s.Number}")),
             WebsiteUrl = _emailOptions.WebsiteUrl,
-            Code = code
+            Code = order.FourDigitCode
         };
 
-        _emailSender.SendTicketAsync(order.Email, ticketInfo);
-
-        return code;
+        await _emailSender.SendTicketAsync(order.Email, ticketInfo);
+        return;
     }
 }

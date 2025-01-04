@@ -63,6 +63,7 @@ public class OrdersControllerTests
             Id = Guid.NewGuid(),
             Email = "test@example.com",
             PhoneNumber = "1234567890",
+            FourDigitCode = "1111",
             Status = OrderStatus.Pending,
             Screening = screening,
             Seats = new List<Seat> { seats[0], seats[2] }
@@ -167,6 +168,7 @@ public class OrdersControllerTests
         {
             Email = "initial@example.com",
             PhoneNumber = "111-111-1111",
+            FourDigitCode = "1111",
             Status = OrderStatus.Pending,
             ScreeningId = screening.Id,
             Seats = context.Seats.ToList()
