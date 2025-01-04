@@ -14,7 +14,6 @@ interface Props {
 }
 
 export const UserForm: FC<Props> = ({ form, isDisabled = false, isWithPassword = false }) => {
-  // @TODO - put
   return (
     <Card>
       <FormProvider {...form}>

@@ -9,6 +9,7 @@ export interface MenuItemProps {
   isActive?: boolean;
   isDisabled?: boolean;
   onClick?: NavigateFunction;
+  onLogout?: () => void;
 }
 
 export interface MenuGroup {
