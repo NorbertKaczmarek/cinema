@@ -44,7 +44,8 @@ public class OrdersController : ControllerBase
             .Where(
                 o => query.Phrase == null ||
                 (
-                    o.Email.ToLower().Contains(query.Phrase.ToLower())
+                    o.Email.ToLower().Contains(query.Phrase.ToLower()) ||
+                    o.FourDigitCode == query.Phrase
                 )
             );
 
