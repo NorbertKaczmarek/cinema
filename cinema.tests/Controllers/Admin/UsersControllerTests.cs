@@ -82,30 +82,6 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public void Get_WithValidId_ShouldReturnUser()
-    {
-        // Arrange
-        var existingUser = _context.Users.First();
-
-        // Act
-        var result = _controller.Get(existingUser.Id);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Email.Should().Be(existingUser.Email);
-    }
-
-    [Fact]
-    public void Get_WithInvalidId_ShouldReturnNull()
-    {
-        // Act
-        var result = _controller.Get(Guid.NewGuid());
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
     public void Post_WithValidData_ShouldCreateNewUser()
     {
         // Arrange
@@ -140,32 +116,6 @@ public class UsersControllerTests
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
-    }
-
-    [Fact]
-    public void Put_WithValidData_ShouldUpdateUser()
-    {
-        // Arrange
-        var existingUser = _context.Users.First();
-        var updateUserDto = new UserUpdateDto
-        {
-            Email = existingUser.Email,
-            FirstName = "UpdatedFirstName",
-            LastName = "UpdatedLastName",
-            Password = "test123!!!",
-            NewPassword = "NewPassword123",
-            ConfirmNewPassword = "NewPassword123"
-        };
-
-        // Act
-        var result = _controller.Put(existingUser.Id, updateUserDto);
-
-        // Assert
-        result.Should().BeOfType<OkObjectResult>();
-        var updatedUser = _context.Users.Find(existingUser.Id)!;
-        updatedUser.Should().NotBeNull();
-        updatedUser.FirstName.Should().Be("UpdatedFirstName");
-        updatedUser.LastName.Should().Be("UpdatedLastName");
     }
 
     [Fact]

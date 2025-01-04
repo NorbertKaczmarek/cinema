@@ -25,6 +25,7 @@ erDiagram
         char(36)        Id              PK  "Id rezerwacji"
         varchar(100)    Email               "Email klienta"
         varchar(100)    PhoneNumber         "Numer telefonu klienta"
+        varchar(4)      FourDigitCode       "Kod rezerwacji"
         varchar(100)    Status              "Status rezerwacji"
         char(36)        ScreeningId     FK  "Id seansu"
     }

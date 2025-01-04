@@ -126,6 +126,7 @@ public class CinemaDbContext(DbContextOptions<CinemaDbContext> options) : DbCont
             eb.Property(eb => eb.Id).HasColumnType("char(36)");
             eb.Property(eb => eb.Email).HasColumnType("varchar(100)");
             eb.Property(eb => eb.PhoneNumber).HasColumnType("varchar(100)");
+            eb.Property(eb => eb.FourDigitCode).HasColumnType("varchar(4)");
             eb.Property(eb => eb.Status).HasColumnType("varchar(100)");
             eb.Property(eb => eb.ScreeningId).HasColumnType("char(36)");
 

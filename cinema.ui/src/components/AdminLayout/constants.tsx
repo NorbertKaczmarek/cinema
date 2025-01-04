@@ -32,6 +32,7 @@ export const adminSidebarMenus = [
         label: 'Pracownicy',
         href: ROUTES.private.USER.TABLE,
         icon: <UsersIcon />,
+        requiredRole: 'Admin',
       },
       {
         label: 'Zamówienia',
@@ -42,7 +43,7 @@ export const adminSidebarMenus = [
   },
 ];
 
-export const getAdminProfileMenus = (userId: string) => [
+export const getAdminProfileMenus = (userId: string, onLogout: () => void) => [
   {
     items: [
       {
@@ -58,6 +59,7 @@ export const getAdminProfileMenus = (userId: string) => [
         label: 'Wyloguj się',
         href: '/signOut',
         icon: <LogOut />,
+        onLogout,
       },
     ],
   },

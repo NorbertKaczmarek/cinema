@@ -292,11 +292,13 @@ public class Seeder
 
                     var customerId = _random.Next(1, 11);
                     var customerPhoneNumber = _random.Next(111111111, 999999999).ToString();
+                    string fourDigitCode = _random.Next(1000, 10000).ToString();
                     orders.Add(new Order
                     {
                         Id = Guid.NewGuid(),
                         Email = $"customer{customerId}@example.com",
                         PhoneNumber = customerPhoneNumber,
+                        FourDigitCode = fourDigitCode,
                         Status = (OrderStatus)_random.Next(Enum.GetValues(typeof(OrderStatus)).Length),
                         Screening = screening,
                         Seats = selectedSeats

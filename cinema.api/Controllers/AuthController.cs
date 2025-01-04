@@ -35,7 +35,8 @@ public class AuthController : ControllerBase
         var result = SalterAndHasher.CheckPassword(dto.Password, user.Salt, user.SaltedHashedPassword);
         if (result == false) return BadRequest();
 
-        return Ok(generateJSONWebToken(user));
+        var token = new TokenObject() { Token = generateJSONWebToken(user) };
+        return Ok(token);
     }
 
     private User? getUserByEmail(string email)
@@ -59,7 +60,7 @@ public class AuthController : ControllerBase
             {
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FullName", string.Concat(user.FirstName, " ", user.LastName)),
-                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
+                new Claim("Role", user.IsAdmin ? "Admin" : "User")
             },
             notBefore: null,
             expires: DateTime.UtcNow.AddHours(6),

@@ -5,12 +5,14 @@ using cinema.context.Entities;
 using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace cinema.api.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/movies")]
 [ApiExplorerSettings(GroupName = "Admin")]
+[Authorize(Roles = "User,Admin")]
 public class MoviesController : ControllerBase
 {
     private readonly CinemaDbContext _context;

@@ -30,10 +30,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Outlet />,
     children: [
-      {
-        element: <PrivateRoute />,
-        children: [{ path: ROUTES.private.AUTH, element: <AdminAuth /> }],
-      },
+      { path: ROUTES.private.AUTH, element: <AdminAuth /> },
       {
         path: '/admin',
         element: <AdminLayout />,
@@ -79,7 +76,7 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <PrivateRoute />,
+            element: <PrivateRoute requiredRoles={['Admin']} />,
             children: [{ path: ROUTES.private.USER.TABLE, element: <AdminUserTable /> }],
           },
           {
@@ -87,7 +84,7 @@ export const router = createBrowserRouter([
             children: [{ path: ROUTES.private.USER.DETAILS, element: <AdminUserDetails /> }],
           },
           {
-            element: <PrivateRoute />,
+            element: <PrivateRoute requiredRoles={['Admin']} />,
             children: [{ path: ROUTES.private.USER.ADD, element: <AdminUserAdd /> }],
           },
           {
@@ -117,11 +114,10 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      //@ TODO - UNCOMMNET
-      // {
-      //   path: '*',
-      //   element: <UnknownRoute />,
-      // },
+      {
+        path: '*',
+        element: <UnknownRoute />,
+      },
     ],
   },
 ]);

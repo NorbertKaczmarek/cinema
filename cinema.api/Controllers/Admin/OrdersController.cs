@@ -6,18 +6,23 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using cinema.api.Helpers.EmailSender;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace cinema.api.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/orders")]
 [ApiExplorerSettings(GroupName = "Admin")]
+[Authorize(Roles = "User,Admin")]
 public class OrdersController : ControllerBase
 {
     private readonly CinemaDbContext _context;
     private readonly EmailOptions _emailOptions;
     private readonly IEmailSender _emailSender;
     private readonly IMapper _mapper;
+
+    private readonly Random _random = new Random();
 
     public OrdersController(CinemaDbContext context, EmailOptions emailOptions, IEmailSender emailSender, IMapper mapper)
     {
@@ -39,7 +44,8 @@ public class OrdersController : ControllerBase
             .Where(
                 o => query.Phrase == null ||
                 (
-                    o.Email.ToLower().Contains(query.Phrase.ToLower())
+                    o.Email.ToLower().Contains(query.Phrase.ToLower()) ||
+                    o.FourDigitCode == query.Phrase
                 )
             );
 
@@ -108,10 +114,13 @@ public class OrdersController : ControllerBase
             return BadRequest($"Następujące miejsca są już zajęte: {takenSeatNumbers}");
         }
 
+        string code = _random.Next(1000, 10000).ToString();
+
         var newOrder = new Order
         {
             Email = dto.Email ?? "",
             PhoneNumber = dto.PhoneNumber ?? "",
+            FourDigitCode = code,
             Status = Enum.TryParse(dto.Status, true, out OrderStatus parsedStatus)
                 ? parsedStatus
                 : throw new ArgumentException($"Nieprawidłowy status zamówienia: {dto.Status}"),

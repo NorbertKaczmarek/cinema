@@ -67,6 +67,7 @@ public class ScreeningsControllerTests
             Id = Guid.NewGuid(),
             Email = "test@example.com",
             PhoneNumber = "1234567890",
+            FourDigitCode = "1111",
             Status = OrderStatus.Ready,
             ScreeningId = screening.Id,
             Seats = new List<Seat> { seat1, seat2 }

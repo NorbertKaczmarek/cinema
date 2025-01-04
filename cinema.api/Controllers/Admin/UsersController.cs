@@ -7,6 +7,8 @@ using cinema.context;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using cinema.api.Helpers.EmailSender;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace cinema.api.Controllers.Admin;
 
@@ -27,6 +29,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public PageResult<UserDto> Get([FromQuery] PageQuery query)
     {
         var baseQuery = _context
@@ -61,8 +64,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin,User")]
     public UserDto Get(Guid id)
     {
+        var currentUserId = Guid.Parse(User.FindFirstValue("Id")!);
+        if (id != currentUserId && !User.IsInRole("Admin")) return null!;
+
         var user = getById(id);
         if (user == null) return null!;
 
@@ -85,6 +92,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public ActionResult Post([FromBody] UserCreateDto dto)
     {
         if (getUserByEmail(dto.Email) != null) return BadRequest("Użytkownik już istnieje.");
@@ -108,9 +116,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("{id}/resetPassword")]
+    [Authorize(Roles = "Admin")]
     public void ResetUserPassword(Guid id)
     {
-        // TODO check if sender is admin
         var user = getById(id);
 
         string password = generateAndSendNewPassword(user.Email);
@@ -122,10 +130,14 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,User")]
     public ActionResult Put(Guid id, [FromBody] UserUpdateDto dto)
     {
         var existingUser = getById(id);
         if (existingUser == null) return NotFound("Użytkownik nie został znaleziony.");
+
+        var currentUserId = Guid.Parse(User.FindFirstValue("Id")!);
+        if (id != currentUserId && !User.IsInRole("Admin")) return Forbid();
 
         var result = SalterAndHasher.CheckPassword(dto.Password, existingUser.Salt, existingUser.SaltedHashedPassword);
         if (result == false) return BadRequest("Niepoprawne hasło.");
@@ -151,6 +163,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public void Delete(Guid id)
     {
         var user = getById(id);

@@ -1,11 +1,13 @@
 import { ReactElement, ReactNode } from 'react';
 
 import { Popcorn } from 'lucide-react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 
 import { Navbar, NavbarProps } from 'Components/Navbar';
 import { Sidebar } from 'Components/Sidebar';
 import { useSidebarContext } from 'Hooks/useSidebarContext';
+import { ROUTES } from 'Routing/routes';
+import { useAuthStore } from 'Store/authStore';
 import { MenuGroup } from 'Types/menu';
 import { cn } from 'Utils/cn';
 
@@ -65,14 +67,25 @@ const BaseLayout = ({
 
 export const AdminLayout = ({ children = <Outlet /> }: Props) => {
   const navigate = useNavigate();
+  const { token, userId, role, clearToken } = useAuthStore();
 
-  const userId = '08dd1aa2-1132-4c56-8083-bace460b8ebd';
+  const adminProfileMenus = getAdminProfileMenus(userId || '', () => {
+    clearToken();
+    navigate(ROUTES.private.AUTH);
+  });
 
-  const adminProfileMenus = getAdminProfileMenus(userId);
+  const filteredMenus = adminSidebarMenus.map(menu => ({
+    ...menu,
+    items: menu.items.filter(item => !item.requiredRole || item.requiredRole === role),
+  }));
+
+  if (!token || !role) {
+    return <Navigate to={ROUTES.private.AUTH} replace />;
+  }
 
   return (
     <BaseLayout
-      sidebarMenus={generateMenuWithRedirect(adminSidebarMenus, navigate)}
+      sidebarMenus={generateMenuWithRedirect(filteredMenus, navigate)}
       profileMenus={generateMenuWithRedirect(adminProfileMenus, navigate)}
       headerIcon={<Popcorn />}
     >
