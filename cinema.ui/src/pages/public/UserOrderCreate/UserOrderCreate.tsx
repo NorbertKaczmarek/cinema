@@ -16,6 +16,7 @@ import { ROUTES } from 'Routing/routes';
 import useOrderStore from 'Store/orderStore';
 import { Seat } from 'Types/screening';
 import { capitalizeFirstLetter } from 'Utils/capitalize';
+import { formatDateTime } from 'Utils/formatDateTime';
 import { formatSeats } from 'Utils/formatSeats';
 
 export const UserOrderCreate = () => {
@@ -90,11 +91,11 @@ export const UserOrderCreate = () => {
                 {category && <Badge>{category.name}</Badge>}
               </div>
               <p className="mb-2 text-center text-lg sm:text-left sm:text-xl">
-                {capitalizeFirstLetter(
-                  format(new Date(screening.startDateTime), 'EEEE dd.MM, HH:mm', {
+                {`${capitalizeFirstLetter(
+                  format(new Date(screening.startDateTime), 'EEEE dd.MM', {
                     locale: pl,
                   })
-                )}
+                )}, ${formatDateTime(screening.startDateTime)['time']}`}
               </p>
             </div>
 

@@ -11,4 +11,5 @@ export type Order = {
   status: OrderStatus;
   screeningId: string;
   seatIds: string[];
+  fourDigitCode: string;
 };
