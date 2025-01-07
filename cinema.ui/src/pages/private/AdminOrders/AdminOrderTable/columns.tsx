@@ -14,7 +14,7 @@ export const columns: ColumnDef<Order>[] = [
     id: 'email',
     accessorKey: 'email',
     header: 'Adres e-mail',
-    minSize: 100,
+    minSize: 120,
   },
   {
     id: 'phoneNumber',
@@ -35,16 +35,22 @@ export const columns: ColumnDef<Order>[] = [
     id: 'date',
     accessorKey: 'date',
     header: 'Data seansu',
-    minSize: 100,
+    minSize: 80,
     cell: ({ row }: { row: Row<Order> }) => (
       <ScreeningDateCell screeningId={row.original.screeningId} />
     ),
   },
   {
+    id: 'fourDigitCode',
+    accessorKey: 'fourDigitCode',
+    header: 'Kod weryfikacyjny',
+    size: 100,
+  },
+  {
     id: 'status',
     accessorKey: 'status',
     header: 'Status',
-    minSize: 50,
+    size: 100,
     cell: ({ row }: { row: Row<Order> }) => <OrderStatusCell status={row.original.status} />,
   },
   {

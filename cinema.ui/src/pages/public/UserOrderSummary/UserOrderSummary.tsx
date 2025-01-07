@@ -25,6 +25,7 @@ import { queryHelpers } from 'Hooks/queryHelpers';
 import { ROUTES } from 'Routing/routes';
 import useOrderStore from 'Store/orderStore';
 import { Order } from 'Types/order';
+import { formatDateTime } from 'Utils/formatDateTime';
 import { formatDuration } from 'Utils/formatDuration';
 import { formatSeats } from 'Utils/formatSeats';
 
@@ -113,9 +114,9 @@ export const UserOrderSummary = () => {
               <div className="mb-2 flex items-center gap-2">
                 {category && <Badge>{category.name}</Badge>}
                 <Badge variant={BadgeVariant.Info}>
-                  {format(new Date(screening.startDateTime), 'dd.MM, HH:mm', {
+                  {`${format(new Date(screening.startDateTime), 'dd.MM', {
                     locale: pl,
-                  })}
+                  })}, ${formatDateTime(screening.startDateTime)['time']}`}
                 </Badge>
               </div>
               <p className="mb-2">
