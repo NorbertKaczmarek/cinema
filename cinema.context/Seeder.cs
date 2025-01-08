@@ -13,6 +13,23 @@ public class Seeder
         _context = context;
     }
 
+    public void SeedUsersAndSeats()
+    {
+        if (!_context.Database.CanConnect() || !_context.Database.IsRelational()) return;
+
+        if (!_context.Users.Any())
+        {
+            _context.Users.AddRange(GetUsers());
+            _context.SaveChanges();
+        }
+
+        if (!_context.Seats.Any())
+        {
+            _context.Seats.AddRange(SeedSeats());
+            _context.SaveChanges();
+        }
+    }
+
     public void SeedDatabase()
     {
         if (!_context.Database.CanConnect() || !_context.Database.IsRelational()) return;
@@ -28,19 +45,6 @@ public class Seeder
             _context.Movies.AddRange(GetMovies());
             _context.SaveChanges();
         }
-
-        if (!_context.Users.Any())
-        {
-            _context.Users.AddRange(GetUsers());
-            _context.SaveChanges();
-        }
-
-        if (!_context.Seats.Any())
-        {
-            _context.Seats.AddRange(SeedSeats());
-            _context.SaveChanges();
-        }
-
 
         if (!_context.Screenings.Any())
         {
