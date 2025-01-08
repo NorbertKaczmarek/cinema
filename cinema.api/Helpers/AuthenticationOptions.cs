@@ -1,4 +1,4 @@
-﻿namespace cinema.api;
+﻿namespace cinema.api.Helpers;
 
 public class AuthenticationOptions
 {
