@@ -12,11 +12,13 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-var authenticationOptions = configuration.GetSection(nameof(cinema.api.AuthenticationOptions)).Get<cinema.api.AuthenticationOptions>()!;
+var authenticationOptions = configuration.GetSection(nameof(AuthenticationOptions)).Get<AuthenticationOptions>()!;
 builder.Services.AddSingleton(authenticationOptions);
 
 var emailOptions = configuration.GetSection(nameof(cinema.api.EmailOptions)).Get<cinema.api.EmailOptions>()!;
 builder.Services.AddSingleton(emailOptions);
+
+var seedingOptions = configuration.GetSection(nameof(SeedingOptions)).Get<SeedingOptions>()!;
 
 // CORS
 builder.Services.AddCors(options =>
@@ -114,7 +116,9 @@ var scope = app.Services.CreateScope();
 scope.ServiceProvider.GetRequiredService<CinemaDbContext>().UpdateDatabase();
 
 // Seed database
-scope.ServiceProvider.GetRequiredService<Seeder>().SeedDatabase();
+var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+if (seedingOptions.SeedUsersAndSeats == "true") seeder.SeedUsersAndSeats();
+if (seedingOptions.SeedDatabase == "true") seeder.SeedDatabase();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

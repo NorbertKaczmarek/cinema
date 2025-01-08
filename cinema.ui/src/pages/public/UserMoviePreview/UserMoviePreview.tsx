@@ -9,6 +9,7 @@ import { Badge } from 'Components/Badge';
 import { Card } from 'Components/Card';
 import { Skeleton } from 'Components/Skeleton';
 import { capitalizeFirstLetter } from 'Utils/capitalize';
+import { formatDateTime } from 'Utils/formatDateTime';
 import { formatDuration } from 'Utils/formatDuration';
 import { getYouTubeId } from 'Utils/getYoutubeId';
 
@@ -82,9 +83,9 @@ export const UserMoviePreview = () => {
                         )}
                       </span>
                       <span>
-                        {format(new Date(screening.startDateTime), 'dd.MM, HH:mm', {
+                        {`${format(new Date(screening.startDateTime), 'dd.MM', {
                           locale: pl,
-                        })}
+                        })}, ${formatDateTime(screening.startDateTime)['time']}`}
                       </span>
                     </div>
                   </Card>
