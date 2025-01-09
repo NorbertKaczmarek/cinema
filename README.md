@@ -119,10 +119,10 @@ erDiagram
 ## Zrzuty ekranu
 
 ![Screenshot 1](images/main_page_1.png)
-*Zrzut ekranu nr 1: Główna strona kina - przedstawia karuzelę z ostatnio dodanymi filamami oraz repertuarem na najbliższe 7 dni.*
+*Zrzut ekranu nr 1: Główna strona kina - przedstawia karuzelę z ostatnio dodanymi filmamami oraz repertuarem na najbliższe 7 dni.*
 
 ![Screenshot 2](images/main_page_2.png)
-*Zrzut ekranu nr 2: Strona konkrentego filmu - przedstawia kategorię, opinię, opis, czas trwania, 5 najbliższych seansów oraz zwiastun.*
+*Zrzut ekranu nr 2: Strona konkretnego filmu - przedstawia kategorię, opinię, opis, czas trwania, 5 najbliższych seansów oraz zwiastun.*
 
 ![Screenshot 3](images/main_page_3.png)
 *Zrzut ekranu nr 3: Strona wyboru miejsc - zielone miejsca są wolne, czerwone zajęte, pomarańczowe wybrane przez klienta.*
@@ -131,7 +131,7 @@ erDiagram
 *Zrzut ekranu nr 4: Strona zamawiania filmu - klient potwierdza zamówienie i podaje swoje dane.*
 
 ![Screenshot 5](images/email_ticket.png)
-*Zrzut ekranu nr 5: Email, który natychmiatowo przychodzi na maila, widzimy dane dotyczące seansu, naszych miejsc oraz kod identyfikujący nasz bilet.*
+*Zrzut ekranu nr 5: Email, który natychmiastowo przychodzi na maila, widzimy dane dotyczące seansu, naszych miejsc oraz kod identyfikujący nasz bilet.*
 
 ![Screenshot 6](images/admin_login.png)
 *Zrzut ekranu nr 6: Strona logowania dla pracowników kina - zalogować się mogą jedynie pracownicy, konta tworzy administrator.*
@@ -163,10 +163,10 @@ erDiagram
 ![Screenshot 15](images/email_nowy_pracownik_haslo.png)
 *Zrzut ekranu nr 15: Email, który przychodzi do pracownika po założeniu konta lub odgórnym resecie hasła.*
 
-## Zrzuty ekranu endpointów
+## Zrzuty ekranu api
 
 ![Screenshot 16](images/swagger_admin.png)
-*Zrzut ekranu nr 16: Zrzut ekranu endpointów pracownika.*
+*Zrzut ekranu nr 16: Zrzut ekranu api pracownika.*
 
 ![Screenshot 17](images/swagger_user.png)
-*Zrzut ekranu nr 17: Zrzut ekranu endpointów klienta.*
+*Zrzut ekranu nr 17: Zrzut ekranu api klienta.*
