@@ -48,7 +48,7 @@ Umożliwia:
 [admin panel](https://develop.cinema.nkaczmarek.pl/admin)\
 [swagger](https://develop.cinema.nkaczmarek.pl/swagger)
 
-## Database diagram
+## Diagram bazy danych
 
 ```mermaid
 erDiagram
