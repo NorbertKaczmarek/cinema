@@ -87,7 +87,7 @@ export const UserHomePage = () => {
         <Card
           classNames={{ wrapper: 'min-h-screen w-full max-w-[1100px] mx-auto', content: 'pb-0' }}
         >
-          <h1 className="mb-4 text-3xl font-bold">Event Schedule</h1>
+          <h1 className="mb-4 text-3xl font-bold">Harmonogram</h1>
           <Tabs value={selectedDate} onValueChange={setSelectedDate}>
             <TabsList className="mb-4 grid w-full grid-cols-7">
               {dates.map(date => (
