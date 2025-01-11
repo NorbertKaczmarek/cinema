@@ -41,8 +41,8 @@ export const MOVIE_DICT_STATE = {
       .refine(url => getYouTubeId(url) !== null, {
         message: 'Niepoprawny format URL',
       }),
-    rating: z.number().min(0.1, 'Minimalna wartość: 0.1').max(10, 'Maksymalna wartość: 10'),
-    durationMinutes: z.number().min(1, 'Minimalna wartość: 1').int(),
+    rating: z.coerce.number().min(0.1, 'Minimalna wartość: 0.1').max(10, 'Maksymalna wartość: 10'),
+    durationMinutes: z.coerce.number().min(1, 'Minimalna wartość: 1').int(),
     title: z.string().nonempty('To pole jest wymagane').max(255, 'Maksymalnie 255 znaków'),
   }),
 };
