@@ -10,7 +10,7 @@ const PRIVATE = {
 const PUBLIC = {
   SCREENINGS: '/user/screenings',
   SCREENING_SEATS: (id: string) => `/user/screenings/${id}/seats`,
-  GET_SCREENING: (id: string) => `/admin/screenings/${id}`,
+  GET_SCREENING: (id: string) => `/user/screenings/${id}`,
 };
 
 export const SCREENINGS = {
