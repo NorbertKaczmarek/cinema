@@ -21,6 +21,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from 'Components/Dia
 import { FormField } from 'Components/FormField';
 import { Input } from 'Components/Input';
 import { Skeleton } from 'Components/Skeleton';
+import queryClient from 'Configs/queryClient';
 import { queryHelpers } from 'Hooks/queryHelpers';
 import { ROUTES } from 'Routing/routes';
 import useOrderStore from 'Store/orderStore';
@@ -58,8 +59,9 @@ export const UserOrderSummary = () => {
         setTimeout(() => {
           clearOrder();
           setIsModalOpen(false);
+          queryClient.invalidateQueries(['user']);
           navigate(ROUTES.public.HOME);
-        }, 3000);
+        }, 1000);
       },
       onError: () => {
         toast.error('Coś poszło nie tak!');
