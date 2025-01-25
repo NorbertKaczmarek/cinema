@@ -64,9 +64,10 @@ public class Seeder
         var categories = new List<Category>
         {
             new Category { Id = Guid.NewGuid(), Name = "Dramat" },
-            new Category { Id = Guid.NewGuid(), Name = "Animacja" },
+            new Category { Id = Guid.NewGuid(), Name = "Animowany" },
             new Category { Id = Guid.NewGuid(), Name = "Sci-Fi" },
             new Category { Id = Guid.NewGuid(), Name = "Horror" },
+            new Category { Id = Guid.NewGuid(), Name = "Akcja" },
         };
 
         return categories;
@@ -102,16 +103,16 @@ public class Seeder
                 Cast = "Lupita Nyong'o, Pedro Pascal, Kit Connor, Bill Nighy, Stephanie Hsu, Matt Berry",
                 Description = "ROZZUM jest robotem, jednostką 7134. Rozbija się na niezamieszkanej wyspie i musi nauczyć dostosowywać do surowego otoczenia. Stopniowo zaczyna budować relacje z tamtejszymi zwierzętami i staje się również przybranym rodzicem osieroconej gęsi. Animacja oparta jest na bestsellerowej książce dla dzieci o tym samym tytule i opowiada o odkrywaniu siebie oraz bada, co to znaczy być żywym i połączonym ze wszystkimi istotami.",
                 Rating = 8.6,
-                Category = _context.Categories.FirstOrDefault(x => x.Name == "Animacja")
+                Category = _context.Categories.FirstOrDefault(x => x.Name == "Animowany")
             },
             new Movie
             {
                 Id = Guid.NewGuid(),
                 Title = "Venom 3: Ostatni taniec",
                 DurationMinutes = 109,
-                PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/k42Owka8v91trK1qMYwCQCNwJKr.jpg",
+                PosterUrl = "https://image.tmdb.org/t/p/original/aosm8NMQ3UyoBVpSxyimorCQykC.jpg",
                 TrailerUrl = "https://youtu.be/GXrD3RU3Zfk",
-                BackgroundUrl = "https://media.themoviedb.org/t/p/w533_and_h300_bestv2/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg",
+                BackgroundUrl = "https://image.tmdb.org/t/p/original/h7C8brpfcfbh4IZvUSTB24KsxZ5.jpg",
                 Director = "Kelly Marcel",
                 Cast = "Tom Hardy, Chiwetel Ejiofor, Juno Temple, Clark Backo, Rhys Ifans",
                 Description = "Eddie and Venom are on the run. Hunted by both of their worlds and with the net closing in, the duo are forced into a devastating decision that will bring the curtains down on Venom and Eddie's last dance.",
@@ -137,9 +138,9 @@ public class Seeder
                 Id = Guid.NewGuid(),
                 Title = "Obcy: Romulus",
                 DurationMinutes = 119,
-                PosterUrl = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/6FsZvai0QZDdtOf2ideSRUZZyg.jpg",
+                PosterUrl = "https://image.tmdb.org/t/p/original/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg",
                 TrailerUrl = "https://youtu.be/-5FlWjXKyYs",
-                BackgroundUrl = "https://media.themoviedb.org/t/p/w533_and_h300_bestv2/6vn6K9oX82i6E86ZiHVxqVEMQqP.jpg",
+                BackgroundUrl = "https://image.tmdb.org/t/p/original/crCiUhTROhezWYCWfLx1lQGRFNP.jpg",
                 Director = "Fede Álvarez",
                 Cast = "Cailee Spaeny, David Jonsson, Archie Renaux, Isabela Merced",
                 Description = "Podczas przeszukiwania głębin opuszczonej stacji kosmicznej grupa młodych kolonizatorów kosmosu staje twarzą w twarz z najbardziej przerażającą formą życia we wszechświecie.",
@@ -158,7 +159,7 @@ public class Seeder
                 Cast = "Chris Hemsworth, Brian Tyree Henry, Scarlett Johansson, Keegan-Michael Key, Jon Hamm",
                 Description = "Poznaj historię Optimusa Prime'a i Megatrona, lepiej znanych jako zaprzysięgli wrogowie. Kiedyś byli jednak przyjaciółmi związanymi jak bracia, którzy na zawsze zmienili los Cybertronu.",
                 Rating = 8.1,
-                Category = _context.Categories.FirstOrDefault(x => x.Name == "Animacja")
+                Category = _context.Categories.FirstOrDefault(x => x.Name == "Animowany")
             },
             new Movie
             {
@@ -187,6 +188,34 @@ public class Seeder
                 Description = "Historia opowiedziana z perspektywy byłego agenta KGB, którego życie nierozerwalnie łączy się z osobą Ronalda Reagana od czasu, gdy ten po raz pierwszy zwrócił na siebie uwagę Sowietów jako aktor w Hollywood. Reagan pokonuje przeciwności losu i zostaje 40. prezydentem Stanów Zjednoczonych, jednym z największych w historii.",
                 Rating = 6.3,
                 Category = _context.Categories.FirstOrDefault(x => x.Name == "Dramat")
+            },
+            new Movie
+            {
+                Id = Guid.NewGuid(),
+                Title = "The Outrun",
+                DurationMinutes = 117,
+                PosterUrl = "https://image.tmdb.org/t/p/original/zfRR2CkbvYrLuOPQFm8vBaENyMy.jpg",
+                TrailerUrl = "https://www.youtube.com/watch?v=ReKQYf4Jdpc",
+                BackgroundUrl = "https://image.tmdb.org/t/p/original/lg1IITE2hOaVT838FloABCm9mhO.jpg",
+                Director = "Nora Fingscheidt",
+                Cast = "Saoirse Ronan, Paapa Essiedu, Nabil Elouahabi, Izuka Hoyle, Lauren Lyle",
+                Description = "Rona, świeżo po odwyku, wraca na Orkady; miejsce zarówno dzikie, jak i piękne, tuż przy szkockim wybrzeżu. Po ponad dekadzie życia na krawędzi w Londynie, gdzie zarówno znalazła, jak i straciła miłość, Rona – obecnie 30-letnia – próbuje pogodzić się ze swoją trudną przeszłością. Kiedy ponownie nawiązuje kontakt z dramatycznym krajobrazem, w którym dorastała, wspomnienia traumatycznego dzieciństwa łączą się z niedawnymi, pełnymi wyzwań wydarzeniami, które skierowały ją na ścieżkę wyzdrowienia.",
+                Rating = 6.9,
+                Category = _context.Categories.FirstOrDefault(x => x.Name == "Dramat")
+            },
+            new Movie
+            {
+                Id = Guid.NewGuid(),
+                Title = "Gladiator 2",
+                DurationMinutes = 148,
+                PosterUrl = "https://image.tmdb.org/t/p/original/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg",
+                TrailerUrl = "https://www.youtube.com/watch?v=P5vJctb1R0M",
+                BackgroundUrl = "https://image.tmdb.org/t/p/original/uR9M6nOXTigDq64upoBzr23X3ag.jpg",
+                Director = "David Scarpa",
+                Cast = "Paul Mescal, Denzel Washington, Pedro Pascal, Connie Nielsen, Joseph Quinn",
+                Description = "Wiele lat po tym, jak był świadkiem śmierci szanowanego bohatera Maximusa z rąk swojego wuja, Lucjusz zostaje zmuszony do wejścia do Koloseum po tym, jak jego dom został podbity przez despotycznych cesarzy, którzy teraz prowadzą Rzym żelazną pięścią. Z wściekłością w sercu i przyszłością Imperium na szali, Lucjusz musi spojrzeć w swoją przeszłość, aby znaleźć siłę i honor, aby przywrócić chwałę Rzymu jego obywatelom.",
+                Rating = 6.8,
+                Category = _context.Categories.FirstOrDefault(x => x.Name == "Akcja")
             }
         };
 
@@ -245,11 +274,11 @@ public class Seeder
     {
         var _random = new Random();
         long startTicks = new DateTimeOffset(2025, 1, 1, 8, 30, 0, TimeSpan.Zero).UtcTicks;
-        long endTicks = new DateTimeOffset(2025, 6, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
+        long endTicks = new DateTimeOffset(2025, 12, 15, 16, 30, 0, TimeSpan.Zero).UtcTicks;
         var screenings = new List<Screening>();
         foreach (var movie in movies)
         {
-            var screeningsAmount = _random.Next(10, 30);
+            var screeningsAmount = _random.Next(20, 60);
             for (var i = 0; i < screeningsAmount; i++)
             {
                 long randomTicks = (long)(_random.NextDouble() * (endTicks - startTicks)) + startTicks;
